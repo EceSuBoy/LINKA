@@ -39,10 +39,10 @@ namespace Linka.Catalog.Services.ProductDetailDetailServices
 
         }
 
-        public Task<GetByIdProductDetailDto> GetByIdProductDetailAsync(string id)
+        public async Task<GetByIdProductDetailDto> GetByIdProductDetailAsync(string id)
         {
-            var values = _ProductDetailCollection.Find<ProductDetail>(x => x.ProductDetailId == id).FirstOrDefaultAsync();
-            return _mapper.Map<Task<GetByIdProductDetailDto>>(values);
+            var values = await _ProductDetailCollection.Find<ProductDetail>(x => x.ProductDetailId == id).FirstOrDefaultAsync();
+            return _mapper.Map<GetByIdProductDetailDto>(values);
         }
 
         public async Task UpdateProductDetailAsync(UpdateProductDetailDto updateProductDetailDto)

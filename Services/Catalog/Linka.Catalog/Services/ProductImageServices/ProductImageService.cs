@@ -38,10 +38,10 @@ namespace Linka.Catalog.Services.ProductImageServices
 
         }
 
-        public Task<GetByIdProductImageDto> GetByIdProductImageAsync(string id)
+        public async Task<GetByIdProductImageDto> GetByIdProductImageAsync(string id)
         {
-            var values = _ProductImageCollection.Find<ProductImage>(x => x.ProductImageId == id).FirstOrDefaultAsync();
-            return _mapper.Map<Task<GetByIdProductImageDto>>(values);
+            var values = await _ProductImageCollection.Find<ProductImage>(x => x.ProductImageId == id).FirstOrDefaultAsync();
+            return _mapper.Map<GetByIdProductImageDto>(values);
         }
 
         public async Task UpdateProductImageAsync(UpdateProductImageDto updateProductImageDto)
