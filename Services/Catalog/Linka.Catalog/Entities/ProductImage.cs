@@ -2,17 +2,17 @@
 
 namespace Linka.Catalog.Entities
 {
-    public class ProductDetail
+    public class ProductImage
     {
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-        public string ProductDetailId { get; set; }
-        public string ProductDescription { get; set; }
-        public string ProductInfo { get; set; }
+        public string ProductImageId { get; set; }
+        public string Image1 { get; set; }
+        public string Image2 { get; set; }
+        public string Image3 { get; set; }
         public string ProductId { get; set; }
 
         [BsonIgnore]
         public Product Product { get; set; }
-
     }
 }
