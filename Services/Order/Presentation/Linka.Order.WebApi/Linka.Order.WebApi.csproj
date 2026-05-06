@@ -11,7 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\..\Core\Linka.Order.Application\Linka.Order.Application.csproj" />
+    <ProjectReference Include="..\..\Core\Linka.Order.Domain\Linka.Order.Domain.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Linka.Order.Persistence\Linka.Order.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
