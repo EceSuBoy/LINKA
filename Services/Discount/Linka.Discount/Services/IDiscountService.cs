@@ -4,10 +4,10 @@ namespace Linka.Discount.Services
 {
     public interface IDiscountService
     {
-        Task<List<ResultCouponDto>> GetAllCouponAsync();
-        Task CreateCouponAsync(CreateCouponDto createCouponDto); 
-        Task UpdateCouponAsync(CreateCouponDto createCouponDto);
-        Task DeleteCouponAsync(int id);
-        Task<GetByIdCouponDto> GetByIdCouponAsync(int id);
+        Task<List<ResultDiscountCouponDto>> GetAllDiscountCouponAsync();
+        Task CreateDiscountCouponAsync(CreateDiscountCouponDto createCouponDto); 
+        Task UpdateDiscountCouponAsync(UpdateDiscountCouponDto updateCouponDto);
+        Task DeleteDiscountCouponAsync(int id);
+        Task<GetByIdDiscountCouponDto> GetByIdDiscountCouponAsync(int id);
     }
 }
