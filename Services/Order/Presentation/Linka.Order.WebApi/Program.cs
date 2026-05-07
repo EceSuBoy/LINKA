@@ -1,9 +1,17 @@
 using Linka.Order.Application.Features.CQRS.Handlers.AddressHandlers;
 using Linka.Order.Application.Features.CQRS.Handlers.OrderDetailHandlers;
 using Linka.Order.Application.Features.CQRS.Queries.AddressQueries;
+using Linka.Order.Application.Interfaces;
+using Linka.Order.Application.Services;
+using Linka.Order.Persistence.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddApplicationServices(builder.Configuration);
+
+
+#region
 builder.Services.AddScoped<GetAddressQueryHandler>();
 builder.Services.AddScoped<CreateAddressCommandHandler>();
 builder.Services.AddScoped<RemoveAddressCommandHandler>();
@@ -15,6 +23,7 @@ builder.Services.AddScoped<CreateOrderDetailCommandHandler>();
 builder.Services.AddScoped<RemoveOrderDetailCommandHandler>();
 builder.Services.AddScoped<UpdateOrderDetailCommandHandler>();
 builder.Services.AddScoped<GetOrderDetailByIdQueryHandler>();
+#endregion
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
