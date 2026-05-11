@@ -1,17 +1,21 @@
 ﻿using Azure.Identity;
+using IdentityServer4.Hosting.LocalApiAuthentication;
 using Linka.IdentityServer.Dtos;
 using Linka.IdentityServer.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using static IdentityServer4.IdentityServerConstants;
 
 namespace Linka.IdentityServer.Controllers
 {
+    [Authorize(LocalApi.PolicyName)]
     [Route("api/[controller]")]
     [ApiController]
     public class RegistersController : ControllerBase
-    {
+    {       
         private readonly UserManager<ApplicationUser> _userManager;
 
         public RegistersController(UserManager<ApplicationUser> userManager)
