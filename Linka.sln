@@ -29,6 +29,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linka.Order.Persistence", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linka.Order.WebApi", "Services\Order\Presentation\Linka.Order.WebApi\Linka.Order.WebApi.csproj", "{606FEE63-BBF3-4A36-B469-FA1ABFE9EB98}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityServer", "IdentityServer", "{BF02F3ED-2C31-4005-8838-BE21A0E4EAD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linka.IdentityServer", "IdentityServer\Linka.IdentityServer\Linka.IdentityServer.csproj", "{17CF2A07-77BD-1B4D-6554-D835FEC4204B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +63,10 @@ Global
 		{606FEE63-BBF3-4A36-B469-FA1ABFE9EB98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{606FEE63-BBF3-4A36-B469-FA1ABFE9EB98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{606FEE63-BBF3-4A36-B469-FA1ABFE9EB98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17CF2A07-77BD-1B4D-6554-D835FEC4204B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17CF2A07-77BD-1B4D-6554-D835FEC4204B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17CF2A07-77BD-1B4D-6554-D835FEC4204B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17CF2A07-77BD-1B4D-6554-D835FEC4204B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +84,7 @@ Global
 		{1B328D0B-A8E7-4F84-9044-4CF39E8EB5C4} = {3074C7C3-250F-427A-A601-058B0ED184F8}
 		{BAA1C49D-46AB-49C1-A164-68D76298F098} = {9B628291-566C-4673-90BB-14355B25023A}
 		{606FEE63-BBF3-4A36-B469-FA1ABFE9EB98} = {97EDF747-1920-48A7-B7B4-BD805E735E1C}
+		{17CF2A07-77BD-1B4D-6554-D835FEC4204B} = {BF02F3ED-2C31-4005-8838-BE21A0E4EAD1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A748B4CD-ECCE-4506-A537-3DC60BFF8529}

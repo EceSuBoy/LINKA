@@ -3,9 +3,12 @@ using Linka.Order.Application.Features.CQRS.Handlers.OrderDetailHandlers;
 using Linka.Order.Application.Features.CQRS.Queries.AddressQueries;
 using Linka.Order.Application.Interfaces;
 using Linka.Order.Application.Services;
+using Linka.Order.Persistence.Context;
 using Linka.Order.Persistence.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<OrderContext>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddApplicationServices(builder.Configuration);
