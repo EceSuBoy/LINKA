@@ -3,8 +3,17 @@ using Linka.Cargo.BusinessLayer.Concrete;
 using Linka.Cargo.DataAccessLayer.Abstract;
 using Linka.Cargo.DataAccessLayer.Concrete;
 using Linka.Cargo.DataAccessLayer.EntityFramework;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["IdentityServerUrl"];
+        options.Audience = "ResourceCargo";
+        options.RequireHttpsMetadata = false;
+    });
 
 builder.Services.AddDbContext<CargoContext>();
 builder.Services.AddScoped<ICargoCompanyDal, EFCargoCompanyDal>();
@@ -32,6 +41,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
