@@ -2,11 +2,13 @@
 using Linka.Order.Application.Features.CQRS.Handlers.AddressHandlers;
 using Linka.Order.Application.Features.CQRS.Handlers.OrderDetailHandlers;
 using Linka.Order.Application.Features.CQRS.Queries.OrderDetailQueries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Linka.Order.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderDetailsController : ControllerBase

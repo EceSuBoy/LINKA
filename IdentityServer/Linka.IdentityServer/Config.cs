@@ -24,15 +24,16 @@ namespace Linka.IdentityServer
                 new ApiResource("ResourceOrder")
                 {
                     Scopes= {"OrderFullPermission"},
-                }
+                },
+                new ApiResource(IdentityServerConstants.LocalApi.ScopeName)
 
              };
         public static IEnumerable<IdentityResource> IdentityResources =>
             new IdentityResource[]
             {
-                new IdentityResources.OpenId(),
                 new IdentityResources.Email(),
-                new IdentityResources.Profile()
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile() 
             };
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
@@ -40,7 +41,8 @@ namespace Linka.IdentityServer
                 new ApiScope("CatalogFullPermission","Full access to Catalog operations"),
                 new ApiScope("CatalogReadPermission","Read access to Catalog operations"),
                 new ApiScope("DiscountFullPermission","Full access to Discount operations"),
-                new ApiScope("OrderFullPermission","Full access to Order operations")
+                new ApiScope("OrderFullPermission","Full access to Order operations"),
+                new ApiScope(IdentityServerConstants.LocalApi.ScopeName)
             };
         public static IEnumerable<Client> Clients =>
             new Client[]
@@ -52,7 +54,7 @@ namespace Linka.IdentityServer
                     ClientName = "Linka Visitor User",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("linkasecret".Sha256()) },
-                    AllowedScopes = { "CatalogReadPermission" }
+                    AllowedScopes = { "DiscountFullPermission" }
                 },
 
                 //Manager

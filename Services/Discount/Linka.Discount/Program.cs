@@ -1,7 +1,16 @@
 using Linka.Discount.Context;
 using Linka.Discount.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["IdentityServerUrl"];
+        options.Audience = "ResourceDiscount";
+        options.RequireHttpsMetadata = false;
+    });
 
 // Add services to the container.
 builder.Services.AddTransient<DapperContext>();
@@ -24,6 +33,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

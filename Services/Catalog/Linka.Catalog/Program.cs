@@ -4,10 +4,19 @@ using Linka.Catalog.Services.ProductDetailServices;
 using Linka.Catalog.Services.ProductImageServices;
 using Linka.Catalog.Services.ProductServices;
 using Linka.Catalog.Settings;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["IdentityServerUrl"];
+        options.Audience = "ResourceCatalog";
+        options.RequireHttpsMetadata = false;
+    });
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped< IProductService, ProductService>();
@@ -39,6 +48,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

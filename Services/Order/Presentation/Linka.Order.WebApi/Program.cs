@@ -5,8 +5,17 @@ using Linka.Order.Application.Interfaces;
 using Linka.Order.Application.Services;
 using Linka.Order.Persistence.Context;
 using Linka.Order.Persistence.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["IdentityServerUrl"];
+        options.Audience = "ResourceOrder";
+        options.RequireHttpsMetadata = false;
+    });
 
 builder.Services.AddDbContext<OrderContext>();
 
@@ -44,6 +53,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
