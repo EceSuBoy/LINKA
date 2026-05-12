@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Linka.Cargo.EntityLayer\Linka.Cargo.EntityLayer.csproj" />
+  </ItemGroup>
+
 </Project>
