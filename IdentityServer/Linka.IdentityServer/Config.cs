@@ -59,7 +59,7 @@ namespace Linka.IdentityServer
                 {
                     ClientId = "LinkaManagerId",
                     ClientName = "Linka Manager User",
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     ClientSecrets = { new Secret("linkasecret".Sha256()) },
                     AllowedScopes = { "CatalogFullPermission" }
                 },
@@ -69,7 +69,7 @@ namespace Linka.IdentityServer
                 {
                     ClientId = "LinkaAdminId",
                     ClientName = "Linka Admin User",
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     ClientSecrets = { new Secret("linkasecret".Sha256()) },
                     AllowedScopes = { "CatalogFullPermission", "CatalogReadPermission", "DiscountFullPermission", "OrderFullPermission", "CargoFullPermission", "BasketFullPermission",
                     IdentityServerConstants.LocalApi.ScopeName,
