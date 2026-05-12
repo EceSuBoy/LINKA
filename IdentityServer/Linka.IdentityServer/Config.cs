@@ -13,22 +13,12 @@ namespace Linka.IdentityServer
         public static IEnumerable<ApiResource> ApiResources =>
              new ApiResource[]
              {
-                new ApiResource("ResourceCatalog")
-                {
-                    Scopes = {"CatalogFullPermission", "CatalogReadPermission"},
-                },
-                new ApiResource("ResourceDiscount")
-                {
-                    Scopes= {"DiscountFullPermission"},
-                },
-                new ApiResource("ResourceOrder")
-                {
-                    Scopes= {"OrderFullPermission"},
-                },
-                new ApiResource ("ResourceCargo")
-                {
-                    Scopes= {"CargoFullPermission"},
-                },
+                new ApiResource("ResourceCatalog") {Scopes = {"CatalogFullPermission", "CatalogReadPermission"} },
+                new ApiResource("ResourceDiscount") {Scopes = {"DiscountFullPermission"} },
+                new ApiResource("ResourceOrder") {Scopes = {"OrderFullPermission"} },
+                new ApiResource ("ResourceCargo") {Scopes = {"CargoFullPermission"} },
+                new ApiResource ("ResourceBasket") {Scopes = {"BasketFullPermission"} },
+
                 new ApiResource(IdentityServerConstants.LocalApi.ScopeName)
 
              };
@@ -47,6 +37,8 @@ namespace Linka.IdentityServer
                 new ApiScope("DiscountFullPermission","Full access to Discount operations"),
                 new ApiScope("OrderFullPermission","Full access to Order operations"),
                 new ApiScope("CargoFullPermission","Full access to Cargo operations"),
+                new ApiScope("BasketFullPermission","Full access to Basket operations"),
+
                 new ApiScope(IdentityServerConstants.LocalApi.ScopeName)
             };
         public static IEnumerable<Client> Clients =>
@@ -79,7 +71,7 @@ namespace Linka.IdentityServer
                     ClientName = "Linka Admin User",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("linkasecret".Sha256()) },
-                    AllowedScopes = { "CatalogFullPermission", "CatalogReadPermission", "DiscountFullPermission", "OrderFullPermission", "CargoFullPermission",
+                    AllowedScopes = { "CatalogFullPermission", "CatalogReadPermission", "DiscountFullPermission", "OrderFullPermission", "CargoFullPermission", "BasketFullPermission",
                     IdentityServerConstants.LocalApi.ScopeName,
                     IdentityServerConstants.StandardScopes.Email,
                     IdentityServerConstants.StandardScopes.OpenId,
