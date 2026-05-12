@@ -1,0 +1,6 @@
+@Linka.Basket_HostAddress = http://localhost:5212
+
+GET {{Linka.Basket_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
