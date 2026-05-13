@@ -53,6 +53,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontends", "Frontends", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linka.WebUI", "Frontends\Linka.WebUI\Linka.WebUI.csproj", "{D0DF1501-7EF7-483C-8CDB-F947D59D5BF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linka.DtoLayer", "Frontends\Linka.DtoLayer\Linka.DtoLayer.csproj", "{29E82FB8-6F3C-4B60-949C-DB8D8F837C84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +117,10 @@ Global
 		{D0DF1501-7EF7-483C-8CDB-F947D59D5BF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0DF1501-7EF7-483C-8CDB-F947D59D5BF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0DF1501-7EF7-483C-8CDB-F947D59D5BF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29E82FB8-6F3C-4B60-949C-DB8D8F837C84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29E82FB8-6F3C-4B60-949C-DB8D8F837C84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29E82FB8-6F3C-4B60-949C-DB8D8F837C84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29E82FB8-6F3C-4B60-949C-DB8D8F837C84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,6 +148,7 @@ Global
 		{BED819E8-CEA5-499D-ABA6-729550DD2630} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{71E6CF1E-3997-465E-AA5F-2CAC1D9C3F06} = {BED819E8-CEA5-499D-ABA6-729550DD2630}
 		{D0DF1501-7EF7-483C-8CDB-F947D59D5BF7} = {D56128B9-6DD8-4A13-A901-EA9477E81B2A}
+		{29E82FB8-6F3C-4B60-949C-DB8D8F837C84} = {D56128B9-6DD8-4A13-A901-EA9477E81B2A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A748B4CD-ECCE-4506-A537-3DC60BFF8529}
