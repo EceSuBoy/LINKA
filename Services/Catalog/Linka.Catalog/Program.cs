@@ -1,6 +1,8 @@
+using Linka.Catalog.Services.BrandServices;
 using Linka.Catalog.Services.CategoryServices;
 using Linka.Catalog.Services.FeatureServices;
 using Linka.Catalog.Services.FeatureSliderServices;
+using Linka.Catalog.Services.OfferDiscountServices;
 using Linka.Catalog.Services.ProductDetailDetailServices;
 using Linka.Catalog.Services.ProductDetailServices;
 using Linka.Catalog.Services.ProductImageServices;
@@ -28,6 +30,10 @@ builder.Services.AddScoped<IProductImageService, ProductImageService>();
 builder.Services.AddScoped<IFeatureSliderService, FeatureSliderService>();
 builder.Services.AddScoped<IFeatureService, FeatureService>();
 builder.Services.AddScoped<ISpecialOfferService, SpecialOfferService>();
+builder.Services.AddScoped<IOfferDiscountService, OfferDiscountService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
+
+
 
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());

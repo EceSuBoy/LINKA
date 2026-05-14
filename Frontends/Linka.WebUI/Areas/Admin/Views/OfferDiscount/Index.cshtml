@@ -1,0 +1,74 @@
+﻿@model List<ResultOfferDiscountDto>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var offerCount = Model?.Count ?? 0;
+    var isAddButtonDisabled = offerCount >= 2;
+}
+
+<section class="content container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="chart-box">
+                <div class="bs-example" data-example-id="bordered-table">
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Discount Offer Title</th>
+                                <th>Discount Offer Subtitle</th>
+                                <th>Delete</th>
+                                <th>Update</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Title</td>
+                                    <td>@item.SubTitle</td>
+                                    <td>
+                                        <a href="/Admin/OfferDiscount/DeleteOfferDiscount/@item.OfferDiscountId"
+                                           class="btn btn-danger">
+                                            Remove
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/Admin/OfferDiscount/UpdateOfferDiscount/@item.OfferDiscountId"
+                                           class="btn btn-success">
+                                            Update
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    @if (isAddButtonDisabled)
+                    {
+                        <a href="#"
+                           class="btn btn-primary disabled"
+                           style="pointer-events: none; opacity: 0.6;">
+                            Add New Discount Offer
+                        </a>
+
+                        <span class="text-danger ml-2">
+                            Maximum 2 discount offers can be added.
+                        </span>
+                    }
+                    else
+                    {
+                        <a href="/Admin/OfferDiscount/CreateOfferDiscount/"
+                           class="btn btn-primary">
+                            Add New Discount Offer
+                        </a>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

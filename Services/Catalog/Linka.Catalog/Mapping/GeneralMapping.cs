@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Linka.Catalog.Dtos.AboutDtos;
+using Linka.Catalog.Dtos.BrandDtos;
 using Linka.Catalog.Dtos.CategoryDtos;
 using Linka.Catalog.Dtos.FeatureDtos;
 using Linka.Catalog.Dtos.FeatureSliderDtos;
+using Linka.Catalog.Dtos.OfferDiscountDtos;
 using Linka.Catalog.Dtos.ProductDetailDtos;
 using Linka.Catalog.Dtos.ProductDtos;
 using Linka.Catalog.Dtos.ProductImageDtos;
@@ -50,6 +53,21 @@ namespace Linka.Catalog.Mapping
             CreateMap<Feature, CreateFeatureDto>().ReverseMap();
             CreateMap<Feature, UpdateFeatureDto>().ReverseMap();
             CreateMap<Feature, GetByIdFeatureDto>().ReverseMap();
+
+            CreateMap<OfferDiscount, ResultOfferDiscountDto>().ReverseMap();
+            CreateMap<OfferDiscount, CreateOfferDiscountDto>().ReverseMap();
+            CreateMap<OfferDiscount, UpdateOfferDiscountDto>().ReverseMap();
+            CreateMap<OfferDiscount, GetByIdOfferDiscountDto>().ReverseMap();
+
+            CreateMap<Brand, ResultBrandDto>().ReverseMap();
+            CreateMap<Brand, CreateBrandDto>().ReverseMap();
+            CreateMap<Brand, UpdateBrandDto>().ReverseMap();
+            CreateMap<Brand, GetByIdBrandDto>().ReverseMap();
+
+            CreateMap<About, ResultAboutDto>().ReverseMap();
+            CreateMap<About, CreateAboutDto>().ReverseMap();
+            CreateMap<About, UpdateAboutDto>().ReverseMap();
+            CreateMap<About, GetByIdAboutDto>().ReverseMap();
         }
     }
 }
