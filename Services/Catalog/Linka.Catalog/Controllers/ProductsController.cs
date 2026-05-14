@@ -51,5 +51,12 @@ namespace Linka.Catalog.Controllers
             await _ProductService.UpdateProductAsync(updateProductDto);
             return Ok("Product successfully updated");
         }
+        [HttpGet("ProductListWithCategory")]
+        public async Task<IActionResult> ProductListWithCategory()
+        {
+            var values = await _ProductService.GetProductsWithCategoryAsync();
+            return Ok(values);
+
+        }
     }
 }

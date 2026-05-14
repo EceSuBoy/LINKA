@@ -1,8 +1,11 @@
 using Linka.Catalog.Services.CategoryServices;
+using Linka.Catalog.Services.FeatureServices;
+using Linka.Catalog.Services.FeatureSliderServices;
 using Linka.Catalog.Services.ProductDetailDetailServices;
 using Linka.Catalog.Services.ProductDetailServices;
 using Linka.Catalog.Services.ProductImageServices;
 using Linka.Catalog.Services.ProductServices;
+using Linka.Catalog.Services.SpecialOfferServices;
 using Linka.Catalog.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
@@ -22,6 +25,10 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped< IProductService, ProductService>();
 builder.Services.AddScoped<IProductDetailService, ProductDetailService>();
 builder.Services.AddScoped<IProductImageService, ProductImageService>();
+builder.Services.AddScoped<IFeatureSliderService, FeatureSliderService>();
+builder.Services.AddScoped<IFeatureService, FeatureService>();
+builder.Services.AddScoped<ISpecialOfferService, SpecialOfferService>();
+
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
