@@ -60,5 +60,15 @@ namespace Linka.Comment.Controllers
             _context.SaveChanges();
             return Ok("Comment updated successfully.");
         }
+        [HttpGet("CommentListByProductId")]
+        public IActionResult CommentListByProductId(string id)
+        {
+            var value = _context.UserComments.Where(x => x.ProductId == id).ToList();
+            if (value == null)
+            {
+                return NotFound("No comments found for the specified product.");
+            }
+            return Ok(value);
+        }
     }
 }

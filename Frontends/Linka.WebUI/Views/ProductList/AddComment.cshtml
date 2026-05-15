@@ -1,0 +1,81 @@
+﻿@model CreateCommentDto
+
+<div class="col-md-6">
+    <h4 class="mb-4">Leave a review</h4>
+    <small>Your email address will not be published. Required fields are marked *</small>
+
+    <form method="post" asp-action="AddComment" asp-controller="ProductList">
+
+        <input type="hidden" asp-for="ProductId"  />
+
+        <div class="form-group mt-3">
+            <label for="name">Your Name *</label>
+            <input type="text" class="form-control" id="name" asp-for="NameSurname" />
+        </div>
+
+        <div class="form-group">
+            <label for="email">Your Email *</label>
+            <input type="email" class="form-control" id="email" asp-for="Email" />
+        </div>
+
+        <div class="form-group">
+            <label>Your Rating *</label>
+
+            <div id="rating-stars" style="cursor:pointer;">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <i class="far fa-star"
+                       data-value="@i"
+                       style="font-size: 25px; color: gray; margin-right: 5px;"></i>
+                }
+            </div>
+
+            <input type="hidden" asp-for="Rating" id="Rating" />
+        </div>
+
+        <div class="form-group">
+            <label for="message">Your Review *</label>
+            <textarea id="message" cols="30" rows="5" class="form-control" asp-for="CommentDetail"></textarea>
+        </div>
+
+        <div class="form-group mb-0">
+            <input type="submit" value="Leave Your Review" class="btn btn-primary px-3" />
+        </div>
+
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const stars = document.querySelectorAll('#rating-stars i');
+        const ratingInput = document.getElementById('Rating');
+
+        function setRating(rating) {
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                    star.style.color = 'gold';
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                    star.style.color = 'gray';
+                }
+            });
+        }
+
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const rating = parseInt(star.getAttribute('data-value'));
+                ratingInput.value = rating;
+                setRating(rating);
+            });
+        });
+
+        const initialRating = parseInt(ratingInput.value);
+
+        if (!isNaN(initialRating) && initialRating > 0) {
+            setRating(initialRating);
+        }
+    });
+</script>

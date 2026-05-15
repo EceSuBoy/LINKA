@@ -1,4 +1,5 @@
 ﻿@model List<ResultCommentDto>
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
@@ -14,6 +15,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Product</th>
                                 <th>User</th>
                                 <th>Comment</th>
                                 <th>Rate</th>
@@ -24,18 +26,32 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model)
+                            @if (Model != null && Model.Any())
                             {
-                                count++;
+                                foreach (var item in Model)
+                                {
+                                    count++;
+                                    <tr>
+                                        <th scope="row">@count</th>
+                                        <td>@(!string.IsNullOrWhiteSpace(item.ProductName) ? item.ProductName : item.ProductId)</td>
+                                        <td>@item.NameSurname</td>
+                                        <td>@item.CommentDetail</td>
+                                        <td>@item.Rating</td>
+                                        <td>@item.CreatedDate.ToShortDateString()</td>
+                                        <td>@item.Status</td>
+                                        <td>
+                                            <a href="/Admin/Comment/DeleteComment/@item.UserCommentId" class="btn btn-danger">Remove</a>
+                                        </td>
+                                        <td>
+                                            <a href="/Admin/Comment/UpdateComment/@item.UserCommentId" class="btn btn-success">Update</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
                                 <tr>
-                                    <th scope="row">@count</th>
-                                    <td>@item.NameSurname</td>
-                                    <td>@item.CommentDetail</td>
-                                    <td>@item.Rating</td>
-                                    <td>@item.CreatedDate.ToShortDateString()</td>
-                                    <td>@item.Status</td>
-                                    <td><a href="/Admin/Comment/DeleteComment/@item.UserCommentId" class="btn btn-danger">Remove</a></td>
-                                    <td><a href="/Admin/Comment/UpdateComment/@item.UserCommentId" class="btn btn-success">Update</a></td>
+                                    <td colspan="9" class="text-center">No comments found.</td>
                                 </tr>
                             }
                         </tbody>
@@ -45,6 +61,3 @@
         </div>
     </div>
 </section>
-
-
-
