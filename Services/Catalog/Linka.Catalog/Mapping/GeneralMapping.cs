@@ -2,6 +2,7 @@
 using Linka.Catalog.Dtos.AboutDtos;
 using Linka.Catalog.Dtos.BrandDtos;
 using Linka.Catalog.Dtos.CategoryDtos;
+using Linka.Catalog.Dtos.ContactDtos;
 using Linka.Catalog.Dtos.FeatureDtos;
 using Linka.Catalog.Dtos.FeatureSliderDtos;
 using Linka.Catalog.Dtos.OfferDiscountDtos;
@@ -68,6 +69,11 @@ namespace Linka.Catalog.Mapping
             CreateMap<About, CreateAboutDto>().ReverseMap();
             CreateMap<About, UpdateAboutDto>().ReverseMap();
             CreateMap<About, GetByIdAboutDto>().ReverseMap();
+
+            CreateMap<Contact, ResultContactDto>().ReverseMap();
+            CreateMap<Contact, CreateContactDto>().ReverseMap();
+            CreateMap<Contact, UpdateContactDto>().ReverseMap();
+            CreateMap<Contact, GetByIdContactDto>().ReverseMap();
         }
     }
 }

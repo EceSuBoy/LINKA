@@ -1,6 +1,7 @@
 using Linka.Catalog.Services.AboutServices;
 using Linka.Catalog.Services.BrandServices;
 using Linka.Catalog.Services.CategoryServices;
+using Linka.Catalog.Services.ContactServices;
 using Linka.Catalog.Services.FeatureServices;
 using Linka.Catalog.Services.FeatureSliderServices;
 using Linka.Catalog.Services.OfferDiscountServices;
@@ -34,6 +35,7 @@ builder.Services.AddScoped<ISpecialOfferService, SpecialOfferService>();
 builder.Services.AddScoped<IOfferDiscountService, OfferDiscountService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<IAboutService, AboutService>();
+builder.Services.AddScoped<IContactService, ContactService>();
 
 
 
