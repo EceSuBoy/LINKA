@@ -1,6 +1,6 @@
-﻿namespace Linka.Catalog.Dtos.ProductImageDtos
+﻿namespace Linka.DtoLayer.CatalogDtos.ProductImageDtos
 {
-    public class UpdateProductImageDto
+    public class GetByIdProductImageDto
     {
         public string ProductImageId { get; set; }
         public List<string> Images { get; set; } = new List<string>();

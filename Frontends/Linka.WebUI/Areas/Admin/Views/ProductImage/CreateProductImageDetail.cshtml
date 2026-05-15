@@ -1,0 +1,35 @@
+﻿@model CreateProductImageDto
+
+@{
+    ViewData["Title"] = "CreateProductImageDetail";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<section class="content container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="chart-box">
+                <h4>Product Image Add Page</h4>
+                <br />
+
+                <form method="post">
+                    <input type="hidden" asp-for="ProductId" />
+
+                    @for (int i = 0; i < 4; i++)
+                    {
+                        <label>Image @(i + 1)</label>
+
+                        <input type="text"
+                               name="Images[@i]"
+                               class="form-control"
+                               placeholder="Enter image URL or path" />
+
+                        <br />
+                    }
+
+                    <button class="btn btn-success">Add Images</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

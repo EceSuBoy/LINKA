@@ -1,0 +1,65 @@
+﻿@model UpdateProductImageDto
+
+@{
+    ViewData["Title"] = "ProductImageDetail";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<section class="content container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="chart-box">
+                <h4>Product Image Detail Page</h4>
+                <br />
+
+                @if (Model.Images != null && Model.Images.Any())
+                {
+                    <div class="row">
+                        @foreach (var image in Model.Images)
+                        {
+                            <div class="col-md-3">
+                                <div class="card" style="padding:10px; margin-bottom:15px;">
+                                    <img src="@image" style="width:100%; height:180px; object-fit:contain;" />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        No images have been added for this product yet.
+                    </div>
+                }
+
+                <a href="/Admin/ProductImage/CreateProductImageDetail/@Model.ProductId" class="btn btn-success">
+                    Add Images
+                </a>
+
+                @if (!string.IsNullOrEmpty(Model.ProductImageId))
+                {
+                    <hr />
+
+                    <form method="post">
+                        <input type="hidden" asp-for="ProductImageId" />
+                        <input type="hidden" asp-for="ProductId" />
+
+                        @for (int i = 0; i < 4; i++)
+                        {
+                            <label>Image @(i + 1)</label>
+
+                            <input type="text"
+                                   name="Images[@i]"
+                                   value="@(Model.Images.Count > i ? Model.Images[i] : "")"
+                                   class="form-control" />
+
+                            <br />
+                        }
+
+                        <button class="btn btn-primary">Update Images</button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</section>

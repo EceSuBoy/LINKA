@@ -1,4 +1,4 @@
-﻿namespace Linka.Catalog.Dtos.ProductImageDtos
+﻿namespace Linka.DtoLayer.CatalogDtos.ProductImageDtos
 {
     public class UpdateProductImageDto
     {
