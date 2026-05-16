@@ -1,4 +1,6 @@
-﻿@{
+﻿@model CreateLoginDto
+
+@{
 	Layout = null;
 }
 
@@ -79,6 +81,7 @@
 
 					<input type="text"
 						   id="your_username"
+						   asp-for="Username"
 						   class="input-text"
 						   required>
 				</div>
@@ -88,6 +91,7 @@
 
 					<input type="password"
 						   id="your_password"
+						   asp-for="Password"
 						   class="input-text"
 						   required>
 				</div>
