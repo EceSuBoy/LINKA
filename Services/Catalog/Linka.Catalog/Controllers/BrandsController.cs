@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Linka.Catalog.Controllers
 {
-    [AllowAnonymous]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BrandsController : ControllerBase

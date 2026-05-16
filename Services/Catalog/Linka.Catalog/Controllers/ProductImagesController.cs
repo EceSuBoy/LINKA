@@ -1,10 +1,12 @@
 ﻿using Linka.Catalog.Dtos.ProductImageDtos;
 using Linka.Catalog.Services.ProductImageServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Linka.Catalog.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductImagesController : ControllerBase

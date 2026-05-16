@@ -1,10 +1,12 @@
 ﻿using Linka.Catalog.Dtos.FeatureDtos;
 using Linka.Catalog.Services.FeatureServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Linka.Catalog.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FeaturesController : ControllerBase
