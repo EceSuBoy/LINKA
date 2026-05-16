@@ -1,0 +1,114 @@
+﻿@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+	<style>
+		.signin-btn {
+			display: inline-block;
+			margin-top: 25px;
+			padding: 14px 32px;
+			background-color: #ffffff;
+			color: #2f86bf;
+			border-radius: 6px;
+			font-weight: 700;
+			text-decoration: none;
+			transition: 0.3s;
+		}
+
+			.signin-btn:hover {
+				background-color: #f1f7fb;
+				color: #1f6f9f;
+				text-decoration: none;
+			}
+	</style>
+
+	<meta charset="utf-8">
+	<title>LINKA Sign In</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="stylesheet" type="text/css" href="~/UserRegister-form/css/opensans-font.css">
+	<link rel="stylesheet" type="text/css" href="~/UserRegister-form/fonts/line-awesome/css/line-awesome.min.css">
+
+	<link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css">
+
+	<link rel="stylesheet" href="~/UserRegister-form/css/style.css" />
+</head>
+
+<body class="form-v4">
+
+	<div class="page-content">
+		<div class="form-v4-content">
+
+			<!-- LEFT SIDE -->
+			<div class="form-left">
+
+				<h2>WELCOME BACK</h2>
+
+				<p class="text-1">
+					Sign in to your LINKA account and continue your shopping journey with
+					secure access, personalized recommendations, favorite products, and
+					exclusive offers tailored just for you.
+				</p>
+
+				<p class="text-2">
+					<span>Why Sign In?</span>
+					Track your orders, save your favorite items, manage your account easily,
+					and enjoy a faster and smarter shopping experience with LINKA.
+				</p>
+
+				<div class="form-left-last">
+					<a href="/Register/Index" class="signin-btn">
+						Don't have an account? Register
+					</a>
+				</div>
+
+			</div>
+
+			<!-- RIGHT SIDE -->
+			<form class="form-detail" method="post">
+
+				<h2>LINKA SIGN IN</h2>
+
+				<div class="form-row">
+					<label for="your_username">Username</label>
+
+					<input type="text"
+						   id="your_username"
+						   class="input-text"
+						   required>
+				</div>
+
+				<div class="form-row">
+					<label for="your_password">Password</label>
+
+					<input type="password"
+						   id="your_password"
+						   class="input-text"
+						   required>
+				</div>
+
+				<div class="form-row-last">
+					<input type="submit"
+						   name="signin"
+						   class="register"
+						   value="Sign In">
+				</div>
+
+			</form>
+
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+
+</body>
+</html>

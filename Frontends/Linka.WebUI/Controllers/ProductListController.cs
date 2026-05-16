@@ -33,7 +33,7 @@ namespace Linka.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddComment(CreateCommentDto createCommentDto, string pid)
         {
-            createCommentDto.ImageUrl="test";
+            createCommentDto.ImageUrl = "test";
             createCommentDto.CreatedDate = DateTime.Parse(DateTime.Now.ToShortDateString());
             createCommentDto.Status = true;
             var client = _httpClientFactory.CreateClient();
@@ -42,10 +42,11 @@ namespace Linka.WebUI.Controllers
             var responseMessage = await client.PostAsync("https://localhost:7229/api/Comments/", stringContent);
             if (responseMessage.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index", "Default" );
+                return RedirectToAction("Index", "Default");
             }
             return View();
 
         }
+
     }
 }
