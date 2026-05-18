@@ -15,7 +15,7 @@ namespace Linka.WebUI.Controllers
         public async Task<IActionResult> Index()
         {
             var values = await _userservice.GetUserInfo();  
-            return View();
+            return View(values);
         }
     }
 }

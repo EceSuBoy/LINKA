@@ -1,3 +1,4 @@
+using Linka.WebUI.Handlers;
 using Linka.WebUI.Services;
 using Linka.WebUI.Services.Concrete;
 using Linka.WebUI.Services.Interfaces;
@@ -43,6 +44,14 @@ builder.Services.Configure<ClientSettings>(
     builder.Configuration.GetSection("ClientSettings"));
 builder.Services.Configure<ServiceApiSettings>(
     builder.Configuration.GetSection("ServiceApiSettings"));
+
+builder.Services.AddScoped<ResourceOwnerPasswordOwnerTokenHandler>();
+
+var values = builder.Configuration.GetSection("ServiceApiSettings").Get<ServiceApiSettings>();
+builder.Services.AddHttpClient<IUserService, UserService>(opt =>
+{
+    opt.BaseAddress = new Uri(values.IdentityServerUrl);
+}).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
 
 
 var app = builder.Build();

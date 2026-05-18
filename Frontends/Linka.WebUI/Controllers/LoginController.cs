@@ -45,7 +45,7 @@ namespace Linka.WebUI.Controllers
             signInDto.Username = "kerem03";
             signInDto.Password = "1111aA*";
             await _identityService.SignIn(signInDto);
-            return RedirectToAction("Index", "Test");
+            return RedirectToAction("Index", "User");
         }
     }
 }
