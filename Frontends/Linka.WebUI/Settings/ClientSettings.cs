@@ -2,9 +2,9 @@
 {
     public class ClientSettings
     {
-        public Client LinkaVisitorId { get; set; } 
-        public Client LinkaManagerId { get; set; }
-        public Client LinkaAdminId { get; set; }
+        public Client LinkaVisitorClient { get; set; } 
+        public Client LinkaManagerClient { get; set; }
+        public Client LinkaAdminClient { get; set; }
     }
     public class Client
     {

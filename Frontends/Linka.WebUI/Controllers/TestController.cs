@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
 
 namespace Linka.WebUI.Controllers
 {
@@ -16,8 +17,8 @@ namespace Linka.WebUI.Controllers
 
         public async Task<IActionResult> Index()
         {
-            string token;
-            using ( var httpClient = new HttpClient())
+            string token = "";
+            using (var httpClient = new HttpClient())
             {
                 var request = new HttpRequestMessage
                 {
@@ -31,7 +32,7 @@ namespace Linka.WebUI.Controllers
                     })
                 };
 
-                using( var response = await httpClient.SendAsync(request))
+                using (var response = await httpClient.SendAsync(request))
                 {
                     if (response.IsSuccessStatusCode)
                     {
@@ -44,6 +45,8 @@ namespace Linka.WebUI.Controllers
 
 
             var client = _httpClientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var responseMessage = await client.GetAsync("https://localhost:7070/api/Categories");
             if (responseMessage.IsSuccessStatusCode)
             {
@@ -52,6 +55,10 @@ namespace Linka.WebUI.Controllers
                 return View(values);
             }
 
+            return View();
+        }
+        public IActionResult Deneme1()
+        {
             return View();
         }
     }

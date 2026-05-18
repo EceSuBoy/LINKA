@@ -51,7 +51,7 @@ namespace Linka.IdentityServer
                     ClientName = "Linka Visitor User",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("linkasecret".Sha256()) },
-                    AllowedScopes = { "CatalogReadPermission" }
+                    AllowedScopes = { "CatalogReadPermission", "CatalogFullPermission" }
                 },
 
                 //Manager

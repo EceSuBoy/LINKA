@@ -1,0 +1,6 @@
+@Linka.Payment_HostAddress = http://localhost:5087
+
+GET {{Linka.Payment_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -2,7 +2,11 @@
 using Linka.DtoLayer.IdentityDtos.LoginDtos;
 using Linka.WebUI.Services.Interfaces;
 using Linka.WebUI.Settings;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System.Security.Claims;
 
 namespace Linka.WebUI.Services.Concrete
 {
@@ -19,7 +23,7 @@ namespace Linka.WebUI.Services.Concrete
             _clientSettings = clientSettings.Value;
         }
 
-        public async Task<bool> SignIn(SignUpDto signUpDto)
+        public async Task<bool> SignIn(SignInDto signInDto)
         {
             var discoveryEndPoint= await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
@@ -29,12 +33,56 @@ namespace Linka.WebUI.Services.Concrete
 
             var passwordTokenRequest = new PasswordTokenRequest
             {
-                ClientId = _clientSettings.LinkaManagerId.ClientId,
-                ClientSecret = _clientSettings.LinkaManagerId.ClientSecret,
-                UserName = signUpDto.Username,
-                Password = signUpDto.Password,
+                ClientId = _clientSettings.LinkaManagerClient.ClientId,
+                ClientSecret = _clientSettings.LinkaManagerClient.ClientSecret,
+                UserName = signInDto.Username,
+                Password = signInDto.Password,
                 Address= discoveryEndPoint.TokenEndpoint
             };
+
+            var token = await _httpClient.RequestPasswordTokenAsync(passwordTokenRequest);
+
+            var userInfoRequest = new UserInfoRequest
+            {
+                Token = token.AccessToken,
+                Address = discoveryEndPoint.UserInfoEndpoint      
+            };
+
+            var userValues= await _httpClient.GetUserInfoAsync(userInfoRequest);
+
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(userValues.Claims, CookieAuthenticationDefaults.AuthenticationScheme, "name", "role");
+
+            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            var authenticationProperties = new AuthenticationProperties();
+            
+                authenticationProperties.StoreTokens(new List<AuthenticationToken>()
+                {
+                    new AuthenticationToken{
+                        Name = OpenIdConnectParameterNames.AccessToken,
+                        Value = token.AccessToken
+                    },
+                
+                
+            new AuthenticationToken
+            {
+                Name=OpenIdConnectParameterNames.RefreshToken,
+                Value= token.RefreshToken
+            },
+
+            new AuthenticationToken
+            {
+                Name=OpenIdConnectParameterNames.ExpiresIn,
+                Value= DateTime.UtcNow.AddSeconds(token.ExpiresIn).ToString("o", System.Globalization.CultureInfo.InvariantCulture)
+            }
+            });
+
+            authenticationProperties.IsPersistent = false;
+
+            await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authenticationProperties);
+
+            return true;
+
         }
     }
 }

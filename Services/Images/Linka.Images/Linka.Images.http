@@ -1,0 +1,6 @@
+@Linka.Images_HostAddress = http://localhost:5104
+
+GET {{Linka.Images_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Linka.DtoLayer.IdentityDtos.LoginDtos
 {
-    public class SignUpDto
+    public class SignInDto
     {
         public string Username { get; set; }
         public string Password { get; set; }
