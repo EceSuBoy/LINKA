@@ -18,6 +18,10 @@ namespace Linka.IdentityServer
                 new ApiResource("ResourceOrder") {Scopes = {"OrderFullPermission"} },
                 new ApiResource ("ResourceCargo") {Scopes = {"CargoFullPermission"} },
                 new ApiResource ("ResourceBasket") {Scopes = {"BasketFullPermission"} },
+                new ApiResource ("ResourcePayment") {Scopes = {"PaymentFullPermission"} },
+                new ApiResource ("ResourceImages") {Scopes = {"ImagesFullPermission"} },
+                new ApiResource ("ResourceComment") {Scopes = {"CommentFullPermission"} },
+                new ApiResource ("ResourceOcelot") {Scopes = {"OcelotFullPermission"} },
 
                 new ApiResource(IdentityServerConstants.LocalApi.ScopeName)
 
@@ -38,6 +42,10 @@ namespace Linka.IdentityServer
                 new ApiScope("OrderFullPermission","Full access to Order operations"),
                 new ApiScope("CargoFullPermission","Full access to Cargo operations"),
                 new ApiScope("BasketFullPermission","Full access to Basket operations"),
+                new ApiScope("CommentFullPermission","Full access to Comment operations"),
+                new ApiScope("PaymentFullPermission","Full access to Payment operations"),
+                new ApiScope("ImagesFullPermission","Full access to Images operations"),
+                new ApiScope("OcelotFullPermission","Full access to Ocelot operations"),
 
                 new ApiScope(IdentityServerConstants.LocalApi.ScopeName)
             };
@@ -51,7 +59,7 @@ namespace Linka.IdentityServer
                     ClientName = "Linka Visitor User",
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     ClientSecrets = { new Secret("linkasecret".Sha256()) },
-                    AllowedScopes = { "CatalogReadPermission", "CatalogFullPermission" }
+                    AllowedScopes = { "CatalogReadPermission", "CatalogFullPermission", "OcelotFullPermission", "CommentFullPermission", "ImagesFullPermission" }
                 },
 
                 //Manager
@@ -61,7 +69,11 @@ namespace Linka.IdentityServer
                     ClientName = "Linka Manager User",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     ClientSecrets = { new Secret("linkasecret".Sha256()) },
-                    AllowedScopes = { "CatalogFullPermission", "BasketFullPermission" }
+                    AllowedScopes = { "CatalogFullPermission", "BasketFullPermission", "OcelotFullPermission", "CommentFullPermission", "PaymentFullPermission", "ImagesFullPermission",
+                    IdentityServerConstants.LocalApi.ScopeName,
+                    IdentityServerConstants.StandardScopes.Email,
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile}
                 },
 
                 //Admin
@@ -71,7 +83,7 @@ namespace Linka.IdentityServer
                     ClientName = "Linka Admin User",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     ClientSecrets = { new Secret("linkasecret".Sha256()) },
-                    AllowedScopes = { "CatalogFullPermission", "CatalogReadPermission", "DiscountFullPermission", "OrderFullPermission", "CargoFullPermission", "BasketFullPermission",
+                    AllowedScopes = { "CatalogFullPermission", "CatalogReadPermission", "DiscountFullPermission", "OrderFullPermission", "CargoFullPermission", "BasketFullPermission", "OcelotFullPermission", "CommentFullPermission", "PaymentFullPermission", "ImagesFullPermission",
                     IdentityServerConstants.LocalApi.ScopeName,
                     IdentityServerConstants.StandardScopes.Email,
                     IdentityServerConstants.StandardScopes.OpenId,
