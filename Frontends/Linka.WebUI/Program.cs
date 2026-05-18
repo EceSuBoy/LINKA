@@ -1,5 +1,6 @@
 using Linka.WebUI.Handlers;
 using Linka.WebUI.Services;
+using Linka.WebUI.Services.CatalogServices.CategoryServices;
 using Linka.WebUI.Services.Concrete;
 using Linka.WebUI.Services.Interfaces;
 using Linka.WebUI.Settings;
@@ -52,6 +53,12 @@ builder.Services.AddHttpClient<IUserService, UserService>(opt =>
 {
     opt.BaseAddress = new Uri(values.IdentityServerUrl);
 }).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
+
+builder.Services.AddHttpClient<ICategoryService, CategoryService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Catalog.Path}");
+});
+
 
 
 var app = builder.Build();
