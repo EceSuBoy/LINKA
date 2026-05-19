@@ -15,12 +15,18 @@ namespace Linka.WebUI.Controllers
         }
         public IActionResult Index(string id)
         {
+            @ViewBag.directory1 = "Home Page";
+            @ViewBag.directory2 = "Products";
+            @ViewBag.directory3 = "Product List";
             ViewBag.i = id;
             return View();
         }
 
         public IActionResult ProductDetail(string id)
         {
+            @ViewBag.directory1 = "Home Page";
+            @ViewBag.directory2 = "Product List";
+            @ViewBag.directory3 = "Product Details";
             ViewBag.x = id;
             return View();
         }
