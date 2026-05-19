@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Linka.Comment.Controllers
 {
-    [AllowAnonymous]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CommentsController : ControllerBase
@@ -60,7 +60,7 @@ namespace Linka.Comment.Controllers
             _context.SaveChanges();
             return Ok("Comment updated successfully.");
         }
-        [HttpGet("CommentListByProductId")]
+        [HttpGet("CommentListByProductId/{id}")]
         public IActionResult CommentListByProductId(string id)
         {
             var value = _context.UserComments.Where(x => x.ProductId == id).ToList();

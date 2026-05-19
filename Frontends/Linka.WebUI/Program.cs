@@ -3,6 +3,7 @@ using Linka.WebUI.Services;
 using Linka.WebUI.Services.CatalogServices.AboutServices;
 using Linka.WebUI.Services.CatalogServices.BrandServices;
 using Linka.WebUI.Services.CatalogServices.CategoryServices;
+using Linka.WebUI.Services.CatalogServices.ContactServices;
 using Linka.WebUI.Services.CatalogServices.FeatureServices;
 using Linka.WebUI.Services.CatalogServices.OfferDiscountServices;
 using Linka.WebUI.Services.CatalogServices.ProductDetailServices;
@@ -10,6 +11,7 @@ using Linka.WebUI.Services.CatalogServices.ProductImageServices;
 using Linka.WebUI.Services.CatalogServices.ProductServices;
 using Linka.WebUI.Services.CatalogServices.SliderServices;
 using Linka.WebUI.Services.CatalogServices.SpecialOfferServices;
+using Linka.WebUI.Services.CommentServices;
 using Linka.WebUI.Services.Concrete;
 using Linka.WebUI.Services.Interfaces;
 using Linka.WebUI.Settings;
@@ -114,6 +116,16 @@ builder.Services.AddHttpClient<IProductImageService, ProductImageService>(opt =>
 }).AddHttpMessageHandler<ClientCredentialTokenHandler>();
 
 builder.Services.AddHttpClient<IProductDetailService, ProductDetailService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Catalog.Path}");
+}).AddHttpMessageHandler<ClientCredentialTokenHandler>();
+
+builder.Services.AddHttpClient<ICommentService, CommentService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Comment.Path}");
+}).AddHttpMessageHandler<ClientCredentialTokenHandler>();
+
+builder.Services.AddHttpClient<IContactService, ContactService>(opt =>
 {
     opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Catalog.Path}");
 }).AddHttpMessageHandler<ClientCredentialTokenHandler>();
