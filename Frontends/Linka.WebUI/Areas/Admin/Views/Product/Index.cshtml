@@ -1,6 +1,7 @@
 ﻿@model List<ResultProductDto>
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Product List";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
     int count = 0;
 }
@@ -9,37 +10,65 @@
     <div class="row">
         <div class="col-md-12">
             <div class="chart-box">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="mb-0">Product List</h3>
+                </div>
+
                 <div class="bs-example" data-example-id="bordered-table">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th style="width:60px">#</th>
+                                <th>Product Image</th>
                                 <th>Product Name</th>
                                 <th>Product Price</th>
-                                <th>Delete</th>
-                                <th>Update</th>
+                                <th style="width:120px">Delete</th>
+                                <th style="width:120px">Update</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             @foreach (var item in Model)
                             {
                                 count++;
+
                                 <tr>
                                     <th scope="row">@count</th>
+
+                                    <td>
+                                        <img src="@item.ProductImageUrl"
+                                             style="width:70px;height:70px;object-fit:cover;border-radius:8px;" />
+                                    </td>
+
                                     <td>@item.ProductName</td>
-                                    <td>@item.ProductPrice</td>
-                                    
-                                    <td><a href="/Admin/Product/DeleteProduct/@item.ProductId" class="btn btn-danger">Remove</a></td>
-                                    <td><a href="/Admin/Product/UpdateProduct/@item.ProductId" class="btn btn-success">Update</a></td>
+
+                                    <td>@item.ProductPrice ₺</td>
+
+
+                                    <td>
+                                        <a href="/Admin/Product/DeleteProduct/@item.ProductId"
+                                           class="btn btn-danger">
+                                            Remove
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <a href="/Admin/Product/UpdateProduct/@item.ProductId"
+                                           class="btn btn-success">
+                                            Update
+                                        </a>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
+
                     </table>
-                    <td><a href="/Admin/Product/CreateProduct/" class="btn btn-primary">Add New Product</a></td>
                 </div>
+                <a href="/Admin/Product/CreateProduct/" class="btn btn-primary">
+                    Add New Product
+                </a>
             </div>
         </div>
     </div>
 </section>
-
-

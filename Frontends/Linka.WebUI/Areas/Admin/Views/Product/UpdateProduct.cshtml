@@ -1,35 +1,74 @@
 ﻿@model UpdateProductDto
+
 @{
     ViewData["Title"] = "UpdateProduct";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
 
+<style>
+    .category-select {
+        height: 45px !important;
+        min-height: 45px !important;
+        line-height: 25px !important;
+        padding: 10px 12px !important;
+        font-size: 15px;
+    }
+</style>
+
 <section class="content container-fluid">
     <div class="row">
         <div class="col-md-12">
             <div class="chart-box">
+
                 <h4>Product Update Page</h4>
                 <br />
+
                 <div class="bs-example" data-example-id="simple-table">
 
                     <form method="post">
+
                         <input type="hidden" asp-for="ProductId" />
+
                         <label>Product Name</label>
-                        <input type="text" class="form-control" asp-for="ProductName">
+                        <input type="text"
+                               class="form-control"
+                               asp-for="ProductName" />
                         <br />
+
                         <label>Product Price</label>
-                        <input type="text" class="form-control" asp-for="ProductPrice">
+                        <input type="text"
+                               class="form-control"
+                               asp-for="ProductPrice" />
                         <br />
+
                         <label>Product Image</label>
-                        <input type="text" class="form-control" asp-for="ProductImageUrl">
+                        <input type="text"
+                               class="form-control"
+                               asp-for="ProductImageUrl" />
                         <br />
+
                         <label>Product Category</label>
-                        @Html.DropDownListFor(x => x.CategoryId, (List<SelectListItem>)ViewBag.CategoryValues, new { @class = "form-control" })
+
+                        @Html.DropDownListFor(
+                        x => x.CategoryId,
+                                                (List<SelectListItem>)ViewBag.CategoryValues,
+                                                new { @class = "form-control category-select" }
+                                                )
+
                         <br />
+
                         <label>Product Description</label>
-                        <textarea class="form-control" asp-for="ProductDescription" rows="5"></textarea>
+
+                        <textarea class="form-control"
+                                  asp-for="ProductDescription"
+                                  rows="5"></textarea>
+
                         <br />
-                        <button class="btn btn-primary">Update Product</button>
+
+                        <button class="btn btn-primary">
+                            Update Product
+                        </button>
+
                     </form>
 
                 </div>
