@@ -23,7 +23,16 @@ namespace Linka.Order.Application.Features.CQRS.Handlers.AddressHandlers
                 UserId = createAddressCommand.UserId,
                 District = createAddressCommand.District,
                 City = createAddressCommand.City,
-                Detail = createAddressCommand.Detail
+                Detail1 = createAddressCommand.Detail1,
+                Country = createAddressCommand.Country,
+                Description = createAddressCommand.Description,
+                Detail2 = createAddressCommand.Detail2,
+                Email = createAddressCommand.Email,
+                Name = createAddressCommand.Name,
+                Phone = createAddressCommand.Phone,
+                Surname= createAddressCommand.Surname,
+                ZipCode = createAddressCommand.ZipCode,
+
             });
         }
     }

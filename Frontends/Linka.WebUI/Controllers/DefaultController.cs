@@ -6,8 +6,8 @@ namespace Linka.WebUI.Controllers
     {
         public IActionResult Index()
         {
-            @ViewBag.directory1 = "Home Page";
-            @ViewBag.directory3 = "Product List";
+            ViewBag.directory1 = "Home Page";
+            ViewBag.directory3 = "Product List";
             return View();
         }
     }

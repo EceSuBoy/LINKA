@@ -1,0 +1,86 @@
+﻿@model List<BasketItemDto>
+
+<div class="bg-light p-30 mb-5">
+
+    <div class="border-bottom table-responsive">
+
+        <h6 class="mb-3">Order Summary</h6>
+
+        <table class="table mb-0">
+
+            <thead>
+                <tr>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th class="text-right" scope="col">Total</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td>@item.Price ₺</td>
+                        <td class="text-center">@item.Quantity</td>
+                        <td class="text-right">
+                            @(item.Price* item.Quantity) ₺
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <table class="table table-borderless mb-2">
+
+        <tbody>
+
+            <tr>
+                <td>
+                    <h6>Subtotal</h6>
+                </td>
+
+                <td class="text-right">
+                    <h6>100 ₺</h6>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <h6>Shipping</h6>
+                </td>
+
+                <td class="text-right">
+                    <h6>50 ₺</h6>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <table class="table table-borderless">
+
+        <tbody>
+
+            <tr>
+                <th>
+                    <h5>Grand Total</h5>
+                </th>
+
+                <th class="text-right">
+                    <h5>150 ₺</h5>
+                </th>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>

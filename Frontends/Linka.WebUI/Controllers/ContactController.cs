@@ -18,9 +18,9 @@ namespace Linka.WebUI.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            @ViewBag.directory1 = "Home Page";
-            @ViewBag.directory3 = "Contacts";
-            @ViewBag.directory3 = "Send Message";
+            ViewBag.directory1 = "Home Page";
+            ViewBag.directory2 = "Contacts";
+            ViewBag.directory3 = "Send Message";
             return View();
         }
         [HttpPost]

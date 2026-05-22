@@ -42,5 +42,12 @@ namespace Linka.Basket.Controllers
             await _basketIService.DeleteBasket(_loginService.GetUserId);
             return Ok("Basket is deleted.");
         }
+
+        [HttpGet("ClearBasket")]
+        public async Task<IActionResult> ClearBasket()
+        {
+            await _basketIService.DeleteBasket(_loginService.GetUserId);
+            return Ok("Basket cleared");
+        }
     }
 }

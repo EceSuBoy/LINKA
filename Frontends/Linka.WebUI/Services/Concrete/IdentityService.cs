@@ -97,6 +97,10 @@ namespace Linka.WebUI.Services.Concrete
             };
 
             var token = await _httpClient.RequestPasswordTokenAsync(passwordTokenRequest);
+            if (token.IsError)
+            {
+                throw new Exception($"Token Error: {token.Error} - {token.ErrorDescription}");
+            }
 
             var userInfoRequest = new UserInfoRequest
             {

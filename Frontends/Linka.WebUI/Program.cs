@@ -1,5 +1,6 @@
 using Linka.WebUI.Handlers;
 using Linka.WebUI.Services;
+using Linka.WebUI.Services.BasketServices;
 using Linka.WebUI.Services.CatalogServices.AboutServices;
 using Linka.WebUI.Services.CatalogServices.BrandServices;
 using Linka.WebUI.Services.CatalogServices.CategoryServices;
@@ -13,7 +14,9 @@ using Linka.WebUI.Services.CatalogServices.SliderServices;
 using Linka.WebUI.Services.CatalogServices.SpecialOfferServices;
 using Linka.WebUI.Services.CommentServices;
 using Linka.WebUI.Services.Concrete;
+using Linka.WebUI.Services.DiscountServices;
 using Linka.WebUI.Services.Interfaces;
+using Linka.WebUI.Services.OrderServices.OrderAddressServices;
 using Linka.WebUI.Settings;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -68,6 +71,21 @@ var values = builder.Configuration.GetSection("ServiceApiSettings").Get<ServiceA
 builder.Services.AddHttpClient<IUserService, UserService>(opt =>
 {
     opt.BaseAddress = new Uri(values.IdentityServerUrl);
+}).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
+
+builder.Services.AddHttpClient<IBasketService, BasketService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Basket.Path}");
+}).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
+
+builder.Services.AddHttpClient<IOrderAddressServices, OrderAddressServices>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Order.Path}");
+}).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
+
+builder.Services.AddHttpClient<IDiscountService, DiscountService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Discount.Path}");
 }).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
 
 builder.Services.AddHttpClient<ICategoryService, CategoryService>(opt =>

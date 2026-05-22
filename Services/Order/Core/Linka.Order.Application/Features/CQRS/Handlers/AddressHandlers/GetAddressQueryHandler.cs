@@ -27,7 +27,7 @@ namespace Linka.Order.Application.Features.CQRS.Handlers.AddressHandlers
                 UserId = x.UserId,
                 District = x.District,
                 City = x.City,
-                Detail = x.Detail
+                Detail = x.Detail1
             }).ToList();
         }
     }

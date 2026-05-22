@@ -30,5 +30,6 @@ namespace Linka.Basket.Services
         {
             await _redisService.GetDb().StringSetAsync(basketTotalDto.UserId, JsonSerializer.Serialize(basketTotalDto));
         }
+
     }
 }
