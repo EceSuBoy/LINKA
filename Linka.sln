@@ -80,6 +80,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Requirements", "Requirement
 		Orderhtml.txt = Orderhtml.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Message", "Message", "{FA2A0EA0-24C0-401A-8BC5-066F359570E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linka.Message", "Services\Message\Linka.Message\Linka.Message.csproj", "{241B2A3E-C1C2-4F5C-94A9-8DCE602A3F8F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -162,6 +166,10 @@ Global
 		{C7B94BCD-24FF-4B63-A2AA-61DF84B74605}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7B94BCD-24FF-4B63-A2AA-61DF84B74605}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C7B94BCD-24FF-4B63-A2AA-61DF84B74605}.Release|Any CPU.Build.0 = Release|Any CPU
+		{241B2A3E-C1C2-4F5C-94A9-8DCE602A3F8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{241B2A3E-C1C2-4F5C-94A9-8DCE602A3F8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{241B2A3E-C1C2-4F5C-94A9-8DCE602A3F8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{241B2A3E-C1C2-4F5C-94A9-8DCE602A3F8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -197,6 +205,8 @@ Global
 		{4389F8B5-689F-48AA-A627-8337AAA27435} = {C404F4D2-2963-4954-B901-A2D19C617CCE}
 		{1F2B525B-26C2-4251-B8B7-214EC38AF4D2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{C7B94BCD-24FF-4B63-A2AA-61DF84B74605} = {1F2B525B-26C2-4251-B8B7-214EC38AF4D2}
+		{FA2A0EA0-24C0-401A-8BC5-066F359570E2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{241B2A3E-C1C2-4F5C-94A9-8DCE602A3F8F} = {FA2A0EA0-24C0-401A-8BC5-066F359570E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A748B4CD-ECCE-4506-A537-3DC60BFF8529}
