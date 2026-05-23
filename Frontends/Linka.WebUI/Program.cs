@@ -17,6 +17,7 @@ using Linka.WebUI.Services.Concrete;
 using Linka.WebUI.Services.DiscountServices;
 using Linka.WebUI.Services.Interfaces;
 using Linka.WebUI.Services.OrderServices.OrderAddressServices;
+using Linka.WebUI.Services.OrderServices.OrderOrderingServices;
 using Linka.WebUI.Settings;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -76,6 +77,11 @@ builder.Services.AddHttpClient<IUserService, UserService>(opt =>
 builder.Services.AddHttpClient<IBasketService, BasketService>(opt =>
 {
     opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Basket.Path}");
+}).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
+
+builder.Services.AddHttpClient<IOrderOrderingServices, OrderOrderingServices>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Order.Path}");
 }).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
 
 builder.Services.AddHttpClient<IOrderAddressServices, OrderAddressServices>(opt =>
