@@ -42,12 +42,13 @@ namespace Linka.Cargo.WebApi.Controllers
                 Phone = createCargoCustomerDto.Phone,
                 District = createCargoCustomerDto.District,
                 City = createCargoCustomerDto.City,
-                Address = createCargoCustomerDto.Address
+                Address = createCargoCustomerDto.Address,
+                UserCustomerId = createCargoCustomerDto.UserCustomerId
             };
             _cargoCustomerService.TInsert(cargoCustomer);
             return Ok("Cargo Customer Created Successfully");
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult RemoveCargoCustomer(int id)
         {
             _cargoCustomerService.TDelete(id);
@@ -69,6 +70,11 @@ namespace Linka.Cargo.WebApi.Controllers
             };
             _cargoCustomerService.TUpdate(cargoCustomer);
             return Ok("Cargo Customer Updated Successfully");
+        }
+        [HttpGet("GetCargoCustomerById")]
+        public IActionResult GetCargoCustomerById(string id)
+        {
+            return Ok(_cargoCustomerService.TGetCargoCustomerById(id));
         }
     }
 }

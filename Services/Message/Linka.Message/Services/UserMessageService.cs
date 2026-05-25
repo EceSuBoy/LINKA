@@ -21,12 +21,14 @@ namespace Linka.Message.Services
         {
             var value = _mapper.Map<UserMessage>(createMessageDto);
             await _messageContext.UserMessages.AddAsync(value);
+            await _messageContext.SaveChangesAsync();
         }
 
         public async Task DeleteMessageAsync(int id)
         {
             var values = await _messageContext.UserMessages.FindAsync(id);
             _messageContext.UserMessages.Remove(values);
+            await _messageContext.SaveChangesAsync();
         }
 
         public async Task<List<ResultMessageDto>> GetAllMessageAsync()
@@ -57,6 +59,7 @@ namespace Linka.Message.Services
         {
             var values = _mapper.Map<UserMessage>(updateMessageDto);
             _messageContext.UserMessages.Update(values);
+            await _messageContext.SaveChangesAsync();
         }
     }
 }

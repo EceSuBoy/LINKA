@@ -39,7 +39,7 @@ namespace Linka.Cargo.WebApi.Controllers
                 _CargoOperationService.TInsert(CargoOperation);
                 return Ok("Cargo Operation Created Successfully");
             }
-            [HttpDelete]
+            [HttpDelete("{id}")]
             public IActionResult RemoveCargoOperation(int id)
             {
                 _CargoOperationService.TDelete(id);

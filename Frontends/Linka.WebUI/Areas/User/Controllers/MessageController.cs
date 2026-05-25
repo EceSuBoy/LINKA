@@ -1,12 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Linka.WebUI.Services.Interfaces;
+using Linka.WebUI.Services.MessageServices;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Linka.WebUI.Areas.User.Controllers
 {
+    [Area("User")]
     public class MessageController : Controller
     {
-        public IActionResult Index()
+        private readonly IMessageService _messageService;
+        private readonly IUserService _userService;
+
+        public MessageController(IMessageService messageService, IUserService userService)
         {
-            return View();
+            _messageService = messageService;
+            _userService = userService;
+        }
+
+        public async Task<IActionResult> Inbox(string id)
+        {
+            var user = await _userService.GetUserInfo();
+            var values = await _messageService.GetInboxMessageAsync(user.Id);
+            return View(values);
+        }
+        public async Task<IActionResult> Sendbox(string id)
+        {
+            var user = await _userService.GetUserInfo();
+            var values = await _messageService.GetSendboxMessageAsync(user.Id);
+            return View(values);
         }
     }
 }

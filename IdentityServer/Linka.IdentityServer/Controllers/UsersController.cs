@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,6 +37,12 @@ namespace Linka.IdentityServer.Controllers
                 Email = user.Email,
                 Username = user.UserName
             });
+        }
+        [HttpGet("GetAllUserList")]
+        public async Task<IActionResult> GetAllUserList()
+        {
+            var user = await _userManager.Users.ToListAsync();
+            return Ok(user);    
         }
     }
 }

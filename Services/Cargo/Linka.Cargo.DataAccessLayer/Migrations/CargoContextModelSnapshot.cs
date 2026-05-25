@@ -55,7 +55,7 @@ namespace Linka.Cargo.DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Districst")
+                    b.Property<string>("District")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -73,6 +73,9 @@ namespace Linka.Cargo.DataAccessLayer.Migrations
 
                     b.Property<string>("Surname")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserCustomerId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CargoCustomerId");

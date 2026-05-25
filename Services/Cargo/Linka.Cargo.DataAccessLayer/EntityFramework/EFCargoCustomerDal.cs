@@ -12,8 +12,16 @@ namespace Linka.Cargo.DataAccessLayer.EntityFramework
 {
     public class EFCargoCustomerDal : GenericRepository<CargoCustomer>, ICargoCustomerDal
     {
-        public EFCargoCustomerDal(CargoContext context) : base(context)
+        private readonly CargoContext _cargoContext;
+        public EFCargoCustomerDal(CargoContext context, CargoContext cargoContext) : base(context)
         {
+            _cargoContext = cargoContext;
+        }
+
+        public CargoCustomer GetCargoCustomerById(string id)
+        {
+            var values = _cargoContext.CargoCustomers.Where(x=>x.UserCustomerId == id).FirstOrDefault();
+            return values;
         }
     }
 }
