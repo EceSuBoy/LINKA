@@ -6,6 +6,7 @@ namespace Linka.WebUI.Services.MessageServices
     {
         Task<List<ResultInboxMessageDto>> GetInboxMessageAsync(string id);
         Task<List<ResultSendBoxMessageDto>> GetSendboxMessageAsync(string id);
+        Task<int> GetTotalMessageCountByReceiverId(string id);
         //Task CreateMessageAsync(CreateMessageDto createMessageDto);
         //Task UpdateMessageAsync(UpdateMessageDto updateMessageDto);
         //Task DeleteMessageAsync(int id);

@@ -1,0 +1,6 @@
+@Linka.SignalRRealTimeApi_HostAddress = http://localhost:5098
+
+GET {{Linka.SignalRRealTimeApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
