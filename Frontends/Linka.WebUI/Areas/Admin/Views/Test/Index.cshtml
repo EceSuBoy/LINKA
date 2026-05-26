@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+
+    <script src="~/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+
+    <div class="content">
+        <br /> <br />
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <script type="text/javascript">
+                        $(document).ready(()=>{
+                            var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7180/signalrhub").build();
+                            $("#connstatus").text(connection.state);
+
+                            connection.start().then(() =>{
+                                $("#connstatus").text(connection.state);
+                            }).catch((err)=> {console.log(err) });
+                        })
+                    </script>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<div class="col-md-8 offset-2">
+    <div class="alert alert-primary">Connection Status: <strong id="connstatus"></strong></div>
+</div>
