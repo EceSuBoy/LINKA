@@ -55,6 +55,12 @@ namespace Linka.Message.Services
             return _mapper.Map<List<ResultSentBoxMessageDto>>(values);
         }
 
+        public async Task<int> GetTotalMessageCount()
+        {
+            int values = await _messageContext.UserMessages.CountAsync();
+            return values;
+        }
+
         public async Task UpdateMessageAsync(UpdateMessageDto updateMessageDto)
         {
             var values = _mapper.Map<UserMessage>(updateMessageDto);

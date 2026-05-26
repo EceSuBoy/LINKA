@@ -1,6 +1,6 @@
-﻿namespace Linka.Catalog.Services.StatisticsServices
+﻿namespace Linka.WebUI.Services.StatisticServices.CatalogStatisticServices
 {
-    public interface IStatisticsService
+    public interface ICatalogStatisticService
     {
         Task<long> GetCategoryCount();
         Task<long> GetProductCount();

@@ -1,0 +1,202 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<section class="content container-fluid">
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box">
+                <div class="media-icon pull-left"><i class="icon-bargraph"></i> </div>
+                <div class="media-info">
+                    <h5>Total Brand</h5>
+                    <h3>@ViewBag.getBrandCount</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-sea">
+                <div class="media-icon pull-left"><i class="icon-wallet"></i> </div>
+                <div class="media-info">
+                    <h5>Total Product</h5>
+                    <h3>@ViewBag.getProductCount</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-blue">
+                <div class="media-icon pull-left"><i class="icon-basket"></i> </div>
+                <div class="media-info">
+                    <h5>Total Category</h5>
+                    <h3>@ViewBag.getCategoryCount</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-green">
+                <div class="media-icon pull-left"><i class="icon-layers"></i> </div>
+                <div class="media-info">
+                    <h5>Average Product Price</h5>
+                    <h3>@ViewBag.getProductAvgPrice</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box">
+                <div class="media-icon pull-left"><i class="icon-bargraph"></i> </div>
+                <div class="media-info">
+                    <h5>The Most Expensive Product</h5>
+                    <h3>@ViewBag.getMaxPriceProductName</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-sea">
+                <div class="media-icon pull-left"><i class="icon-wallet"></i> </div>
+                <div class="media-info">
+                    <h5>The Cheapest Product</h5>
+                    <h3>@ViewBag.getMinPriceProductName</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-blue">
+                <div class="media-icon pull-left"><i class="icon-basket"></i> </div>
+                <div class="media-info">
+                    <h5>Total User</h5>
+                    <h3>@ViewBag.getUserCount</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-green">
+                <div class="media-icon pull-left"><i class="icon-layers"></i> </div>
+                <div class="media-info">
+                    <h5>Total Comments</h5>
+                    <h3>@ViewBag.getTotalCommentCount</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box">
+                <div class="media-icon pull-left"><i class="icon-bargraph"></i> </div>
+                <div class="media-info">
+                    <h5>Active Comments</h5>
+                    <h3>@ViewBag.getActiveCommentCount</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-sea">
+                <div class="media-icon pull-left"><i class="icon-wallet"></i> </div>
+                <div class="media-info">
+                    <h5>Passive Comments</h5>
+                    <h3>@ViewBag.getPassiveCommentCount</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-blue">
+                <div class="media-icon pull-left"><i class="icon-basket"></i> </div>
+                <div class="media-info">
+                    <h5>Total Discounts</h5>
+                    <h3>@ViewBag.getDiscountCouponCount</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-green">
+                <div class="media-icon pull-left"><i class="icon-layers"></i> </div>
+                <div class="media-info">
+                    <h5>Total Messages</h5>
+                    <h3>@ViewBag.getTotalMessageCount</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box">
+                <div class="media-icon pull-left"><i class="icon-bargraph"></i> </div>
+                <div class="media-info">
+                    <h5>Total Leads</h5>
+                    <h3>1530</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-sea">
+                <div class="media-icon pull-left"><i class="icon-wallet"></i> </div>
+                <div class="media-info">
+                    <h5>Total Payment</h5>
+                    <h3>$8,530</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-blue">
+                <div class="media-icon pull-left"><i class="icon-basket"></i> </div>
+                <div class="media-info">
+                    <h5>Total Sales</h5>
+                    <h3>935</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-green">
+                <div class="media-icon pull-left"><i class="icon-layers"></i> </div>
+                <div class="media-info">
+                    <h5>New Orders</h5>
+                    <h3>5324</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box">
+                <div class="media-icon pull-left"><i class="icon-bargraph"></i> </div>
+                <div class="media-info">
+                    <h5>Total Leads</h5>
+                    <h3>1530</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-sea">
+                <div class="media-icon pull-left"><i class="icon-wallet"></i> </div>
+                <div class="media-info">
+                    <h5>Total Payment</h5>
+                    <h3>$8,530</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-blue">
+                <div class="media-icon pull-left"><i class="icon-basket"></i> </div>
+                <div class="media-info">
+                    <h5>Total Sales</h5>
+                    <h3>935</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-xs-6">
+            <div class="media-box bg-green">
+                <div class="media-icon pull-left"><i class="icon-layers"></i> </div>
+                <div class="media-info">
+                    <h5>New Orders</h5>
+                    <h3>5324</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -21,6 +21,10 @@ using Linka.WebUI.Services.Interfaces;
 using Linka.WebUI.Services.MessageServices;
 using Linka.WebUI.Services.OrderServices.OrderAddressServices;
 using Linka.WebUI.Services.OrderServices.OrderOrderingServices;
+using Linka.WebUI.Services.StatisticServices.CatalogStatisticServices;
+using Linka.WebUI.Services.StatisticServices.DiscountStatisticServices;
+using Linka.WebUI.Services.StatisticServices.MessageStatisticServices;
+using Linka.WebUI.Services.StatisticServices.UserStatisticsServices;
 using Linka.WebUI.Services.UserIdentityServices;
 using Linka.WebUI.Settings;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -86,6 +90,26 @@ builder.Services.AddHttpClient<IUserIdentityService, UserIdentityService>(opt =>
 builder.Services.AddHttpClient<IBasketService, BasketService>(opt =>
 {
     opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Basket.Path}");
+}).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
+
+builder.Services.AddHttpClient<ICatalogStatisticService, CatalogStatisticService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Catalog.Path}");
+}).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
+
+builder.Services.AddHttpClient<IDiscountStatisticServices, DiscountStatisticServices>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Discount.Path}");
+}).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
+
+builder.Services.AddHttpClient<IUserStatisticService, UserStatisticService>(opt =>
+{
+    opt.BaseAddress = new Uri(values.IdentityServerUrl);
+}).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
+
+builder.Services.AddHttpClient<IMessageStatisticService, MessageStatisticService>(opt =>
+{
+    opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Message.Path}");
 }).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
 
 builder.Services.AddHttpClient<IOrderOrderingServices, OrderOrderingServices>(opt =>

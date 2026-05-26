@@ -55,6 +55,14 @@ namespace Linka.Message.Controllers
             await _userMessageService.UpdateMessageAsync(updateMessageDto);
             return Ok("Message deleted successfully.");
         }
-        
+
+        [HttpGet("GetTotalMessageCount")]
+        public async Task<IActionResult> GetTotalMessageCount()
+        {
+            int values = await _userMessageService.GetTotalMessageCount();
+            return Ok(values);
+
+        }
+
     }
 }

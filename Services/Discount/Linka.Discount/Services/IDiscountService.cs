@@ -11,5 +11,6 @@ namespace Linka.Discount.Services
         Task<GetByIdDiscountCouponDto> GetByIdDiscountCouponAsync(int id);
         Task<ResultDiscountCouponDto> GetCodeDetailByCodeAsync(string code);
         int GetDiscountCouponCountRate(string code);
+        Task<int> GetDiscountCouponCount();
     }
 }

@@ -62,6 +62,13 @@ namespace Linka.Discount.Controllers
             var values = _discountService.GetDiscountCouponCountRate(code);
             return Ok(values);
         }
+
+        [HttpGet("GetDiscountCouponCount")]
+        public async Task<IActionResult> GetDiscountCouponCount()
+        {
+            var values = await _discountService.GetDiscountCouponCount();
+            return Ok(values);
+        }
     }
 }
 //public int GetDiscountCouponCountRateAsync(string code)

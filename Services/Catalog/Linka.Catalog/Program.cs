@@ -10,6 +10,7 @@ using Linka.Catalog.Services.ProductDetailServices;
 using Linka.Catalog.Services.ProductImageServices;
 using Linka.Catalog.Services.ProductServices;
 using Linka.Catalog.Services.SpecialOfferServices;
+using Linka.Catalog.Services.StatisticsServices;
 using Linka.Catalog.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
@@ -36,6 +37,7 @@ builder.Services.AddScoped<IOfferDiscountService, OfferDiscountService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<IAboutService, AboutService>();
 builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<IStatisticsService, StatisticsService>();
 
 
 
