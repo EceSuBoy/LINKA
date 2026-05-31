@@ -7,21 +7,16 @@ namespace Linka.SignalRRealTimeApi.Hubs
 {
     public class SignalRHub : Hub
     {
-        private readonly ISignalRMessageService _signalRService;
         private readonly ISignalRCommentService _signalRCommentService;
 
-        public SignalRHub(ISignalRMessageService signalRService, ISignalRCommentService signalRCommentService)
+        public SignalRHub(ISignalRCommentService signalRCommentService)
         {
-            _signalRService = signalRService;
             _signalRCommentService = signalRCommentService;
         }
-        public async Task SendStatisticCount(string id)
+        public async Task SendStatisticCount()
         {
-            var getTotalCommentCount = _signalRCommentService.GetTotalCommentCount();
+            var getTotalCommentCount = await _signalRCommentService.GetTotalCommentCount();
             await Clients.All.SendAsync("ReceiveCommentCount", getTotalCommentCount);
-
-            var getTotalMessageCount = _signalRService.GetTotalMessageCountByReceiverId(id);
-            await Clients.All.SendAsync("ReceiveMessageCount", getTotalMessageCount);
         }
     }
 }

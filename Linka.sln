@@ -88,6 +88,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SignalRRealTime", "SignalRR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linka.SignalRRealTimeApi", "Services\SignalRRealTime\Linka.SignalRRealTimeApi\Linka.SignalRRealTimeApi.csproj", "{EEF5D399-7BA3-41FB-9A8F-862E7F42504F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linka.Images.WebUI", "Services\Images\Linka.Images.WebUI\Linka.Images.WebUI.csproj", "{E3AD7CCE-1C60-4FFC-B03A-5026C58BAFDE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -178,6 +180,10 @@ Global
 		{EEF5D399-7BA3-41FB-9A8F-862E7F42504F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEF5D399-7BA3-41FB-9A8F-862E7F42504F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEF5D399-7BA3-41FB-9A8F-862E7F42504F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3AD7CCE-1C60-4FFC-B03A-5026C58BAFDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3AD7CCE-1C60-4FFC-B03A-5026C58BAFDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3AD7CCE-1C60-4FFC-B03A-5026C58BAFDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3AD7CCE-1C60-4FFC-B03A-5026C58BAFDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -217,6 +223,7 @@ Global
 		{241B2A3E-C1C2-4F5C-94A9-8DCE602A3F8F} = {FA2A0EA0-24C0-401A-8BC5-066F359570E2}
 		{00295B9D-15DE-4F9E-8C6F-EB887A2B5385} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{EEF5D399-7BA3-41FB-9A8F-862E7F42504F} = {00295B9D-15DE-4F9E-8C6F-EB887A2B5385}
+		{E3AD7CCE-1C60-4FFC-B03A-5026C58BAFDE} = {1F2B525B-26C2-4251-B8B7-214EC38AF4D2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A748B4CD-ECCE-4506-A537-3DC60BFF8529}
