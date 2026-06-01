@@ -26,7 +26,14 @@ namespace Linka.Catalog.Controllers
         [HttpGet("ProductImagesByProductId/{id}")]
         public async Task<IActionResult> ProductImagesByProductId(string id)
         {
-            var values = await _productImageService.GetByProductIdProductImageAsync(id);
+            var values = await _productImageService
+                .GetByProductIdProductImageAsync(id);
+
+            if (values == null)
+            {
+                return NotFound();
+            }
+
             return Ok(values);
         }
 

@@ -12,14 +12,25 @@
                 <h4>Product Image Detail Page</h4>
                 <br />
 
-                @if (Model.Images != null && Model.Images.Any())
+                @{
+                    var existingImages = Model.Images?
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .ToList()
+                    ?? new List<string>();
+                }
+
+                @if (existingImages.Any())
                 {
                     <div class="row">
-                        @foreach (var image in Model.Images)
+                        @foreach (var image in existingImages)
                         {
                             <div class="col-md-3">
-                                <div class="card" style="padding:10px; margin-bottom:15px;">
-                                    <img src="@image" style="width:100%; height:180px; object-fit:contain;" />
+                                <div class="card"
+                                     style="padding:10px; margin-bottom:15px; min-height:205px;">
+
+                                    <img src="@image"
+                                         alt="Product image"
+                                         style="width:100%; height:180px; object-fit:contain;" />
                                 </div>
                             </div>
                         }
@@ -32,33 +43,36 @@
                     </div>
                 }
 
-                <a href="/Admin/ProductImage/CreateProductImageDetail/@Model.ProductId" class="btn btn-success">
-                    Add Images
-                </a>
+                <hr />
 
-                @if (!string.IsNullOrEmpty(Model.ProductImageId))
-                {
-                    <hr />
+                <form asp-area="Admin"
+                      asp-controller="ProductImage"
+                      asp-action="ProductImageDetail"
+                      asp-route-id="@Model.ProductId"
+                      method="post">
 
-                    <form method="post">
-                        <input type="hidden" asp-for="ProductImageId" />
-                        <input type="hidden" asp-for="ProductId" />
+                    <input type="hidden" asp-for="ProductImageId" />
+                    <input type="hidden" asp-for="ProductId" />
 
-                        @for (int i = 0; i < 4; i++)
-                        {
-                            <label>Image @(i + 1)</label>
+                    @for (int i = 0; i < 4; i++)
+                    {
+                        <label>Image @(i + 1)</label>
 
-                            <input type="text"
-                                   name="Images[@i]"
-                                   value="@(Model.Images.Count > i ? Model.Images[i] : "")"
-                                   class="form-control" />
+                        <input type="text"
+                               name="Images[@i]"
+                               value="@(Model.Images != null && Model.Images.Count > i
+                                                                  ? Model.Images[i]
+                                                                  : "")"
+                           class="form-control"
+                           placeholder="Enter image URL or path" />
 
-                            <br />
-                        }
+                        <br />
+                                        }
 
-                        <button class="btn btn-primary">Update Images</button>
-                    </form>
-                }
+                    <button type="submit" class="btn btn-primary">
+                        Update Images
+                    </button>
+                </form>
             </div>
         </div>
     </div>

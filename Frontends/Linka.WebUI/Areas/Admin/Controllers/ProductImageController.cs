@@ -1,111 +1,53 @@
 ﻿using Linka.DtoLayer.CatalogDtos.ProductImageDtos;
-using Microsoft.AspNetCore.Authorization;
+using Linka.WebUI.Services.CatalogServices.ProductImageServices;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Text;
 
 namespace Linka.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [AllowAnonymous]
     [Route("Admin/ProductImage")]
     public class ProductImageController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IProductImageService _productImageService;
 
-        public ProductImageController(IHttpClientFactory httpClientFactory)
+        public ProductImageController(
+            IProductImageService productImageService)
         {
-            _httpClientFactory = httpClientFactory;
+            _productImageService = productImageService;
         }
 
+        // Product image var mı diye kontrol eden ara action
         [HttpGet]
-        [Route("ProductImageDetail/{id}")]
-        public async Task<IActionResult> ProductImageDetail(string id)
+        [Route("ProductImageOperation/{id}")]
+        public async Task<IActionResult> ProductImageOperation(string id)
         {
-            ViewBag.v1 = "Home";
-            ViewBag.v2 = "Products";
-            ViewBag.v3 = "Product Image Page";
-            ViewBag.v0 = "Product Image Operations";
+            var existingImage =
+                await _productImageService
+                    .GetByProductIdProductImageAsync(id);
 
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7070/api/ProductImages/ProductImagesByProductId?id=" + id);
-
-            if (responseMessage.IsSuccessStatusCode)
+            if (existingImage == null)
             {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-
-                if (!string.IsNullOrWhiteSpace(jsonData) && jsonData != "null")
-                {
-                    var values = JsonConvert.DeserializeObject<UpdateProductImageDto>(jsonData);
-
-                    if (values != null)
-                    {
-                        values.ProductId = id;
-                        values.Images ??= new List<string>();
-                        return View(values);
-                    }
-                }
+                return RedirectToAction(
+                    "CreateProductImageDetail",
+                    "ProductImage",
+                    new { area = "Admin", id });
             }
 
-            var emptyModel = new UpdateProductImageDto
-            {
-                ProductId = id,
-                Images = new List<string>()
-            };
-
-            return View(emptyModel);
+            return RedirectToAction(
+                "ProductImageDetail",
+                "ProductImage",
+                new { area = "Admin", id });
         }
 
-        [HttpPost]
-        [Route("ProductImageDetail/{id}")]
-        public async Task<IActionResult> ProductImageDetail(UpdateProductImageDto updateProductImageDto)
-        {
-            updateProductImageDto.Images = updateProductImageDto.Images
-                .Where(x => !string.IsNullOrWhiteSpace(x))
-                .Take(4)
-                .ToList();
-
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(updateProductImageDto);
-            var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            var responseMessage = await client.PutAsync("https://localhost:7070/api/ProductImages/", stringContent);
-
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("ProductListWithCategory", "Product", new { area = "Admin" });
-            }
-
-            return View(updateProductImageDto);
-        }
-
+        // Create sayfası
         [HttpGet]
         [Route("CreateProductImageDetail/{id}")]
-        public async Task<IActionResult> CreateProductImageDetail(string id)
+        public IActionResult CreateProductImageDetail(string id)
         {
             ViewBag.v1 = "Home";
             ViewBag.v2 = "Products";
             ViewBag.v3 = "Add Product Images";
             ViewBag.v0 = "Product Image Operations";
-
-            var client = _httpClientFactory.CreateClient();
-            var checkResponse = await client.GetAsync("https://localhost:7070/api/ProductImages/ProductImagesByProductId?id=" + id);
-
-            if (checkResponse.IsSuccessStatusCode)
-            {
-                var jsonData = await checkResponse.Content.ReadAsStringAsync();
-
-                if (!string.IsNullOrWhiteSpace(jsonData) && jsonData != "null")
-                {
-                    var existingImage = JsonConvert.DeserializeObject<UpdateProductImageDto>(jsonData);
-
-                    if (existingImage?.Images != null && existingImage.Images.Count >= 4)
-                    {
-                        TempData["ImageError"] = "This product already has the maximum number of images.";
-                        return RedirectToAction("ProductImageDetail", "ProductImage", new { area = "Admin", id });
-                    }
-                }
-            }
 
             var model = new CreateProductImageDto
             {
@@ -116,46 +58,98 @@ namespace Linka.WebUI.Areas.Admin.Controllers
             return View(model);
         }
 
+        // Yeni image kaydı oluştur
         [HttpPost]
         [Route("CreateProductImageDetail/{id}")]
-        public async Task<IActionResult> CreateProductImageDetail(CreateProductImageDto createProductImageDto)
+        public async Task<IActionResult> CreateProductImageDetail(
+            string id,
+            CreateProductImageDto createProductImageDto)
         {
-            var client = _httpClientFactory.CreateClient();
+            createProductImageDto.ProductId = id;
 
-            var checkResponse = await client.GetAsync("https://localhost:7070/api/ProductImages/ProductImagesByProductId?id=" + createProductImageDto.ProductId);
+            createProductImageDto.Images =
+                createProductImageDto.Images?
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Take(4)
+                    .ToList()
+                ?? new List<string>();
 
-            if (checkResponse.IsSuccessStatusCode)
+            var existingImage =
+                await _productImageService
+                    .GetByProductIdProductImageAsync(id);
+
+            if (existingImage != null)
             {
-                var existingData = await checkResponse.Content.ReadAsStringAsync();
-
-                if (!string.IsNullOrWhiteSpace(existingData) && existingData != "null")
-                {
-                    var existingImage = JsonConvert.DeserializeObject<UpdateProductImageDto>(existingData);
-
-                    if (existingImage?.Images != null && existingImage.Images.Count >= 4)
-                    {
-                        TempData["ImageError"] = "This product already has the maximum number of images.";
-                        return RedirectToAction("ProductImageDetail", "ProductImage", new { area = "Admin", id = createProductImageDto.ProductId });
-                    }
-                }
+                return RedirectToAction(
+                    "ProductImageDetail",
+                    "ProductImage",
+                    new { area = "Admin", id });
             }
 
-            createProductImageDto.Images = createProductImageDto.Images
-                .Where(x => !string.IsNullOrWhiteSpace(x))
-                .Take(4)
-                .ToList();
+            await _productImageService
+                .CreateProductImageAsync(createProductImageDto);
 
-            var jsonData = JsonConvert.SerializeObject(createProductImageDto);
-            var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            return RedirectToAction(
+                "ProductListWithCategory",
+                "Product",
+                new { area = "Admin" });
+        }
 
-            var responseMessage = await client.PostAsync("https://localhost:7070/api/ProductImages/", stringContent);
+        // Update sayfası
+        [HttpGet]
+        [Route("ProductImageDetail/{id}")]
+        public async Task<IActionResult> ProductImageDetail(string id)
+        {
+            ViewBag.v1 = "Home";
+            ViewBag.v2 = "Products";
+            ViewBag.v3 = "Product Image Page";
+            ViewBag.v0 = "Product Image Operations";
 
-            if (responseMessage.IsSuccessStatusCode)
+            var existingImage =
+                await _productImageService
+                    .GetByProductIdProductImageAsync(id);
+
+            if (existingImage == null)
             {
-                return RedirectToAction("ProductImageDetail", "ProductImage", new { area = "Admin", id = createProductImageDto.ProductId });
+                return RedirectToAction(
+                    "CreateProductImageDetail",
+                    "ProductImage",
+                    new { area = "Admin", id });
             }
 
-            return View(createProductImageDto);
+            var model = new UpdateProductImageDto
+            {
+                ProductImageId = existingImage.ProductImageId,
+                ProductId = existingImage.ProductId,
+                Images = existingImage.Images ?? new List<string>()
+            };
+
+            return View(model);
+        }
+
+        // Mevcut image kaydını güncelle
+        [HttpPost]
+        [Route("ProductImageDetail/{id}")]
+        public async Task<IActionResult> ProductImageDetail(
+            string id,
+            UpdateProductImageDto updateProductImageDto)
+        {
+            updateProductImageDto.ProductId = id;
+
+            updateProductImageDto.Images =
+                updateProductImageDto.Images?
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Take(4)
+                    .ToList()
+                ?? new List<string>();
+
+            await _productImageService
+                .UpdateProductImageAsync(updateProductImageDto);
+
+            return RedirectToAction(
+                "ProductListWithCategory",
+                "Product",
+                new { area = "Admin" });
         }
     }
 }

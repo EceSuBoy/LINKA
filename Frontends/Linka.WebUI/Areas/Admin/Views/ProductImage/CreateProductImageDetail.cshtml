@@ -12,7 +12,12 @@
                 <h4>Product Image Add Page</h4>
                 <br />
 
-                <form method="post">
+                <form asp-area="Admin"
+                      asp-controller="ProductImage"
+                      asp-action="CreateProductImageDetail"
+                      asp-route-id="@Model.ProductId"
+                      method="post">
+
                     <input type="hidden" asp-for="ProductId" />
 
                     @for (int i = 0; i < 4; i++)
@@ -27,7 +32,9 @@
                         <br />
                     }
 
-                    <button class="btn btn-success">Add Images</button>
+                    <button type="submit" class="btn btn-success">
+                        Add Images
+                    </button>
                 </form>
             </div>
         </div>

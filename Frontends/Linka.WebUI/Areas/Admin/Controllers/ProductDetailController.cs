@@ -1,41 +1,41 @@
 ﻿using Linka.DtoLayer.CatalogDtos.ProductDetailDtos;
-using Microsoft.AspNetCore.Authorization;
+using Linka.WebUI.Services.CatalogServices.ProductDetailServices;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Text;
 
 namespace Linka.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [AllowAnonymous]
     [Route("Admin/ProductDetail")]
     public class ProductDetailController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IProductDetailService _productDetailService;
 
-        public ProductDetailController(IHttpClientFactory httpClientFactory)
+        public ProductDetailController(
+            IProductDetailService productDetailService)
         {
-            _httpClientFactory = httpClientFactory;
+            _productDetailService = productDetailService;
         }
 
         [HttpGet]
         [Route("ProductDetailOperation/{id}")]
         public async Task<IActionResult> ProductDetailOperation(string id)
         {
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7070/api/ProductDetails/GetProductDetailByProductId?id=" + id);
+            var existingDetail =
+                await _productDetailService
+                    .GetByProductIdProductDetailAsync(id);
 
-            if (responseMessage.IsSuccessStatusCode)
+            if (existingDetail == null)
             {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-
-                if (!string.IsNullOrWhiteSpace(jsonData) && jsonData != "null")
-                {
-                    return RedirectToAction("UpdateProductDetail", "ProductDetail", new { area = "Admin", id = id });
-                }
+                return RedirectToAction(
+                    "CreateProductDetail",
+                    "ProductDetail",
+                    new { area = "Admin", id });
             }
 
-            return RedirectToAction("CreateProductDetail", "ProductDetail", new { area = "Admin", id = id });
+            return RedirectToAction(
+                "UpdateProductDetail",
+                "ProductDetail",
+                new { area = "Admin", id });
         }
 
         [HttpGet]
@@ -57,20 +57,19 @@ namespace Linka.WebUI.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("CreateProductDetail/{id}")]
-        public async Task<IActionResult> CreateProductDetail(CreateProductDetailDto createProductDetailDto)
+        public async Task<IActionResult> CreateProductDetail(
+            string id,
+            CreateProductDetailDto createProductDetailDto)
         {
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(createProductDetailDto);
-            var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            createProductDetailDto.ProductId = id;
 
-            var responseMessage = await client.PostAsync("https://localhost:7070/api/ProductDetails/", stringContent);
+            await _productDetailService
+                .CreateProductDetailAsync(createProductDetailDto);
 
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("ProductListWithCategory", "Product", new { area = "Admin" });
-            }
-
-            return View(createProductDetailDto);
+            return RedirectToAction(
+                "ProductListWithCategory",
+                "Product",
+                new { area = "Admin" });
         }
 
         [HttpGet]
@@ -82,44 +81,44 @@ namespace Linka.WebUI.Areas.Admin.Controllers
             ViewBag.v3 = "Product Description and Info Page";
             ViewBag.v0 = "Product Operations";
 
-            var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync("https://localhost:7070/api/ProductDetails/GetProductDetailByProductId?id=" + id);
+            var existingDetail =
+                await _productDetailService
+                    .GetByProductIdProductDetailAsync(id);
 
-            if (responseMessage.IsSuccessStatusCode)
+            if (existingDetail == null)
             {
-                var jsonData = await responseMessage.Content.ReadAsStringAsync();
-
-                if (!string.IsNullOrWhiteSpace(jsonData) && jsonData != "null")
-                {
-                    var values = JsonConvert.DeserializeObject<UpdateProductDetailDto>(jsonData);
-
-                    if (values != null)
-                    {
-                        values.ProductId = id;
-                        return View(values);
-                    }
-                }
+                return RedirectToAction(
+                    "CreateProductDetail",
+                    "ProductDetail",
+                    new { area = "Admin", id });
             }
 
-            return RedirectToAction("CreateProductDetail", "ProductDetail", new { area = "Admin", id = id });
+            var model = new UpdateProductDetailDto
+            {
+                ProductDetailId = existingDetail.ProductDetailId,
+                ProductId = existingDetail.ProductId,
+                ProductDescription = existingDetail.ProductDescription,
+                ProductInfo = existingDetail.ProductInfo
+            };
+
+            return View(model);
         }
 
         [HttpPost]
         [Route("UpdateProductDetail/{id}")]
-        public async Task<IActionResult> UpdateProductDetail(UpdateProductDetailDto updateProductDetailDto)
+        public async Task<IActionResult> UpdateProductDetail(
+            string id,
+            UpdateProductDetailDto updateProductDetailDto)
         {
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(updateProductDetailDto);
-            var stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            updateProductDetailDto.ProductId = id;
 
-            var responseMessage = await client.PutAsync("https://localhost:7070/api/ProductDetails/", stringContent);
+            await _productDetailService
+                .UpdateProductDetailAsync(updateProductDetailDto);
 
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                return RedirectToAction("ProductListWithCategory", "Product", new { area = "Admin" });
-            }
-
-            return View(updateProductDetailDto);
+            return RedirectToAction(
+                "ProductListWithCategory",
+                "Product",
+                new { area = "Admin" });
         }
     }
 }
