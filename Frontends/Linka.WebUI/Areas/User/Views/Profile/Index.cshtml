@@ -1,0 +1,202 @@
+﻿@{
+    ViewData["Title"] = "My Panel";
+    Layout = "~/Areas/User/Views/UserLayout/Index.cshtml";
+}
+
+<style>
+    .linka-dashboard-title {
+        margin-bottom: 8px;
+        color: #26374b;
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .linka-dashboard-subtitle {
+        margin-bottom: 24px;
+        color: #8d9aab;
+        font-size: 14px;
+    }
+
+    .linka-welcome-card {
+        padding: 24px;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #2946a3, #5175df);
+        box-shadow: 0 9px 22px rgba(45, 76, 168, 0.16);
+    }
+
+        .linka-welcome-card h4 {
+            margin-bottom: 8px;
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .linka-welcome-card p {
+            margin-bottom: 0;
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 14px;
+        }
+
+    .linka-dashboard-card {
+        height: 100%;
+        padding: 20px;
+        border: 1px solid #e3e8f0;
+        border-radius: 8px;
+        background-color: #ffffff;
+        transition: 0.2s ease;
+    }
+
+        .linka-dashboard-card:hover {
+            border-color: #ccd8f4;
+            box-shadow: 0 8px 20px rgba(45, 76, 168, 0.10);
+            transform: translateY(-3px);
+        }
+
+    .linka-dashboard-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        margin-bottom: 14px;
+        border-radius: 10px;
+        color: #2d4ca8;
+        background-color: #edf2ff;
+        font-size: 22px;
+    }
+
+    .linka-dashboard-card h5 {
+        margin-bottom: 6px;
+        color: #2a3a4f;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .linka-dashboard-card p {
+        margin-bottom: 14px;
+        color: #8b98a8;
+        font-size: 13px;
+    }
+
+    .linka-dashboard-link {
+        color: #2d4ca8;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none !important;
+    }
+
+        .linka-dashboard-link:hover {
+            color: #1c347f;
+        }
+</style>
+
+<div class="content-wrapper">
+
+    <h3 class="linka-dashboard-title">
+        My LINKA Panel
+    </h3>
+
+    <p class="linka-dashboard-subtitle">
+        Manage your account, orders, cargo information and settings.
+    </p>
+
+    <div class="linka-welcome-card mb-4">
+        <h4>
+            Welcome back, @ViewBag.FullName
+        </h4>
+
+        <p>
+            You can review your account information and manage your shopping activity from this panel.
+        </p>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-6 col-lg-3 grid-margin stretch-card">
+            <div class="linka-dashboard-card">
+
+                <div class="linka-dashboard-icon">
+                    <i class="mdi mdi-shopping-outline"></i>
+                </div>
+
+                <h5>My Orders</h5>
+
+                <p>
+                    Review your current orders and previous purchases.
+                </p>
+
+                <a href="/User/MyOrder/MyOrderList"
+                   class="linka-dashboard-link">
+                    View Orders →
+                </a>
+
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 grid-margin stretch-card">
+            <div class="linka-dashboard-card">
+
+                <div class="linka-dashboard-icon">
+                    <i class="mdi mdi-truck-outline"></i>
+                </div>
+
+                <h5>My Cargo</h5>
+
+                <p>
+                    Track the delivery process of your orders.
+                </p>
+
+                <a href="/User/Cargo/Index"
+                   class="linka-dashboard-link">
+                    Track Cargo →
+                </a>
+
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 grid-margin stretch-card">
+            <div class="linka-dashboard-card">
+
+                <div class="linka-dashboard-icon">
+                    <i class="mdi mdi-account-outline"></i>
+                </div>
+
+                <h5>My Profile</h5>
+
+                <p>
+                    Review and update your personal account details.
+                </p>
+
+                <a href="/User/Profile"
+                   class="linka-dashboard-link">
+                    View Profile →
+                </a>
+
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 grid-margin stretch-card">
+            <div class="linka-dashboard-card">
+
+                <div class="linka-dashboard-icon">
+                    <i class="mdi mdi-lock-outline"></i>
+                </div>
+
+                <h5>Settings</h5>
+
+                <p>
+                    Change your password and account preferences.
+                </p>
+
+                <a href="/User/Profile/ChangePassword"
+                   class="linka-dashboard-link">
+                    Open Settings →
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

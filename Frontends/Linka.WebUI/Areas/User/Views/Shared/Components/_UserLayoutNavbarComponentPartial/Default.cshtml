@@ -1,158 +1,381 @@
-﻿<nav class="navbar col-lg-12 col-12 px-0 py-0 py-lg-4 d-flex flex-row">
-    <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
-            <span class="mdi mdi-menu"></span>
+﻿@model Linka.WebUI.Models.UserLayoutNavbarViewModel
+
+<style>
+    .linka-compact-navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        min-height: 78px;
+        padding: 14px 28px;
+        border-bottom: 1px solid #e5eaf2;
+        background-color: #ffffff;
+        box-shadow: 0 4px 13px rgba(30, 55, 95, 0.05);
+    }
+
+    .linka-navbar-brand-area {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-shrink: 0;
+    }
+
+    .linka-sidebar-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 39px;
+        height: 39px;
+        border: none;
+        border-radius: 8px;
+        color: #3156ba;
+        background-color: #eef3ff;
+        font-size: 22px;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+        .linka-sidebar-toggle:hover {
+            color: #ffffff;
+            background-color: #3156ba;
+        }
+
+    .linka-navbar-logo {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 44px;
+        padding: 0 15px;
+        border-radius: 5px;
+        color: #26374b !important;
+        background-color: #ffd333;
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-decoration: none !important;
+        transition: 0.2s ease;
+    }
+
+        .linka-navbar-logo:hover {
+            background-color: #f4c522;
+            transform: translateY(-1px);
+        }
+
+    .linka-navbar-search-area {
+        flex: 1;
+        max-width: 760px;
+    }
+
+    .linka-navbar-search-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    .linka-navbar-search-input {
+        width: 100%;
+        height: 43px;
+        padding: 0 46px 0 15px;
+        border: 1px solid #dfe6f0;
+        border-radius: 8px;
+        color: #34475d;
+        background-color: #f9fbff;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s ease;
+    }
+
+        .linka-navbar-search-input:focus {
+            border-color: #3156ba;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(49, 86, 186, 0.10);
+        }
+
+    .linka-navbar-search-icon {
+        position: absolute;
+        top: 50%;
+        right: 16px;
+        color: #3156ba;
+        font-size: 19px;
+        transform: translateY(-50%);
+    }
+
+    .linka-navbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-shrink: 0;
+    }
+
+    .linka-navbar-action-link {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 39px;
+        height: 39px;
+        border-radius: 50%;
+        color: #3156ba;
+        background-color: #eef3ff;
+        font-size: 19px;
+        text-decoration: none !important;
+        transition: 0.2s ease;
+    }
+
+        .linka-navbar-action-link:hover {
+            color: #ffffff;
+            background-color: #3156ba;
+        }
+
+    .linka-navbar-badge {
+        position: absolute;
+        top: -5px;
+        right: -4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: 20px;
+        color: #ffffff;
+        background-color: #ff4f58;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .linka-navbar-profile-button {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 157px;
+        padding: 6px 9px;
+        border: none;
+        border-radius: 9px;
+        color: #293b50;
+        background-color: #f4f7fd;
+        text-align: left;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+        .linka-navbar-profile-button:hover,
+        .linka-navbar-profile-button:focus {
+            color: #293b50;
+            background-color: #eaf0ff;
+            box-shadow: none;
+            outline: none;
+        }
+
+    .linka-navbar-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 37px;
+        height: 37px;
+        border-radius: 50%;
+        color: #ffffff;
+        background: linear-gradient(135deg, #3156ba, #6284e5);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        flex-shrink: 0;
+    }
+
+    .linka-navbar-profile-text {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        max-width: 125px;
+    }
+
+    .linka-navbar-profile-name {
+        overflow: hidden;
+        color: #293b50;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.2;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .linka-navbar-profile-role {
+        color: #8998aa;
+        font-size: 11px;
+        line-height: 1.2;
+    }
+
+    .linka-navbar-dropdown {
+        min-width: 225px;
+        margin-top: 9px;
+        padding: 7px 0;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 10px 24px rgba(28, 48, 78, 0.16);
+    }
+
+        .linka-navbar-dropdown .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            color: #35495e;
+            font-size: 14px;
+        }
+
+            .linka-navbar-dropdown .dropdown-item:hover {
+                color: #3156ba;
+                background-color: #eef3ff;
+            }
+
+        .linka-navbar-dropdown i {
+            width: 17px;
+            color: #3156ba;
+            text-align: center;
+        }
+
+    @@media (max-width: 1100px) {
+        .linka-navbar-search-area {
+            max-width: 520px;
+        }
+
+        .linka-navbar-profile-role {
+            display: none;
+        }
+    }
+</style>
+
+<nav class="linka-compact-navbar">
+
+    <!-- Logo + Sidebar Button -->
+    <div class="linka-navbar-brand-area">
+
+        <button type="button"
+                class="linka-sidebar-toggle"
+                data-toggle="minimize"
+                title="Toggle Menu">
+            <i class="mdi mdi-menu"></i>
         </button>
-        <div class="navbar-brand-wrapper">
-            <a class="navbar-brand brand-logo" href="../../index.html"><img src="~/spica/images/logo.svg" alt="logo" /></a>
-            <a class="navbar-brand brand-logo-mini" href="../../index.html"><img src="~/spica/images/logo-mini.svg" alt="logo" /></a>
+
+        <a href="/Default/Index"
+           class="linka-navbar-logo">
+            LINKA
+        </a>
+
+    </div>
+
+    <!-- Search -->
+    <div class="linka-navbar-search-area">
+
+        <div class="linka-navbar-search-wrapper">
+
+            <input type="text"
+                   class="linka-navbar-search-input"
+                   placeholder="Search your orders, messages or cargo information..." />
+
+            <i class="mdi mdi-magnify linka-navbar-search-icon"></i>
+
         </div>
-        <h4 class="font-weight-bold mb-0 d-none d-md-block mt-1">Welcome back, Brandon Haynes</h4>
-        <ul class="navbar-nav navbar-nav-right">
-            <li class="nav-item">
-                <h4 class="mb-0 font-weight-bold d-none d-xl-block">@(((DateTime.Now)).ToString("dd-MMM-yyyy"))</h4>
-            </li>
-            <li class="nav-item dropdown mr-1">
-                <a class="nav-link count-indicator dropdown-toggle d-flex justify-content-center align-items-center" id="messageDropdown" href="#" data-toggle="dropdown">
-                    <i class="mdi mdi-calendar mx-0"></i>
-                    <span class="count bg-info">2</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="messageDropdown">
-                    <p class="mb-0 font-weight-normal float-left dropdown-header">Messages</p>
-                    <a class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <img src="../../images/faces/face4.jpg" alt="image" class="profile-pic">
-                        </div>
-                        <div class="preview-item-content flex-grow">
-                            <h6 class="preview-subject ellipsis font-weight-normal">
-                                David Grey
-                            </h6>
-                            <p class="font-weight-light small-text text-muted mb-0">
-                                The meeting is cancelled
-                            </p>
-                        </div>
-                    </a>
-                    <a class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <img src="../../images/faces/face2.jpg" alt="image" class="profile-pic">
-                        </div>
-                        <div class="preview-item-content flex-grow">
-                            <h6 class="preview-subject ellipsis font-weight-normal">
-                                Tim Cook
-                            </h6>
-                            <p class="font-weight-light small-text text-muted mb-0">
-                                New product launch
-                            </p>
-                        </div>
-                    </a>
-                    <a class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <img src="../../images/faces/face3.jpg" alt="image" class="profile-pic">
-                        </div>
-                        <div class="preview-item-content flex-grow">
-                            <h6 class="preview-subject ellipsis font-weight-normal">
-                                Johnson
-                            </h6>
-                            <p class="font-weight-light small-text text-muted mb-0">
-                                Upcoming board meeting
-                            </p>
-                        </div>
-                    </a>
-                </div>
-            </li>
-            <li class="nav-item dropdown mr-2">
-                <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center" id="notificationDropdown" href="#" data-toggle="dropdown">
-                    <i class="mdi mdi-email-open mx-0"></i>
-                    <span class="count bg-danger">1</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-                    <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
-                    <a class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-success">
-                                <i class="mdi mdi-information mx-0"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content">
-                            <h6 class="preview-subject font-weight-normal">Application Error</h6>
-                            <p class="font-weight-light small-text mb-0 text-muted">
-                                Just now
-                            </p>
-                        </div>
-                    </a>
-                    <a class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-warning">
-                                <i class="mdi mdi-settings mx-0"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content">
-                            <h6 class="preview-subject font-weight-normal">Settings</h6>
-                            <p class="font-weight-light small-text mb-0 text-muted">
-                                Private message
-                            </p>
-                        </div>
-                    </a>
-                    <a class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-info">
-                                <i class="mdi mdi-account-box mx-0"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content">
-                            <h6 class="preview-subject font-weight-normal">New user registration</h6>
-                            <p class="font-weight-light small-text mb-0 text-muted">
-                                2 days ago
-                            </p>
-                        </div>
-                    </a>
-                </div>
-            </li>
-        </ul>
-        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-            <span class="mdi mdi-menu"></span>
-        </button>
+
     </div>
-    <div class="navbar-menu-wrapper navbar-search-wrapper d-none d-lg-flex align-items-center">
-        <ul class="navbar-nav mr-lg-2">
-            <li class="nav-item nav-search d-none d-lg-block">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search Here..." aria-label="search" aria-describedby="search">
-                </div>
-            </li>
-        </ul>
-        <ul class="navbar-nav navbar-nav-right">
-            <li class="nav-item nav-profile dropdown">
-                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
-                    <img src="../../images/faces/face5.jpg" alt="profile" />
-                    <span class="nav-profile-name">Eleanor Richardson</span>
+
+    <!-- Notifications + Profile -->
+    <div class="linka-navbar-actions">
+
+        <a href="/User/Message/Index"
+           class="linka-navbar-action-link"
+           title="Messages">
+
+            <i class="mdi mdi-email-outline"></i>
+            <span class="linka-navbar-badge">1</span>
+
+        </a>
+
+        <a href="/User/MyOrder/MyOrderList"
+           class="linka-navbar-action-link"
+           title="Orders">
+
+            <i class="mdi mdi-cart-outline"></i>
+            <span class="linka-navbar-badge">2</span>
+
+        </a>
+
+        <div class="dropdown">
+
+            <button class="linka-navbar-profile-button dropdown-toggle"
+                    type="button"
+                    id="userProfileDropdown"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+
+                <span class="linka-navbar-avatar">
+                    @Model.Initials
+                </span>
+
+                <span class="linka-navbar-profile-text">
+
+                    <span class="linka-navbar-profile-name">
+                        @Model.FullName
+                    </span>
+
+                    <span class="linka-navbar-profile-role">
+                        LINKA Member
+                    </span>
+
+                </span>
+
+            </button>
+
+            <div class="dropdown-menu dropdown-menu-right linka-navbar-dropdown"
+                 aria-labelledby="userProfileDropdown">
+
+                <a href="/User/Profile"
+                   class="dropdown-item">
+
+                    <i class="mdi mdi-account-outline"></i>
+                    <span>My Profile</span>
+
                 </a>
-                <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                    <a class="dropdown-item">
-                        <i class="mdi mdi-settings text-primary"></i>
-                        Settings
-                    </a>
-                    <a class="dropdown-item">
-                        <i class="mdi mdi-logout text-primary"></i>
-                        Logout
-                    </a>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link icon-link">
-                    <i class="mdi mdi-plus-circle-outline"></i>
+
+                <a href="/User/Profile/ChangePassword"
+                   class="dropdown-item">
+
+                    <i class="mdi mdi-lock-outline"></i>
+                    <span>Change Password</span>
+
                 </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link icon-link">
-                    <i class="mdi mdi-web"></i>
+
+                <a href="/User/MyOrder/MyOrderList"
+                   class="dropdown-item">
+
+                    <i class="mdi mdi-shopping-outline"></i>
+                    <span>My Orders</span>
+
                 </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link icon-link">
-                    <i class="mdi mdi-clock-outline"></i>
-                </a>
-            </li>
-        </ul>
+
+                <div class="dropdown-divider"></div>
+
+                <form asp-area=""
+                      asp-controller="Login"
+                      asp-action="LogOut"
+                      method="post"
+                      class="m-0">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit"
+                            class="dropdown-item border-0 bg-transparent">
+
+                        <i class="mdi mdi-logout"></i>
+                        <span>Log Out</span>
+
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
     </div>
+
 </nav>

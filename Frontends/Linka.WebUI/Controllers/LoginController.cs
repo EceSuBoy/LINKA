@@ -3,6 +3,7 @@ using Linka.WebUI.Models;
 using Linka.WebUI.Services;
 using Linka.WebUI.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
@@ -35,7 +36,17 @@ namespace Linka.WebUI.Controllers
         {
 
             await _identityService.SignIn(signInDto);
-            return RedirectToAction("Index", "User");
+            return RedirectToAction("Index", "Default");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogOut()
+        {
+            await HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return RedirectToAction("Index", "Default");
         }
     }
 }

@@ -1,0 +1,166 @@
+﻿@model Linka.WebUI.Models.HeaderUserViewModel
+
+<style>
+    .header-account-login {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        min-width: 135px;
+        padding: 10px 14px;
+        border: 1px solid #e1e5eb;
+        border-radius: 8px;
+        color: #3d464d;
+        background-color: #ffffff;
+        font-size: 15px;
+        font-weight: 600;
+        text-decoration: none !important;
+        transition: 0.2s ease;
+    }
+
+        .header-account-login:hover {
+            border-color: #ffd333;
+            color: #3d464d;
+            background-color: #fff9e6;
+        }
+
+    .header-account-button {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        min-width: 155px;
+        padding: 9px 12px;
+        border: 1px solid #e1e5eb;
+        border-radius: 8px;
+        color: #3d464d;
+        background-color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: left;
+    }
+
+        .header-account-button:hover,
+        .header-account-button:focus {
+            border-color: #ffd333;
+            color: #3d464d;
+            background-color: #fff9e6;
+            box-shadow: none;
+        }
+
+    .header-account-icon {
+        color: #f0b800;
+        font-size: 18px;
+    }
+
+    .header-account-menu {
+        min-width: 215px;
+        margin-top: 8px;
+        padding: 7px 0;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14);
+    }
+
+        .header-account-menu .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            color: #3d464d;
+            font-size: 14px;
+        }
+
+            .header-account-menu .dropdown-item:hover {
+                color: #3d464d;
+                background-color: #fff6d6;
+            }
+
+            .header-account-menu .dropdown-item i {
+                width: 16px;
+                color: #f0b800;
+                text-align: center;
+            }
+</style>
+
+@if (!Model.IsAuthenticated)
+{
+    <a asp-area=""
+       asp-controller="Login"
+       asp-action="Index"
+       class="header-account-login">
+
+        <i class="fa fa-user header-account-icon"></i>
+
+        <span>Sign In</span>
+    </a>
+}
+else
+{
+    <div class="dropdown">
+
+        <button class="btn header-account-button dropdown-toggle"
+                type="button"
+                id="headerAccountDropdown"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+
+            <i class="fa fa-user-circle header-account-icon"></i>
+
+            <span>@Model.FullName</span>
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-right header-account-menu"
+             aria-labelledby="headerAccountDropdown">
+
+            <a asp-area="User"
+               asp-controller="Profile"
+               asp-action="Index"
+               class="dropdown-item">
+
+                <i class="fa fa-user"></i>
+                <span>My Panel</span>
+            </a>
+
+            <a asp-area="User"
+               asp-controller="Profile"
+               asp-action="ChangePassword"
+               class="dropdown-item">
+
+                <i class="fa fa-cog"></i>
+                <span>Settings</span>
+            </a>
+
+            @if (Model.CanAccessAdminPanel)
+            {
+                <a asp-area="Admin"
+                   asp-controller="Product"
+                   asp-action="ProductListWithCategory"
+                   class="dropdown-item">
+
+                    <i class="fa fa-dashboard"></i>
+                    <span>Admin Panel</span>
+                </a>
+            }
+
+            <div class="dropdown-divider"></div>
+
+            <form asp-area=""
+                  asp-controller="Login"
+                  asp-action="LogOut"
+                  method="post"
+                  class="m-0">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit"
+                        class="dropdown-item border-0 bg-transparent">
+
+                    <i class="fa fa-sign-out"></i>
+                    <span>Log Out</span>
+
+                </button>
+            </form>
+
+        </div>
+    </div>
+}

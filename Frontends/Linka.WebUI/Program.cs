@@ -33,27 +33,36 @@ using Microsoft.AspNetCore.Mvc.Razor;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddCookie(JwtBearerDefaults.AuthenticationScheme, opt =>
-{
-   opt.Cookie.Name = "LinkaJwt";
-    opt.LoginPath = "/Login/Index";
-    opt.LogoutPath = "/Login/LogOut";
-    opt.AccessDeniedPath= "/Pages/AccessDenied";
-    opt.Cookie.HttpOnly = true;
-    opt.Cookie.SameSite = SameSiteMode.Strict;
-    opt.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddCookie(JwtBearerDefaults.AuthenticationScheme, opt =>
+//{
+//   opt.Cookie.Name = "LinkaJwt";
+//    opt.LoginPath = "/Login/Index";
+//    opt.LogoutPath = "/Login/LogOut";
+//    opt.AccessDeniedPath= "/Pages/AccessDenied";
+//    opt.Cookie.HttpOnly = true;
+//    opt.Cookie.SameSite = SameSiteMode.Strict;
+//    opt.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 
-    //opt.ExpireTimeSpan = TimeSpan.FromDays(7);
-});
+//    //opt.ExpireTimeSpan = TimeSpan.FromDays(7);
+//});
 
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+    {
+        options.Cookie.Name = "LinkaCookie";
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt =>
-{
-    opt.LoginPath = "/Login/Index";
-    opt.ExpireTimeSpan = TimeSpan.FromDays(5);
-    opt.Cookie.Name = "LinkaCookie";
-    opt.SlidingExpiration = true;
-});
+        options.LoginPath = "/Login/Index";
+        options.LogoutPath = "/Login/LogOut";
+        options.AccessDeniedPath = "/Pages/AccessDenied";
+
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+
+        options.ExpireTimeSpan = TimeSpan.FromDays(5);
+        options.SlidingExpiration = true;
+    });
 
 builder.Services.AddAccessTokenManagement();
 
@@ -241,15 +250,11 @@ var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(sup
 app.UseRequestLocalization(localizationOptions);
 
 app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(
-      name: "areas",
-      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-    );
-});
 
 app.Run();
