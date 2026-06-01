@@ -1,0 +1,6 @@
+@Linka.RabbitMQMessageApi_HostAddress = http://localhost:5176
+
+GET {{Linka.RabbitMQMessageApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
