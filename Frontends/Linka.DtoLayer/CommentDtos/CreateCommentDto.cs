@@ -9,6 +9,7 @@ namespace Linka.DtoLayer.CommentDtos
     public class CreateCommentDto
     {
         public string NameSurname { get; set; }
+        public string? UserId { get; set; }
         public string? ImageUrl { get; set; }
         public string Email { get; set; }
         public string CommentDetail { get; set; }

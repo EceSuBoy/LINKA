@@ -56,19 +56,40 @@ namespace Linka.Comment.Controllers
         [HttpPut]
         public IActionResult UpdateComment(UserComment userComment)
         {
-            _context.UserComments.Update(userComment);
+            var existingComment = _context.UserComments
+                .Find(userComment.UserCommentId);
+
+            if (existingComment == null)
+            {
+                return NotFound("Comment not found.");
+            }
+
+            existingComment.NameSurname = userComment.NameSurname;
+            existingComment.ImageUrl = userComment.ImageUrl;
+            existingComment.Email = userComment.Email;
+            existingComment.CommentDetail = userComment.CommentDetail;
+            existingComment.Rating = userComment.Rating;
+            existingComment.CreatedDate = userComment.CreatedDate;
+            existingComment.Status = userComment.Status;
+            existingComment.ProductId = userComment.ProductId;
+
+            if (!string.IsNullOrWhiteSpace(userComment.UserId))
+            {
+                existingComment.UserId = userComment.UserId;
+            }
+
             _context.SaveChanges();
+
             return Ok("Comment updated successfully.");
         }
         [HttpGet("CommentListByProductId/{id}")]
         public IActionResult CommentListByProductId(string id)
         {
-            var value = _context.UserComments.Where(x => x.ProductId == id).ToList();
-            if (value == null)
-            {
-                return NotFound("No comments found for the specified product.");
-            }
-            return Ok(value);
+            var values = _context.UserComments
+        .Where(x => x.ProductId == id)
+        .ToList();
+
+            return Ok(values);
         }
 
         [HttpGet("GetActiveCommentCount")]

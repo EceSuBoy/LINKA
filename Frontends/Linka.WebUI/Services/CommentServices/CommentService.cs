@@ -22,7 +22,20 @@ namespace Linka.WebUI.Services.CommentServices
 
         public async Task CreateCommentAsync(CreateCommentDto createCommentDto)
         {
-            await _httpClient.PostAsJsonAsync<CreateCommentDto>("Comments", createCommentDto);
+            var responseMessage =
+        await _httpClient.PostAsJsonAsync(
+            "Comments",
+            createCommentDto);
+
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                var content =
+                    await responseMessage.Content.ReadAsStringAsync();
+
+                throw new Exception(
+                    $"Comment creation failed: " +
+                    $"{responseMessage.StatusCode} - {content}");
+            }
         }
 
         public async Task DeleteCommentAsync(string id)

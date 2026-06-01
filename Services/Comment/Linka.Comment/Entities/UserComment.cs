@@ -3,6 +3,9 @@
     public class UserComment
     {
         public int UserCommentId { get; set; }
+
+        public string? UserId { get; set; }
+
         public string NameSurname { get; set; }
         public string? ImageUrl { get; set; }
         public string Email { get; set; }
