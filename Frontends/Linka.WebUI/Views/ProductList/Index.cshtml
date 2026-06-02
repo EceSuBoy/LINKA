@@ -10,11 +10,20 @@
         
         <div class="col-lg-3 col-md-4">
 
-            @await Component.InvokeAsync("_ProductListPriceFilterComponentPartial")
+            @await Component.InvokeAsync(
+            "_ProductListPriceFilterComponentPartial",
+                        new
+                        {
+                            id = ViewBag.i,
+                            minPrice = ViewBag.MinPrice,
+                            maxPrice = ViewBag.MaxPrice,
+                            sort = ViewBag.Sort,
+                            pageSize = ViewBag.PageSize
+                        })
 
-            @await Component.InvokeAsync("_ProductListColorFilterComponentPartial")
+            @* @await Component.InvokeAsync("_ProductListColorFilterComponentPartial")
             
-            @await Component.InvokeAsync("_ProductListSizeFilterComponentPartial")
+            @await Component.InvokeAsync("_ProductListSizeFilterComponentPartial") *@
             
             
         </div>
@@ -22,11 +31,40 @@
         <div class="col-lg-9 col-md-8">
             <div class="row pb-3">
 
-                @await Component.InvokeAsync("_ProductListGetProductCountComponentPartial")
+                @await Component.InvokeAsync(
+                                "_ProductListGetProductCountComponentPartial",
+                                new
+                                {
+                                    id = ViewBag.i,
+                                    minPrice = ViewBag.MinPrice,
+                                    maxPrice = ViewBag.MaxPrice,
+                                    sort = ViewBag.Sort,
+                                    pageSize = ViewBag.PageSize
+                                })
 
-                @await Component.InvokeAsync("_ProductListComponentPartial", new {id = ViewBag.i})
+                @await Component.InvokeAsync(
+                                "_ProductListComponentPartial",
+                                new
+                                {
+                                    id = ViewBag.i,
+                                    minPrice = ViewBag.MinPrice,
+                                    maxPrice = ViewBag.MaxPrice,
+                                    sort = ViewBag.Sort,
+                                    page = ViewBag.CurrentPage,
+                                    pageSize = ViewBag.PageSize
+                                })
 
-                @await Component.InvokeAsync("_ProductListPaginationComponentPartial")
+                @await Component.InvokeAsync(
+                                "_ProductListPaginationComponentPartial",
+                                new
+                                {
+                                    id = ViewBag.i,
+                                    minPrice = ViewBag.MinPrice,
+                                    maxPrice = ViewBag.MaxPrice,
+                                    sort = ViewBag.Sort,
+                                    page = ViewBag.CurrentPage,
+                                    pageSize = ViewBag.PageSize
+                                })
                 
             </div>
         </div>

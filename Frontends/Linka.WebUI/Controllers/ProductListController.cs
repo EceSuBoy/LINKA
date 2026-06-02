@@ -19,12 +19,64 @@ namespace Linka.WebUI.Controllers
             _userService = userService;
         }
 
-        public IActionResult Index(string id)
+        public IActionResult Index(
+    string? id,
+    decimal? minPrice,
+    decimal? maxPrice,
+    string? sort = "default",
+    int page = 1,
+    int pageSize = 10)
         {
             ViewBag.directory1 = "Home Page";
             ViewBag.directory2 = "Products";
             ViewBag.directory3 = "Product List";
-            ViewBag.i = id;
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            if (pageSize != 10 &&
+                pageSize != 20 &&
+                pageSize != 30)
+            {
+                pageSize = 10;
+            }
+
+            var allowedSortValues =
+                new[]
+                {
+            "default",
+            "popularity",
+            "best-rating",
+            "price-asc",
+            "price-desc"
+                };
+
+            if (string.IsNullOrWhiteSpace(sort) ||
+                !allowedSortValues.Contains(
+                    sort.ToLowerInvariant()))
+            {
+                sort = "default";
+            }
+
+            ViewBag.i =
+                id;
+
+            ViewBag.MinPrice =
+                minPrice;
+
+            ViewBag.MaxPrice =
+                maxPrice;
+
+            ViewBag.Sort =
+                sort;
+
+            ViewBag.CurrentPage =
+                page;
+
+            ViewBag.PageSize =
+                pageSize;
 
             return View();
         }
@@ -86,7 +138,7 @@ namespace Linka.WebUI.Controllers
             createCommentDto.ProductId = id;
 
             createCommentDto.ImageUrl =
-                "/images/userprofileavatar/avatargirl.png";
+                "/images/userprofileavatar/avatarr.png";
 
             createCommentDto.CreatedDate =
                 DateTime.Now;

@@ -1,34 +1,209 @@
-﻿@model List<ResultProductWithCategoryDto>
+﻿@using System.Globalization
+@model List<Linka.WebUI.Models.ProductListItemViewModel>
 
-<div class="col-lg-4 col-md-6 col-sm-6 pb-1">
-    @foreach (var item in Model)
-    {
-        <div class="product-item bg-light mb-4">
-            <div class="product-img position-relative overflow-hidden">
-                <img class="img-fluid w-100" src="@item.ProductImageUrl" alt="">
-                <div class="product-action">
-                    <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                    <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                    <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                    <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                </div>
-            </div>
-            <div class="text-center py-4">
-                <a class="h6 text-decoration-none text-truncate" href="">@item.ProductName</a>
-                <div class="d-flex align-items-center justify-content-center mt-2">
-                    <h5>@item.ProductPrice</h5><h6 class="text-muted ml-2"><del>0000</del></h6>
-                </div>
-                <div class="d-flex align-items-center justify-content-center mb-1">
-                    <small class="fa fa-star text-primary mr-1"></small>
-                    <small class="fa fa-star text-primary mr-1"></small>
-                    <small class="fa fa-star text-primary mr-1"></small>
-                    <small class="fa fa-star text-primary mr-1"></small>
-                    <small class="fa fa-star text-primary mr-1"></small>
-                    <small>(99)</small>
-                </div>
-            </div>
-        </div>
+@{
+    var culture = new CultureInfo("tr-TR");
+}
+
+<style>
+    .linka-list-product-card {
+        height: 430px;
+        display: flex;
+        flex-direction: column;
     }
-    
-</div>
 
+    .linka-list-product-image {
+        width: 100%;
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 15px;
+        background-color: #ffffff;
+    }
+
+        .linka-list-product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+        }
+
+    .linka-list-product-content {
+        flex: 1;
+        min-height: 170px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .linka-list-product-name {
+        display: block;
+        max-width: 90%;
+        margin: 0 auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .linka-list-price-row {
+        min-height: 35px;
+        flex-wrap: wrap;
+    }
+
+        .linka-list-price-row h5,
+        .linka-list-price-row h6 {
+            margin-bottom: 0;
+        }
+
+    .linka-list-stars {
+        min-height: 24px;
+    }
+
+    .linka-list-rating-value {
+        margin-left: 5px;
+        color: #6c757d;
+        font-size: 12px;
+    }
+
+    .linka-list-discount-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 2;
+        padding: 7px 9px;
+        border-radius: 4px;
+        color: #ffffff;
+        background-color: #dc3545;
+        font-size: 12px;
+        font-weight: 700;
+    }
+</style>
+
+@foreach (var item in Model)
+{
+    var roundedRating =
+        Math.Round(
+            item.AverageRating * 2,
+            MidpointRounding.AwayFromZero) / 2;
+
+    <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+
+        <div class="product-item bg-light mb-4 linka-list-product-card">
+
+            <div class="product-img position-relative overflow-hidden linka-list-product-image">
+
+                <img src="@item.ProductImageUrl"
+                     alt="@item.ProductName" />
+
+                @if (item.HasDiscount)
+                {
+                    <span class="linka-list-discount-badge">
+                        -%@item.DiscountRate.ToString("0.##")
+                    </span>
+                }
+
+                <div class="product-action">
+
+                    <a class="btn btn-outline-dark btn-square"
+                       href="/ShoppingCart/AddBasketItem/@item.ProductId">
+
+                        <i class="fa fa-shopping-cart"></i>
+
+                    </a>
+
+                    <a class="btn btn-outline-dark btn-square"
+                       href="">
+
+                        <i class="far fa-heart"></i>
+
+                    </a>
+
+                    <a class="btn btn-outline-dark btn-square"
+                       href="">
+
+                        <i class="fa fa-sync-alt"></i>
+
+                    </a>
+
+                    <a class="btn btn-outline-dark btn-square"
+                       href="/ProductList/ProductDetail/@item.ProductId">
+
+                        <i class="fa fa-search"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="text-center py-4 linka-list-product-content">
+
+                <a class="h6 text-decoration-none text-truncate linka-list-product-name"
+                   href="/ProductList/ProductDetail/@item.ProductId">
+
+                    @item.ProductName
+
+                </a>
+
+                <div class="d-flex align-items-center justify-content-center mt-2 linka-list-price-row">
+
+                    @if (item.HasDiscount)
+                    {
+                        <h5>
+                            @item.DiscountedPrice.ToString("N2", culture) ₺
+                        </h5>
+
+                        <h6 class="text-muted ml-2">
+                            <del>
+                                @item.ProductPrice.ToString("N2", culture) ₺
+                            </del>
+                        </h6>
+                    }
+                    else
+                    {
+                        <h5>
+                            @item.ProductPrice.ToString("N2", culture) ₺
+                        </h5>
+                    }
+
+                </div>
+
+                <div class="d-flex align-items-center justify-content-center mb-1 linka-list-stars">
+
+                    @for (int star = 1; star <= 5; star++)
+                    {
+                        if (roundedRating >= star)
+                        {
+                            <small class="fas fa-star text-primary mr-1"></small>
+                        }
+                        else if (roundedRating >= star - 0.5)
+                        {
+                            <small class="fas fa-star-half-alt text-primary mr-1"></small>
+                        }
+                        else
+                        {
+                            <small class="far fa-star text-primary mr-1"></small>
+                        }
+                    }
+
+                    <small>
+                        (@item.CommentCount)
+                    </small>
+
+                    @if (item.CommentCount > 0)
+                    {
+                        <small class="linka-list-rating-value">
+                            @item.AverageRating.ToString("0.0")
+                        </small>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+}

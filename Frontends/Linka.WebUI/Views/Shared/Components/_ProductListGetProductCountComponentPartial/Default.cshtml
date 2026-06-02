@@ -1,26 +1,170 @@
-﻿<div class="col-12 pb-1">
+﻿@model Linka.WebUI.Models.ProductListToolbarViewModel
+
+@{
+    var sortLabel =
+        Model.Sort switch
+        {
+            "popularity" =>
+                "Popularity",
+
+            "best-rating" =>
+                "Best Rating",
+
+            "price-asc" =>
+                "Price: Low to High",
+
+            "price-desc" =>
+                "Price: High to Low",
+
+            _ =>
+                "Default"
+        };
+}
+
+<div class="col-12 pb-1">
+
     <div class="d-flex align-items-center justify-content-between mb-4">
-        <div>
-            <button class="btn btn-sm btn-light"><i class="fa fa-th-large"></i></button>
-            <button class="btn btn-sm btn-light ml-2"><i class="fa fa-bars"></i></button>
+
+        <div class="d-flex align-items-center">
+
+            <button class="btn btn-sm btn-light active">
+                <i class="fa fa-th-large"></i>
+            </button>
+
+            <span class="ml-3 text-muted">
+                @Model.TotalProductCount
+                @(Model.TotalProductCount == 1
+                                ? "Product"
+                                : "Products")
+            </span>
+
         </div>
-        <div class="ml-2">
+
+        <div class="d-flex align-items-center">
+
+            <div class="btn-group mr-2">
+
+                <button type="button"
+                        class="btn btn-sm btn-light dropdown-toggle"
+                        data-toggle="dropdown">
+
+                    Sorting:
+                    @sortLabel
+
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right">
+
+                    <a asp-controller="ProductList"
+                       asp-action="Index"
+                       asp-route-id="@Model.CategoryId"
+                       asp-route-minPrice="@Model.MinPrice"
+                       asp-route-maxPrice="@Model.MaxPrice"
+                       asp-route-sort="default"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-page="1"
+                       class="dropdown-item">
+
+                        Default
+
+                    </a>
+
+                    <a asp-controller="ProductList"
+                       asp-action="Index"
+                       asp-route-id="@Model.CategoryId"
+                       asp-route-minPrice="@Model.MinPrice"
+                       asp-route-maxPrice="@Model.MaxPrice"
+                       asp-route-sort="popularity"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-page="1"
+                       class="dropdown-item">
+
+                        Popularity
+
+                    </a>
+
+                    <a asp-controller="ProductList"
+                       asp-action="Index"
+                       asp-route-id="@Model.CategoryId"
+                       asp-route-minPrice="@Model.MinPrice"
+                       asp-route-maxPrice="@Model.MaxPrice"
+                       asp-route-sort="best-rating"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-page="1"
+                       class="dropdown-item">
+
+                        Best Rating
+
+                    </a>
+
+                    <a asp-controller="ProductList"
+                       asp-action="Index"
+                       asp-route-id="@Model.CategoryId"
+                       asp-route-minPrice="@Model.MinPrice"
+                       asp-route-maxPrice="@Model.MaxPrice"
+                       asp-route-sort="price-asc"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-page="1"
+                       class="dropdown-item">
+
+                        Price: Low to High
+
+                    </a>
+
+                    <a asp-controller="ProductList"
+                       asp-action="Index"
+                       asp-route-id="@Model.CategoryId"
+                       asp-route-minPrice="@Model.MinPrice"
+                       asp-route-maxPrice="@Model.MaxPrice"
+                       asp-route-sort="price-desc"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-page="1"
+                       class="dropdown-item">
+
+                        Price: High to Low
+
+                    </a>
+
+                </div>
+
+            </div>
+
             <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Sorting</button>
+
+                <button type="button"
+                        class="btn btn-sm btn-light dropdown-toggle"
+                        data-toggle="dropdown">
+
+                    Show:
+                    @Model.PageSize
+
+                </button>
+
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#">Latest</a>
-                    <a class="dropdown-item" href="#">Popularity</a>
-                    <a class="dropdown-item" href="#">Best Rating</a>
+
+                    @foreach (var size in new[] { 10, 20, 30 })
+                    {
+                        <a asp-controller="ProductList"
+                           asp-action="Index"
+                           asp-route-id="@Model.CategoryId"
+                           asp-route-minPrice="@Model.MinPrice"
+                           asp-route-maxPrice="@Model.MaxPrice"
+                           asp-route-sort="@Model.Sort"
+                           asp-route-pageSize="@size"
+                           asp-route-page="1"
+                           class="dropdown-item">
+
+                            @size
+
+                        </a>
+                    }
+
                 </div>
+
             </div>
-            <div class="btn-group ml-2">
-                <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">Show</button>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#">10</a>
-                    <a class="dropdown-item" href="#">20</a>
-                    <a class="dropdown-item" href="#">30</a>
-                </div>
-            </div>
+
         </div>
+
     </div>
+
 </div>
