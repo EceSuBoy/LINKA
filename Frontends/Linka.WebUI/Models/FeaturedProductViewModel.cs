@@ -2,6 +2,18 @@
 {
     public class FeaturedProductViewModel
     {
+
+        public decimal DiscountRate { get; set; }
+
+        public bool HasDiscount =>
+            DiscountRate > 0 &&
+            DiscountRate <= 100;
+
+        public decimal DiscountedPrice =>
+            HasDiscount
+                ? ProductPrice -
+                  (ProductPrice * DiscountRate / 100m)
+                : ProductPrice;
         public string ProductId { get; set; } = string.Empty;
 
         public string ProductName { get; set; } = string.Empty;

@@ -79,14 +79,6 @@
 
         @foreach (var item in Model)
         {
-            /*
-            * Ortalama puanı en yakın yarım yıldıza yuvarlıyoruz.
-            *
-            * Örnek:
-            * 4.1 → 4
-            * 4.4 → 4.5
-            * 4.8 → 5
-            */
             var roundedRating =
             Math.Round(
             item.AverageRating * 2,
@@ -100,6 +92,14 @@
 
                         <img src="@item.ProductImageUrl"
                              alt="@item.ProductName" />
+
+                        @if (item.HasDiscount)
+                        {
+                            <span class="badge badge-danger position-absolute"
+                                  style="top:12px; left:12px; padding:7px 9px; font-size:12px;">
+                                -%@item.DiscountRate.ToString("0.##")
+                            </span>
+                        }
 
                         <div class="product-action">
 
@@ -143,16 +143,26 @@
                             @item.ProductName
 
                         </a>
-
-                        <!--
-                            Şimdilik yalnızca gerçek ürün fiyatını gösteriyoruz.
-                            Sahte indirim fiyatı kaldırıldı.
-                        -->
                         <div class="d-flex align-items-center justify-content-center mt-2 product-price-row">
 
-                            <h5>
-                                @item.ProductPrice.ToString("N2", culture) ₺
-                            </h5>
+                            @if (item.HasDiscount)
+                            {
+                                <h5>
+                                    @item.DiscountedPrice.ToString("N2", culture) ₺
+                                </h5>
+
+                                <h6 class="text-muted ml-2">
+                                    <del>
+                                        @item.ProductPrice.ToString("N2", culture) ₺
+                                    </del>
+                                </h6>
+                            }
+                            else
+                            {
+                                <h5>
+                                    @item.ProductPrice.ToString("N2", culture) ₺
+                                </h5>
+                            }
 
                         </div>
 
@@ -162,23 +172,14 @@
                             {
                                 if (roundedRating >= star)
                                 {
-                                    /*
-                                    * Tam yıldız.
-                                    */
                                     <small class="fas fa-star text-primary mr-1"></small>
                                 }
                                 else if (roundedRating >= star - 0.5)
                                 {
-                                    /*
-                                    * Yarım yıldız.
-                                    */
                                     <small class="fas fa-star-half-alt text-primary mr-1"></small>
                                 }
                                 else
                                 {
-                                    /*
-                                    * Boş yıldız.
-                                    */
                                     <small class="far fa-star text-primary mr-1"></small>
                                 }
                             }

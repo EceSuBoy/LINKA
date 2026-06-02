@@ -21,25 +21,14 @@ namespace Linka.WebUI.ViewComponents.DefaultViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            /*
-             * Ürünleri Catalog mikroservisinden getiriyoruz.
-             */
             var products =
                 await _productService
                     .GetAllProductAsync();
 
-            /*
-             * Bütün ürün yorum istatistiklerini Comment
-             * mikroservisinden tek HTTP isteğiyle alıyoruz.
-             */
             var commentStatistics =
                 await _commentService
                     .GetAllProductCommentStatisticsAsync();
 
-            /*
-             * Her ürün için tekrar tekrar liste içinde arama
-             * yapmamak için ProductId üzerinden dictionary oluşturuyoruz.
-             */
             var statisticsByProductId =
                 commentStatistics.ToDictionary(
                     x => x.ProductId,
@@ -60,6 +49,9 @@ namespace Linka.WebUI.ViewComponents.DefaultViewComponents
                         ProductName =
                             product.ProductName,
 
+                        DiscountRate =
+                            product.DiscountRate,
+
                         ProductPrice =
                             product.ProductPrice,
 
@@ -72,10 +64,6 @@ namespace Linka.WebUI.ViewComponents.DefaultViewComponents
                         CategoryId =
                             product.CategoryId,
 
-                        /*
-                         * Ürün hakkında hiç yorum yoksa
-                         * varsayılan olarak 0 kullanıyoruz.
-                         */
                         CommentCount =
                             statistic?.CommentCount ?? 0,
 

@@ -41,6 +41,21 @@
                                asp-for="ProductPrice" />
                         <br />
 
+                        <label>Product Discount Rate (%)</label>
+
+                        <input type="number"
+                               class="form-control"
+                               asp-for="DiscountRate"
+                               min="0"
+                               max="100"
+                               step="0.01" />
+
+                        <span asp-validation-for="DiscountRate"
+                              class="text-danger">
+                        </span>
+
+                        <br />
+
                         <label>Product Image</label>
                         <input type="text"
                                class="form-control"
