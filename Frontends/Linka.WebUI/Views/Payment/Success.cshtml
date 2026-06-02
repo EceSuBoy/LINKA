@@ -1,0 +1,107 @@
+﻿@{
+    ViewData["Title"] = "Order Completed";
+    Layout = "~/Views/UILayout/_UILayout.cshtml";
+}
+
+<style>
+    .linka-success-page {
+        padding: 60px 20px 80px;
+    }
+
+    .linka-success-card {
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 42px 30px;
+        border: 1px solid #edf0f4;
+        border-radius: 12px;
+        background-color: #ffffff;
+        box-shadow: 0 12px 30px rgba(33, 48, 77, 0.08);
+        text-align: center;
+    }
+
+    .linka-success-icon {
+        display: flex;
+        width: 82px;
+        height: 82px;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 21px;
+        border-radius: 50%;
+        background-color: #e8f7ed;
+        color: #218739;
+        font-size: 36px;
+    }
+
+    .linka-success-title {
+        margin-bottom: 10px;
+        color: #2f3a4a;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .linka-success-text {
+        max-width: 510px;
+        margin: 0 auto 18px;
+        color: #7c8798;
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .linka-success-order-number {
+        display: inline-block;
+        margin-bottom: 24px;
+        padding: 9px 14px;
+        border-radius: 6px;
+        background-color: #fffbed;
+        color: #7d6814;
+        font-size: 14px;
+        font-weight: 800;
+    }
+</style>
+
+<div class="container-fluid linka-success-page">
+
+    <div class="linka-success-card">
+
+        <div class="linka-success-icon">
+            <i class="fa fa-check"></i>
+        </div>
+
+        <h2 class="linka-success-title">
+            Payment Completed Successfully
+        </h2>
+
+        <p class="linka-success-text">
+            Your simulated payment has been completed.
+            Your basket has been cleared and your order request has been received.
+        </p>
+
+        <div class="linka-success-order-number">
+            Order Number:
+            @ViewBag.OrderNumber
+        </div>
+
+        <div>
+
+            <a asp-controller="Default"
+               asp-action="Index"
+               class="btn btn-primary px-4 py-2 mr-2">
+
+                Continue Shopping
+
+            </a>
+
+            <a asp-area="User"
+               asp-controller="Profile"
+               asp-action="Index"
+               class="btn btn-outline-dark px-4 py-2">
+
+                Go To My Panel
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

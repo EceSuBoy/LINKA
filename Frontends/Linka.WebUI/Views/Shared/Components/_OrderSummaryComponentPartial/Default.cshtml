@@ -1,86 +1,261 @@
-﻿@model List<BasketItemDto>
+﻿@using System.Globalization
+@model Linka.WebUI.Models.OrderSummaryViewModel
 
-<div class="bg-light p-30 mb-5">
+@{
+    var culture =
+        new CultureInfo("tr-TR");
+}
 
-    <div class="border-bottom table-responsive">
+<style>
+    .order-summary-card {
+        border: 1px solid #edf0f4;
+        border-radius: 8px;
+        background-color: #ffffff;
+        box-shadow: 0 7px 22px rgba(33, 48, 77, 0.06);
+        overflow: hidden;
+    }
 
-        <h6 class="mb-3">Order Summary</h6>
+    .order-summary-header {
+        padding: 18px 20px;
+        border-bottom: 1px solid #edf0f4;
+        background-color: #ffffff;
+    }
 
-        <table class="table mb-0">
+        .order-summary-header h6 {
+            margin-bottom: 0;
+            font-size: 17px;
+            font-weight: 700;
+            color: #2f3a4a;
+        }
 
-            <thead>
-                <tr>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Quantity</th>
-                    <th class="text-right" scope="col">Total</th>
-                </tr>
-            </thead>
+    .order-summary-product {
+        display: flex;
+        gap: 10px;
+        padding: 14px 20px;
+        border-bottom: 1px solid #edf0f4;
+    }
 
-            <tbody>
+    .order-summary-product-img {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+        padding: 4px;
+        border: 1px solid #edf0f4;
+        border-radius: 6px;
+        background-color: #ffffff;
+        object-fit: contain;
+    }
 
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.ProductName</td>
-                        <td>@item.Price ₺</td>
-                        <td class="text-center">@item.Quantity</td>
-                        <td class="text-right">
-                            @(item.Price* item.Quantity) ₺
-                        </td>
-                    </tr>
-                }
+    .order-summary-product-info {
+        flex: 1;
+        min-width: 0;
+    }
 
-            </tbody>
+    .order-summary-product-name {
+        display: block;
+        margin-bottom: 3px;
+        overflow: hidden;
+        color: #2f3a4a;
+        font-size: 14px;
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 
-        </table>
+    .order-summary-product-meta {
+        color: #7c8798;
+        font-size: 12px;
+    }
 
+    .order-summary-product-total {
+        color: #2f3a4a;
+        font-size: 14px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .order-summary-breakdown {
+        padding: 18px 20px 8px;
+    }
+
+    .order-summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 11px;
+        color: #5c6675;
+        font-size: 14px;
+    }
+
+        .order-summary-row strong {
+            color: #2f3a4a;
+            font-weight: 600;
+        }
+
+    .order-summary-discount {
+        color: #24a148 !important;
+    }
+
+    .order-summary-grand-total {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 17px 20px;
+        border-top: 1px solid #edf0f4;
+        background-color: #f9fafc;
+        color: #2f3a4a;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .order-summary-coupon {
+        display: inline-block;
+        margin-top: 2px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        background-color: #e8f7ed;
+        color: #218739;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .order-summary-empty {
+        padding: 22px 20px;
+        color: #7c8798;
+        font-size: 14px;
+        text-align: center;
+    }
+</style>
+
+<div class="order-summary-card">
+
+    <div class="order-summary-header">
+        <h6>
+            <i class="fa fa-shopping-bag mr-2 text-primary"></i>
+            Your Order
+        </h6>
     </div>
 
-    <table class="table table-borderless mb-2">
+    @if (Model.BasketItems.Any())
+    {
+        @foreach (var item in Model.BasketItems)
+        {
+            var lineTotal =
+            item.Price *
+            item.Quantity;
 
-        <tbody>
+            <div class="order-summary-product">
 
-            <tr>
-                <td>
-                    <h6>Subtotal</h6>
-                </td>
+                <img src="@item.ProductImageUrl"
+                     alt="@item.ProductName"
+                     class="order-summary-product-img" />
 
-                <td class="text-right">
-                    <h6>100 ₺</h6>
-                </td>
-            </tr>
+                <div class="order-summary-product-info">
 
-            <tr>
-                <td>
-                    <h6>Shipping</h6>
-                </td>
+                    <span class="order-summary-product-name">
+                        @item.ProductName
+                    </span>
 
-                <td class="text-right">
-                    <h6>50 ₺</h6>
-                </td>
-            </tr>
+                    <span class="order-summary-product-meta">
+                        @item.Price.ToString("N2", culture) ₺
+                        ×
+                        @item.Quantity
+                    </span>
 
-        </tbody>
+                </div>
 
-    </table>
+                <span class="order-summary-product-total">
+                    @lineTotal.ToString("N2", culture) ₺
+                </span>
 
-    <table class="table table-borderless">
+            </div>
+        }
 
-        <tbody>
+        <div class="order-summary-breakdown">
 
-            <tr>
-                <th>
-                    <h5>Grand Total</h5>
-                </th>
+            <div class="order-summary-row">
+                <span>Subtotal</span>
+                <strong>
+                    @Model.SubTotal.ToString("N2", culture) ₺
+                </strong>
+            </div>
 
-                <th class="text-right">
-                    <h5>150 ₺</h5>
-                </th>
-            </tr>
+            @if (Model.HasDiscount)
+            {
+                <div class="order-summary-row">
 
-        </tbody>
+                    <span>
+                        Coupon Discount
+                        <span class="order-summary-coupon">
+                            @Model.DiscountCode
+                        </span>
+                    </span>
 
-    </table>
+                    <strong class="order-summary-discount">
+                        -@Model.DiscountAmount.ToString("N2", culture) ₺
+                    </strong>
+
+                </div>
+
+                <div class="order-summary-row">
+                    <span>Discounted Subtotal</span>
+                    <strong>
+                        @Model.DiscountedSubTotal.ToString("N2", culture) ₺
+                    </strong>
+                </div>
+            }
+
+            <div class="order-summary-row">
+
+                <span>
+                    VAT
+                    (%@Model.VatRate.ToString("0"))
+                </span>
+
+                <strong>
+                    @Model.VatAmount.ToString("N2", culture) ₺
+                </strong>
+
+            </div>
+
+            <div class="order-summary-row">
+
+                <span>Shipping</span>
+
+                @if (Model.HasFreeShipping)
+                {
+                    <strong class="order-summary-discount">
+                        Free
+                    </strong>
+                }
+                else
+                {
+                    <strong>
+                        @Model.ShippingFee.ToString("N2", culture) ₺
+                    </strong>
+                }
+
+            </div>
+
+        </div>
+
+        <div class="order-summary-grand-total">
+
+            <span>
+                Grand Total
+            </span>
+
+            <span>
+                @Model.GrandTotal.ToString("N2", culture) ₺
+            </span>
+
+        </div>
+    }
+    else
+    {
+        <div class="order-summary-empty">
+            Your cart is empty.
+        </div>
+    }
 
 </div>

@@ -17,5 +17,8 @@ namespace Linka.WebUI.Services.CommentServices
         Task<List<ProductCommentStatisticDto>>
     GetAllProductCommentStatisticsAsync();
 
+        Task<ProductCommentStatisticDto>
+    GetProductCommentStatisticsAsync(string productId);
+
     }
 }

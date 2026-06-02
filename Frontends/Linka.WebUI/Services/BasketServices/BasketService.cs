@@ -11,23 +11,58 @@ namespace Linka.WebUI.Services.BasketServices
             _httpClient = httpClient;
         }
 
-        public async Task AddBasketItem(BasketItemDto basketItemDto)
+        public async Task AddBasketItem(
+    BasketItemDto basketItemDto)
         {
-            var values = await GetBasket() ?? new BasketTotalDto();
-            values.BasketItems ??= new List<BasketItemDto>();
+            var basket =
+                await GetBasket();
 
-            var existing = values.BasketItems.FirstOrDefault(x => x.ProductId == basketItemDto.ProductId);
-            if (existing == null)
-                values.BasketItems.Add(basketItemDto);
+            /*
+             * Kullanıcı daha önce sepete hiçbir ürün eklemediyse
+             * Redis içinde henüz kayıt bulunmayabilir.
+             */
+            basket ??=
+                new BasketTotalDto
+                {
+                    BasketItems =
+                        new List<BasketItemDto>()
+                };
+
+            basket.BasketItems ??=
+                new List<BasketItemDto>();
+
+            var existingItem =
+                basket.BasketItems
+                    .FirstOrDefault(x =>
+                        x.ProductId ==
+                        basketItemDto.ProductId);
+
+            if (existingItem == null)
+            {
+                basket.BasketItems
+                    .Add(basketItemDto);
+            }
             else
-                existing.Quantity += basketItemDto.Quantity;
+            {
+                /*
+                 * Aynı ürün yeniden eklenirse ayrı satır oluşturmak
+                 * yerine ürün miktarını artırıyoruz.
+                 */
+                existingItem.Quantity +=
+                    basketItemDto.Quantity;
+            }
 
-            await SaveBasket(values);
+            await SaveBasket(basket);
         }
 
-        public Task DeleteBasket(string userId)
+        public async Task DeleteBasket(
+    string userId)
         {
-            throw new NotImplementedException();
+            /*
+             * Basket API kullanıcıyı token üzerinden belirliyor.
+             * Bu nedenle ayrıca userId göndermiyoruz.
+             */
+            await ClearBasket();
         }
 
         public async Task<BasketTotalDto> GetBasket()
@@ -51,12 +86,27 @@ namespace Linka.WebUI.Services.BasketServices
             return values ?? new BasketTotalDto { BasketItems = new List<BasketItemDto>() };
         }
 
-        public async Task<bool> RemoveBasketItem(string productId)
+        public async Task<bool> RemoveBasketItem(
+    string productId)
         {
-            var values = await GetBasket();
-            var deletedItem=values.BasketItems.FirstOrDefault(x=>x.ProductId == productId);
-            var result = values.BasketItems.Remove(deletedItem);
-            await SaveBasket(values);
+            var basket =
+                await GetBasket();
+
+            var deletedItem =
+                basket.BasketItems
+                    .FirstOrDefault(
+                        x => x.ProductId == productId);
+
+            if (deletedItem == null)
+            {
+                return false;
+            }
+
+            basket.BasketItems
+                .Remove(deletedItem);
+
+            await SaveBasket(basket);
+
             return true;
         }
 
@@ -68,6 +118,62 @@ namespace Linka.WebUI.Services.BasketServices
             if (!responseMessage.IsSuccessStatusCode)
             {
                 throw new Exception($"Basket save failed: {responseMessage.StatusCode} - {content}");
+            }
+        }
+
+        public async Task<bool> UpdateBasketItemQuantity(
+    string productId,
+    int quantity)
+        {
+            var basket =
+                await GetBasket();
+
+            var item =
+                basket.BasketItems
+                    .FirstOrDefault(
+                        x => x.ProductId == productId);
+
+            if (item == null)
+            {
+                return false;
+            }
+
+            /*
+             * Quantity 0 olursa ürünü sepetten tamamen kaldırıyoruz.
+             */
+            if (quantity <= 0)
+            {
+                basket.BasketItems.Remove(item);
+            }
+            else
+            {
+                /*
+                 * Aşırı yüksek miktar gönderilmesini engelliyoruz.
+                 */
+                item.Quantity =
+                    Math.Clamp(quantity, 1, 99);
+            }
+
+            await SaveBasket(basket);
+
+            return true;
+        }
+
+        public async Task ClearBasket()
+        {
+            var responseMessage =
+                await _httpClient.DeleteAsync(
+                    "baskets");
+
+            var content =
+                await responseMessage.Content
+                    .ReadAsStringAsync();
+
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                throw new Exception(
+                    $"Basket could not be cleared: " +
+                    $"{responseMessage.StatusCode} - {content}");
             }
         }
     }

@@ -1,4 +1,9 @@
-﻿@model List<BasketItemDto>
+﻿@using System.Globalization
+@model List<BasketItemDto>
+
+@{
+    var culture = new CultureInfo("tr-TR");
+}
 
 <style>
     .cart-product-img {
@@ -54,6 +59,7 @@
 </style>
 
 <div class="col-lg-8 table-responsive mb-5">
+
     <table class="table table-light table-borderless table-hover text-center mb-0">
 
         <thead class="thead-dark">
@@ -70,9 +76,13 @@
 
             @foreach (var item in Model)
             {
+                var lineTotal =
+                item.Price * item.Quantity;
+
                 <tr>
 
                     <td class="align-middle">
+
                         <div class="cart-product-wrapper">
 
                             <img src="@item.ProductImageUrl"
@@ -84,45 +94,83 @@
                             </span>
 
                         </div>
+
                     </td>
 
                     <td class="align-middle cart-price">
-                        @item.Price ₺
+
+                        @item.Price.ToString("N2", culture) ₺
+
                     </td>
 
                     <td class="align-middle">
 
-                        <div class="input-group quantity mx-auto" style="width: 120px;">
+                        <form asp-controller="ShoppingCart"
+                              asp-action="UpdateBasketItemQuantity"
+                              method="post"
+                              class="d-flex justify-content-center">
 
-                            <div class="input-group-btn">
-                                <button class="btn btn-sm btn-primary btn-minus">
-                                    <i class="fa fa-minus"></i>
-                                </button>
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@item.ProductId" />
+
+                            <div class="input-group quantity"
+                                 style="width: 120px;">
+
+                                <div class="input-group-btn">
+
+                                    <button type="submit"
+                                            name="quantity"
+                                            value="@(item.Quantity - 1)"
+                                            class="btn btn-sm btn-primary">
+
+                                        <i class="fa fa-minus"></i>
+
+                                    </button>
+
+                                </div>
+
+                                <input type="text"
+                                       class="form-control form-control-sm bg-secondary border-0 text-center"
+                                       value="@item.Quantity"
+                                       readonly />
+
+                                <div class="input-group-btn">
+
+                                    <button type="submit"
+                                            name="quantity"
+                                            value="@(item.Quantity + 1)"
+                                            class="btn btn-sm btn-primary">
+
+                                        <i class="fa fa-plus"></i>
+
+                                    </button>
+
+                                </div>
+
                             </div>
 
-                            <input type="text"
-                                   class="form-control form-control-sm bg-secondary border-0 text-center"
-                                   value="@item.Quantity">
-
-                            <div class="input-group-btn">
-                                <button class="btn btn-sm btn-primary btn-plus">
-                                    <i class="fa fa-plus"></i>
-                                </button>
-                            </div>
-
-                        </div>
+                        </form>
 
                     </td>
 
                     <td class="align-middle cart-total">
-                        @(item.Price* item.Quantity) ₺
+
+                        @lineTotal.ToString("N2", culture) ₺
+
                     </td>
 
                     <td class="align-middle">
+
                         <a href="/ShoppingCart/RemoveBasketItem/@item.ProductId"
                            class="btn btn-sm btn-danger remove-btn">
+
                             <i class="fa fa-times"></i>
+
                         </a>
+
                     </td>
 
                 </tr>
@@ -131,4 +179,5 @@
         </tbody>
 
     </table>
+
 </div>

@@ -81,14 +81,35 @@ namespace Linka.WebUI.Controllers
             return View();
         }
 
-        public IActionResult ProductDetail(string id)
+        public async Task<IActionResult> ProductDetail(string id)
         {
-            ViewBag.directory1 = "Home Page";
-            ViewBag.directory2 = "Product List";
-            ViewBag.directory3 = "Product Details";
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest(
+                    "Product ID cannot be empty.");
+            }
 
-            // AddComment partial view'ine aktarılacak ürün ID değeri
-            ViewBag.x = id;
+            ViewBag.directory1 =
+                "Home Page";
+
+            ViewBag.directory2 =
+                "Product List";
+
+            ViewBag.directory3 =
+                "Product Details";
+
+            ViewBag.x =
+                id;
+
+            var statistic =
+                await _commentService
+                    .GetProductCommentStatisticsAsync(id);
+
+            ViewBag.ReviewCount =
+                statistic.CommentCount;
+
+            ViewBag.AverageRating =
+                statistic.AverageRating;
 
             return View();
         }

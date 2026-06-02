@@ -1,31 +1,139 @@
-﻿<div class="mb-5">
-    <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Payment</span></h5>
-    <div class="bg-light p-30">
-        <div class="form-group">
-            <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" name="payment" id="paypal">
-                <label class="custom-control-label" for="paypal">Paypal</label>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" name="payment" id="directcheck">
-                <label class="custom-control-label" for="directcheck">Credit Card / Debit Card</label>
-            </div>
-        </div>
-        <div class="form-group mb-4">
-            <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
-                <label class="custom-control-label" for="banktransfer">Bank Transfer / Wire Transfer</label>
-            </div>
+﻿<style>
+    .linka-payment-card {
+        margin-top: 25px;
+        padding: 20px;
+        border: 1px solid #edf0f4;
+        border-radius: 8px;
+        background-color: #ffffff;
+        box-shadow: 0 7px 22px rgba(33, 48, 77, 0.06);
+    }
+
+    .linka-payment-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+        padding: 13px 14px;
+        border: 1px solid #edf0f4;
+        border-radius: 6px;
+        background-color: #ffffff;
+    }
+
+        .linka-payment-option.active {
+            border-color: #ffd333;
+            background-color: #fffbed;
+        }
+
+        .linka-payment-option label {
+            margin-bottom: 0;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2f3a4a;
+        }
+
+        .linka-payment-option.disabled {
+            opacity: 0.6;
+        }
+
+    .linka-payment-badge {
+        padding: 3px 7px;
+        border-radius: 4px;
+        background-color: #f1f3f6;
+        color: #7c8798;
+        font-size: 11px;
+        font-weight: 700;
+    }
+</style>
+
+<div class="linka-payment-card">
+
+    <h6 class="mb-3">
+        <i class="fa fa-credit-card mr-2 text-primary"></i>
+        Payment Method
+    </h6>
+
+    <div class="linka-payment-option active">
+
+        <div class="custom-control custom-radio">
+
+            <input type="radio"
+                   class="custom-control-input"
+                   name="paymentMethod"
+                   id="creditCard"
+                   value="CreditCard"
+                   checked
+                   required />
+
+            <label class="custom-control-label"
+                   for="creditCard">
+
+                Credit Card / Debit Card
+
+            </label>
+
         </div>
 
-        <div class="form-group">
-            <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
-                <label class="custom-control-label" for="banktransfer">Use Points</label>
-            </div>
-        </div>
-        <button class="btn btn-block btn-primary font-weight-bold py-3">Place Order</button>
+        <i class="fa fa-lock text-success"></i>
+
     </div>
+
+    <div class="linka-payment-option disabled">
+
+        <div class="custom-control custom-radio">
+
+            <input type="radio"
+                   class="custom-control-input"
+                   id="paypal"
+                   disabled />
+
+            <label class="custom-control-label"
+                   for="paypal">
+
+                PayPal
+
+            </label>
+
+        </div>
+
+        <span class="linka-payment-badge">
+            Coming Soon
+        </span>
+
+    </div>
+
+    <div class="linka-payment-option disabled">
+
+        <div class="custom-control custom-radio">
+
+            <input type="radio"
+                   class="custom-control-input"
+                   id="bankTransfer"
+                   disabled />
+
+            <label class="custom-control-label"
+                   for="bankTransfer">
+
+                Bank Transfer
+
+            </label>
+
+        </div>
+
+        <span class="linka-payment-badge">
+            Coming Soon
+        </span>
+
+    </div>
+
+    <button type="submit"
+            class="btn btn-block btn-primary font-weight-bold py-3 mt-4">
+
+        Continue To Payment
+
+        <i class="fa fa-arrow-right ml-2"></i>
+
+    </button>
+
 </div>

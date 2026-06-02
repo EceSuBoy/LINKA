@@ -111,5 +111,43 @@ namespace Linka.WebUI.Services.CommentServices
                 new List<ProductCommentStatisticDto>();
         }
 
+        public async Task<ProductCommentStatisticDto>
+    GetProductCommentStatisticsAsync(string productId)
+        {
+            if (string.IsNullOrWhiteSpace(productId))
+            {
+                throw new ArgumentException(
+                    "Product ID cannot be empty.");
+            }
+
+            var responseMessage =
+                await _httpClient.GetAsync(
+                    "Comments/GetProductCommentStatistics/" +
+                    Uri.EscapeDataString(productId));
+
+            var jsonData =
+                await responseMessage.Content
+                    .ReadAsStringAsync();
+
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                throw new Exception(
+                    $"Product comment statistics could not be loaded: " +
+                    $"{responseMessage.StatusCode} - {jsonData}");
+            }
+
+            var value =
+                JsonConvert.DeserializeObject<
+                    ProductCommentStatisticDto>(jsonData);
+
+            return value ??
+                new ProductCommentStatisticDto
+                {
+                    ProductId = productId,
+                    CommentCount = 0,
+                    AverageRating = 0
+                };
+        }
+
     }
 }

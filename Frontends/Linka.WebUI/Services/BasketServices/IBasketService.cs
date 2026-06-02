@@ -9,5 +9,11 @@ namespace Linka.WebUI.Services.BasketServices
         Task DeleteBasket(string userId);
         Task AddBasketItem(BasketItemDto basketItemDto);
         Task<bool> RemoveBasketItem(string productId);
+        Task<bool> UpdateBasketItemQuantity(
+    string productId,
+    int quantity);
+
+        Task ClearBasket();
+
     }
 }

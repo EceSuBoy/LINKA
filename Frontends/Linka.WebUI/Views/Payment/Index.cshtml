@@ -1,179 +1,550 @@
-﻿@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/UILayout/_UILayout.cshtml";
-}
+﻿@model Linka.WebUI.Models.PaymentViewModel
 
 @{
-    ViewData["Title"] = "Payment";
+    ViewData["Title"] = "Secure Payment";
     Layout = "~/Views/UILayout/_UILayout.cshtml";
+
+    var currentYear =
+        DateTime.Now.Year;
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    .linka-payment-page {
+        padding-bottom: 50px;
+    }
 
-    <link rel="stylesheet" href="~/css/style.css">
+    .linka-payment-title {
+        margin-bottom: 7px;
+        color: #2f3a4a;
+        font-size: 27px;
+        font-weight: 800;
+    }
 
-</head>
-<body>
-    <div class="credit-card">
+    .linka-payment-subtitle {
+        margin-bottom: 0;
+        color: #7c8798;
+        font-size: 14px;
+    }
 
-    <div class="container">
+    .linka-payment-form-card {
+        padding: 26px;
+        border: 1px solid #edf0f4;
+        border-radius: 9px;
+        background-color: #ffffff;
+        box-shadow: 0 7px 22px rgba(33, 48, 77, 0.06);
+    }
 
-        <div class="card-container">
+    .linka-payment-section-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 21px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid #edf0f4;
+    }
 
-            <div class="front">
-                <div class="image">
-                    <img src="~/image/chip.png" alt="">
-                    <img src="~/image/visa.png" alt="">
+    .linka-payment-section-title {
+        margin-bottom: 0;
+        color: #2f3a4a;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .linka-secure-badge {
+        padding: 5px 9px;
+        border-radius: 5px;
+        background-color: #e8f7ed;
+        color: #218739;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .linka-credit-card-preview {
+        position: relative;
+        max-width: 430px;
+        min-height: 235px;
+        margin: 0 auto 28px;
+        padding: 25px;
+        overflow: hidden;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #27364f, #111827);
+        box-shadow: 0 17px 34px rgba(20, 31, 52, 0.24);
+        color: #ffffff;
+    }
+
+        .linka-credit-card-preview::after {
+            position: absolute;
+            width: 210px;
+            height: 210px;
+            right: -78px;
+            top: -73px;
+            border-radius: 50%;
+            background-color: rgba(255, 211, 51, 0.14);
+            content: "";
+        }
+
+        .linka-credit-card-preview::before {
+            position: absolute;
+            width: 170px;
+            height: 170px;
+            right: -50px;
+            bottom: -115px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.06);
+            content: "";
+        }
+
+    .linka-credit-card-top {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .linka-credit-card-chip {
+        width: 46px;
+        height: 34px;
+        border-radius: 7px;
+        background: linear-gradient(135deg, #f1d581, #b99232);
+    }
+
+    .linka-credit-card-brand {
+        color: #ffd333;
+        font-size: 22px;
+        font-style: italic;
+        font-weight: 900;
+        letter-spacing: 1px;
+    }
+
+    .linka-credit-card-number {
+        position: relative;
+        z-index: 1;
+        margin-top: 44px;
+        color: #ffffff;
+        font-size: 23px;
+        font-weight: 700;
+        letter-spacing: 3px;
+    }
+
+    .linka-credit-card-bottom {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-top: 35px;
+    }
+
+    .linka-credit-card-label {
+        display: block;
+        margin-bottom: 4px;
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .linka-credit-card-value {
+        display: block;
+        max-width: 255px;
+        overflow: hidden;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-overflow: ellipsis;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .linka-payment-label {
+        margin-bottom: 7px;
+        color: #536071;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .linka-payment-control {
+        min-height: 45px;
+        border: 1px solid #dfe4eb;
+        border-radius: 5px;
+        background-color: #ffffff;
+    }
+
+        .linka-payment-control:focus {
+            border-color: #ffd333;
+            box-shadow: 0 0 0 0.15rem rgba(255, 211, 51, 0.16);
+        }
+
+    .linka-demo-payment-note {
+        margin-top: 18px;
+        padding: 13px 15px;
+        border-radius: 6px;
+        background-color: #fffbed;
+        color: #7d6814;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .linka-payment-submit {
+        margin-top: 19px;
+        padding: 13px;
+        font-weight: 800;
+    }
+
+    .linka-payment-validation {
+        margin-top: 5px;
+        font-size: 12px;
+    }
+</style>
+
+<div class="container-fluid linka-payment-page">
+
+    <div class="row px-xl-5 mb-4">
+
+        <div class="col-12">
+
+            <h2 class="linka-payment-title">
+                Secure Payment
+            </h2>
+
+            <p class="linka-payment-subtitle">
+                Complete the simulated payment to finish your order.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="row px-xl-5">
+
+        <div class="col-lg-8 mb-4">
+
+            <div class="linka-payment-form-card">
+
+                <div class="linka-payment-section-heading">
+
+                    <h5 class="linka-payment-section-title">
+                        <i class="fa fa-credit-card mr-2 text-primary"></i>
+                        Card Details
+                    </h5>
+
                 </div>
-                <div class="card-number-box">################</div>
-                <div class="flexbox">
-                    <div class="box">
-                        <span>card holder</span>
-                        <div class="card-holder-name">full name</div>
+
+                <div class="linka-credit-card-preview">
+
+                    <div class="linka-credit-card-top">
+
+                        <span class="linka-credit-card-chip">
+                        </span>
+
+                        <span class="linka-credit-card-brand">
+                            LINKA
+                        </span>
+
                     </div>
-                    <div class="box">
-                        <span>expires</span>
-                        <div class="expiration">
-                            <span class="exp-month">mm</span>
-                            <span class="exp-year">yy</span>
+
+                    <div class="linka-credit-card-number"
+                         id="card-number-preview">
+
+                        #### #### #### ####
+
+                    </div>
+
+                    <div class="linka-credit-card-bottom">
+
+                        <div>
+
+                            <span class="linka-credit-card-label">
+                                Card Holder
+                            </span>
+
+                            <span class="linka-credit-card-value"
+                                  id="card-holder-preview">
+
+                                FULL NAME
+
+                            </span>
+
                         </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="back">
-                <div class="stripe"></div>
-                <div class="box">
-                    <span>cvv</span>
-                    <div class="cvv-box"></div>
-                    <img src="image/visa.png" alt="">
+                        <div>
+
+                            <span class="linka-credit-card-label">
+                                Expires
+                            </span>
+
+                            <span class="linka-credit-card-value">
+
+                                <span id="expiration-month-preview">
+                                    MM
+                                </span>
+
+                                /
+
+                                <span id="expiration-year-preview">
+                                    YY
+                                </span>
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
                 </div>
+
+                <form asp-controller="Payment"
+                      asp-action="Index"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger">
+                    </div>
+
+                    <div class="form-group">
+
+                        <label class="linka-payment-label">
+                            Card Number
+                        </label>
+
+                        <input asp-for="CardNumber"
+                               id="card-number-input"
+                               class="form-control linka-payment-control"
+                               type="text"
+                               maxlength="19"
+                               inputmode="numeric"
+                               autocomplete="cc-number"
+                               placeholder="4242 4242 4242 4242" />
+
+                        <span asp-validation-for="CardNumber"
+                              class="text-danger linka-payment-validation">
+                        </span>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label class="linka-payment-label">
+                            Card Holder Name
+                        </label>
+
+                        <input asp-for="CardHolderName"
+                               id="card-holder-input"
+                               class="form-control linka-payment-control"
+                               type="text"
+                               autocomplete="cc-name"
+                               placeholder="Name Surname" />
+
+                        <span asp-validation-for="CardHolderName"
+                              class="text-danger linka-payment-validation">
+                        </span>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4 form-group">
+
+                            <label class="linka-payment-label">
+                                Expiration Month
+                            </label>
+
+                            <select asp-for="ExpirationMonth"
+                                    id="expiration-month-input"
+                                    class="form-control linka-payment-control"
+                                    autocomplete="cc-exp-month">
+
+                                <option value="">
+                                    Month
+                                </option>
+
+                                @for (var month = 1;
+                                                                month <= 12;
+                                                                month++)
+                                {
+                                    <option value="@month">
+                                        @month.ToString("00")
+                                    </option>
+                                }
+
+                            </select>
+
+                            <span asp-validation-for="ExpirationMonth"
+                                  class="text-danger linka-payment-validation">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-4 form-group">
+
+                            <label class="linka-payment-label">
+                                Expiration Year
+                            </label>
+
+                            <select asp-for="ExpirationYear"
+                                    id="expiration-year-input"
+                                    class="form-control linka-payment-control"
+                                    autocomplete="cc-exp-year">
+
+                                <option value="">
+                                    Year
+                                </option>
+
+                                @for (var year =
+                                                                currentYear;
+                                                                year <=
+                                                                currentYear + 10;
+                                                                year++)
+                                {
+                                    <option value="@year">
+                                        @year
+                                    </option>
+                                }
+
+                            </select>
+
+                            <span asp-validation-for="ExpirationYear"
+                                  class="text-danger linka-payment-validation">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-4 form-group">
+
+                            <label class="linka-payment-label">
+                                CVV
+                            </label>
+
+                            <input asp-for="Cvv"
+                                   class="form-control linka-payment-control"
+                                   type="password"
+                                   maxlength="4"
+                                   inputmode="numeric"
+                                   autocomplete="cc-csc"
+                                   placeholder="123" />
+
+                            <span asp-validation-for="Cvv"
+                                  class="text-danger linka-payment-validation">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-block btn-primary linka-payment-submit">
+
+                        Complete Payment
+
+                        <i class="fa fa-lock ml-2"></i>
+
+                    </button>
+
+                </form>
+
             </div>
 
         </div>
 
-        <form action="">
-            <div class="inputBox">
-                <span>card number</span>
-                    <input type="text" id="credit-card" maxlength="19" class="card-number-input">
-            </div>
-            <div class="inputBox">
-                <span>card holder</span>
-                <input type="text" class="card-holder-input">
-            </div>
-            <div class="flexbox">
-                <div class="inputBox">
-                    <span>expiration mm</span>
-                    <select name="" id="" class="month-input">
-                        <option value="month" selected disabled>month</option>
-                        <option value="01">01</option>
-                        <option value="02">02</option>
-                        <option value="03">03</option>
-                        <option value="04">04</option>
-                        <option value="05">05</option>
-                        <option value="06">06</option>
-                        <option value="07">07</option>
-                        <option value="08">08</option>
-                        <option value="09">09</option>
-                        <option value="10">10</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
-                    </select>
-                </div>
-                <div class="inputBox">
-                    <span>expiration yy</span>
-                    <select name="" id="" class="year-input">
-                        <option value="year" selected disabled>year</option>
-                        <option value="2021">2021</option>
-                        <option value="2022">2022</option>
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                        <option value="2025">2025</option>
-                        <option value="2026">2026</option>
-                        <option value="2027">2027</option>
-                        <option value="2028">2028</option>
-                        <option value="2029">2029</option>
-                        <option value="2030">2030</option>
-                    </select>
-                </div>
-                <div class="inputBox">
-                    <span>cvv</span>
-                    <input type="text" maxlength="4" class="cvv-input">
-                </div>
-            </div>
-            <input type="submit" value="Complete Payment" class="submit-btn">
-        </form>
+        <div class="col-lg-4">
+
+            @await Component.InvokeAsync(
+            "_OrderSummaryComponentPartial")
+
+        </div>
 
     </div>
-    </div>
 
+</div>
 
+<script>
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+            const cardNumberInput =
+                document.getElementById(
+                    "card-number-input");
 
+            const cardHolderInput =
+                document.getElementById(
+                    "card-holder-input");
 
+            const expirationMonthInput =
+                document.getElementById(
+                    "expiration-month-input");
 
+            const expirationYearInput =
+                document.getElementById(
+                    "expiration-year-input");
 
-    <script>
+            const cardNumberPreview =
+                document.getElementById(
+                    "card-number-preview");
 
-        document.querySelector('.card-number-input').oninput = () =>{
-            document.querySelector('.card-number-box').innerText = document.querySelector('.card-number-input').value;
-        }
+            const cardHolderPreview =
+                document.getElementById(
+                    "card-holder-preview");
 
-        document.querySelector('.card-holder-input').oninput = () =>{
-            document.querySelector('.card-holder-name').innerText = document.querySelector('.card-holder-input').value;
-        }
+            const expirationMonthPreview =
+                document.getElementById(
+                    "expiration-month-preview");
 
-        document.querySelector('.month-input').oninput = () =>{
-            document.querySelector('.exp-month').innerText = document.querySelector('.month-input').value;
-        }
+            const expirationYearPreview =
+                document.getElementById(
+                    "expiration-year-preview");
 
-        document.querySelector('.year-input').oninput = () =>{
-            document.querySelector('.exp-year').innerText = document.querySelector('.year-input').value;
-        }
+            cardNumberInput.addEventListener(
+                "input",
+                function () {
+                    const digits =
+                        this.value
+                            .replace(/\D/g, "")
+                            .substring(0, 16);
 
-        document.querySelector('.cvv-input').onmouseenter = () =>{
-            document.querySelector('.front').style.transform = 'perspective(1000px) rotateY(-180deg)';
-            document.querySelector('.back').style.transform = 'perspective(1000px) rotateY(0deg)';
-        }
+                    const formattedValue =
+                        digits.match(/.{1,4}/g)
+                            ?.join(" ") ?? "";
 
-        document.querySelector('.cvv-input').onmouseleave = () =>{
-            document.querySelector('.front').style.transform = 'perspective(1000px) rotateY(0deg)';
-            document.querySelector('.back').style.transform = 'perspective(1000px) rotateY(180deg)';
-        }
+                    this.value =
+                        formattedValue;
 
-        document.querySelector('.cvv-input').oninput = () =>{
-            document.querySelector('.cvv-box').innerText = document.querySelector('.cvv-input').value;
+                    cardNumberPreview.textContent =
+                        formattedValue ||
+                        "#### #### #### ####";
+                });
 
+            cardHolderInput.addEventListener(
+                "input",
+                function () {
+                    cardHolderPreview.textContent =
+                        this.value.trim() ||
+                        "FULL NAME";
+                });
 
-        }
+            expirationMonthInput.addEventListener(
+                "change",
+                function () {
+                    expirationMonthPreview.textContent =
+                        this.value
+                            ? this.value.padStart(
+                                2,
+                                "0")
+                            : "MM";
+                });
 
-    </script>
-    <script>
-        const creditCardInput = document.getElementById('credit-card');
-
-        creditCardInput.addEventListener('input', function (e) {
-            let value = e.target.value.replace(/\D/g, '');
-            let formattedValue = '';
-            for (let i = 0; i < value.length; i++) {
-                if (i > 0 && i % 4 === 0) {
-                    formattedValue += '-';
-                }
-                formattedValue += value[i];
-            }
-            e.target.value = formattedValue;
+            expirationYearInput.addEventListener(
+                "change",
+                function () {
+                    expirationYearPreview.textContent =
+                        this.value
+                            ? this.value.slice(-2)
+                            : "YY";
+                });
         });
-    </script>
-
-
-
-
-
-
-
-
-</body>
-</html>
+</script>

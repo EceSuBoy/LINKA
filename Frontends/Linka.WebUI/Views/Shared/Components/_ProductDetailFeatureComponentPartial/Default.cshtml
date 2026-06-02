@@ -1,119 +1,227 @@
-﻿@model UpdateProductDto
+﻿@using System.Globalization
+@model Linka.WebUI.Models.ProductDetailFeatureViewModel
+
+@{
+    var culture =
+        new CultureInfo("tr-TR");
+
+    var roundedRating =
+        Math.Round(
+            Model.AverageRating * 2,
+            MidpointRounding.AwayFromZero) / 2;
+}
+
+<style>
+    .linka-detail-card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .linka-detail-discount-badge {
+        display: inline-block;
+        margin-bottom: 13px;
+        padding: 7px 10px;
+        border-radius: 4px;
+        color: #ffffff;
+        background-color: #dc3545;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .linka-detail-price-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 11px;
+        margin-bottom: 19px;
+    }
+
+        .linka-detail-price-row h3,
+        .linka-detail-price-row h5 {
+            margin-bottom: 0;
+        }
+
+    .linka-detail-rating-value {
+        margin-left: 6px;
+        color: #6c757d;
+        font-size: 12px;
+    }
+
+    .linka-detail-description {
+        line-height: 1.7;
+    }
+</style>
 
 <div class="col-lg-7 h-auto mb-30">
-    <div class="h-100 bg-light p-30">
-        <h3>@Model.ProductName</h3>
-        <div class="d-flex mb-3">
+
+    <div class="h-100 bg-light p-30 linka-detail-card">
+
+        @if (Model.HasDiscount)
+        {
+            <span class="linka-detail-discount-badge">
+                -%@Model.DiscountRate.ToString("0.##")
+            </span>
+        }
+
+        <h3>
+            @Model.ProductName
+        </h3>
+
+        <div class="d-flex align-items-center mb-3">
+
             <div class="text-primary mr-2">
-                <small class="fas fa-star"></small>
-                <small class="fas fa-star"></small>
-                <small class="fas fa-star"></small>
-                <small class="fas fa-star-half-alt"></small>
-                <small class="far fa-star"></small>
+
+                @for (int star = 1;
+                                star <= 5;
+                                star++)
+                {
+                    if (roundedRating >= star)
+                    {
+                        <small class="fas fa-star"></small>
+                    }
+                    else if (
+                    roundedRating >= star - 0.5)
+                    {
+                        <small class="fas fa-star-half-alt"></small>
+                    }
+                    else
+                    {
+                        <small class="far fa-star"></small>
+                    }
+                }
+
             </div>
-            <small class="pt-1">(0 Reviews)</small>
+
+            <small class="pt-1">
+                (@Model.CommentCount
+                @(Model.CommentCount == 1
+                                ? "Review"
+                                : "Reviews"))
+            </small>
+
+            @if (Model.CommentCount > 0)
+            {
+                <small class="linka-detail-rating-value">
+                    @Model.AverageRating.ToString("0.0")
+                </small>
+            }
+
         </div>
-        <h3 class="font-weight-semi-bold mb-4">@Model.ProductPrice ₺</h3>
-        <p class="mb-4">
+
+        <div class="linka-detail-price-row">
+
+            @if (Model.HasDiscount)
+            {
+                <h3 class="font-weight-semi-bold">
+                    @Model.DiscountedPrice.ToString("N2", culture) ₺
+                </h3>
+
+                <h5 class="text-muted">
+                    <del>
+                        @Model.ProductPrice.ToString("N2", culture) ₺
+                    </del>
+                </h5>
+            }
+            else
+            {
+                <h3 class="font-weight-semi-bold">
+                    @Model.ProductPrice.ToString("N2", culture) ₺
+                </h3>
+            }
+
+        </div>
+
+        <p class="mb-4 linka-detail-description">
             @Model.ProductDescription
         </p>
-        <div class="d-flex mb-3">
-            <strong class="text-dark mr-3">Sizes:</strong>
-            <form>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="size-1" name="size">
-                    <label class="custom-control-label" for="size-1">37</label>
+
+        <form asp-controller="ShoppingCart"
+              asp-action="AddBasketItemWithQuantity"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden"
+                   name="id"
+                   value="@Model.ProductId" />
+
+            <div class="d-flex align-items-center mb-4 pt-2">
+
+                <div class="input-group quantity mr-3"
+                     style="width: 130px;">
+
+                    <div class="input-group-btn">
+
+                        <button type="button"
+                                class="btn btn-primary btn-minus">
+
+                            <i class="fa fa-minus"></i>
+
+                        </button>
+
+                    </div>
+
+                    <input type="number"
+                           name="quantity"
+                           class="form-control bg-secondary border-0 text-center"
+                           value="1"
+                           min="1"
+                           max="99" />
+
+                    <div class="input-group-btn">
+
+                        <button type="button"
+                                class="btn btn-primary btn-plus">
+
+                            <i class="fa fa-plus"></i>
+
+                        </button>
+
+                    </div>
+
                 </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="size-2" name="size">
-                    <label class="custom-control-label" for="size-2">38</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="size-3" name="size">
-                    <label class="custom-control-label" for="size-3">39</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="size-4" name="size">
-                    <label class="custom-control-label" for="size-4">40</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="size-5" name="size">
-                    <label class="custom-control-label" for="size-5">41</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="size-6" name="size">
-                    <label class="custom-control-label" for="size-6">42</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="size-7" name="size">
-                    <label class="custom-control-label" for="size-7">43</label>
-                </div>
-            </form>
-        </div>
-        <div class="d-flex mb-4">
-            <strong class="text-dark mr-3">Colors:</strong>
-            <form>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="color-1" name="color">
-                    <label class="custom-control-label" for="color-1">Black</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="color-2" name="color">
-                    <label class="custom-control-label" for="color-2">White</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="color-3" name="color">
-                    <label class="custom-control-label" for="color-3">Red</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="color-4" name="color">
-                    <label class="custom-control-label" for="color-4">Blue</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="color-5" name="color">
-                    <label class="custom-control-label" for="color-5">Green</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input" id="color-6" name="color">
-                    <label class="custom-control-label" for="color-6">Pink</label>
-                </div>
-            </form>
-        </div>
-        <div class="d-flex align-items-center mb-4 pt-2">
-            <div class="input-group quantity mr-3" style="width: 130px;">
-                <div class="input-group-btn">
-                    <button class="btn btn-primary btn-minus">
-                        <i class="fa fa-minus"></i>
-                    </button>
-                </div>
-                <input type="text" class="form-control bg-secondary border-0 text-center" value="1">
-                <div class="input-group-btn">
-                    <button class="btn btn-primary btn-plus">
-                        <i class="fa fa-plus"></i>
-                    </button>
-                </div>
+
+                <button type="submit"
+                        class="btn btn-primary px-3">
+
+                    <i class="fa fa-shopping-cart mr-1"></i>
+
+                    Add To Cart
+
+                </button>
+
             </div>
-            <button class="btn btn-primary px-3">
-                <i class="fa fa-shopping-cart mr-1"></i> Add To
-                Cart
-            </button>
-        </div>
+
+        </form>
+
         <div class="d-flex pt-2">
-            <strong class="text-dark mr-2">Share on:</strong>
+
+            <strong class="text-dark mr-2">
+                Share on:
+            </strong>
+
             <div class="d-inline-flex">
+
                 <a class="text-dark px-2" href="">
                     <i class="fab fa-facebook-f"></i>
                 </a>
+
                 <a class="text-dark px-2" href="">
                     <i class="fab fa-twitter"></i>
                 </a>
+
                 <a class="text-dark px-2" href="">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
+
                 <a class="text-dark px-2" href="">
                     <i class="fab fa-pinterest"></i>
                 </a>
+
             </div>
+
         </div>
+
     </div>
+
 </div>

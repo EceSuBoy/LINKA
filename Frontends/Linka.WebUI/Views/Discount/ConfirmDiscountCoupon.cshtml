@@ -1,43 +1,214 @@
-﻿
+﻿@using System.Globalization
+
+@{
+    var culture =
+        new CultureInfo("tr-TR");
+
+    var subTotal =
+        Convert.ToDecimal(
+            ViewBag.total ?? 0m);
+
+    var discountRate =
+        Convert.ToInt32(
+            ViewBag.discountRate ?? 0);
+
+    var discountAmount =
+        Convert.ToDecimal(
+            ViewBag.discountAmount ?? 0m);
+
+    var discountedSubTotal =
+        Convert.ToDecimal(
+            ViewBag.discountedSubTotal ?? subTotal);
+
+    var tax =
+        Convert.ToDecimal(
+            ViewBag.tax ?? 0m);
+
+    var grandTotal =
+        Convert.ToDecimal(
+            ViewBag.totalPriceWithTax ?? 0m);
+
+    var code =
+        ViewBag.code as string;
+}
 
 <div class="col-lg-4">
-    <form class="mb-30" asp-controller="Discount" asp-action="ConfirmDiscountCoupon" method="post">
+
+    @if (TempData["CouponError"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["CouponError"]
+        </div>
+    }
+
+    @if (TempData["CouponSuccess"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["CouponSuccess"]
+        </div>
+    }
+
+    <form class="mb-30"
+          asp-controller="Discount"
+          asp-action="ConfirmDiscountCoupon"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
         <div class="input-group">
-            <input type="text" name="code" value="@ViewBag.code" class="form-control border-0 p-4" placeholder="Coupon Code">
+
+            <input type="text"
+                   name="code"
+                   value="@code"
+                   class="form-control border-0 p-4"
+                   placeholder="Coupon Code" />
+
             <div class="input-group-append">
-                <button class="btn btn-primary">Apply Coupon</button>
-                <br />  
-                <h3></h3>
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    Apply Coupon
+
+                </button>
+
             </div>
+
         </div>
+
     </form>
-    <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>
+
+    @if (discountRate > 0)
+    {
+        <form asp-controller="Discount"
+              asp-action="RemoveDiscountCoupon"
+              method="post"
+              class="mb-3">
+
+            @Html.AntiForgeryToken()
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <small class="text-success">
+                    Applied coupon:
+                    <strong>@code</strong>
+                </small>
+
+                <button type="submit"
+                        class="btn btn-sm btn-outline-danger">
+
+                    Remove
+
+                </button>
+
+            </div>
+
+        </form>
+    }
+
+    <h5 class="section-title position-relative text-uppercase mb-3">
+
+        <span class="bg-secondary pr-3">
+            Cart Summary
+        </span>
+
+    </h5>
+
     <div class="bg-light p-30 mb-5">
+
         <div class="border-bottom pb-2">
+
             <div class="d-flex justify-content-between mb-3">
-                <h6>Subtotal</h6>
-                <h6>@ViewBag.total ₺</h6>
+
+                <h6>
+                    Subtotal
+                </h6>
+
+                <h6>
+                    @subTotal.ToString("N2", culture) ₺
+                </h6>
+
             </div>
+
+            @if (discountRate > 0)
+            {
+                <div class="d-flex justify-content-between mb-1">
+
+                    <h6 class="font-weight-medium">
+                        Coupon Discount
+                        (%@discountRate)
+                    </h6>
+
+                    <h6 class="font-weight-medium text-success">
+                        -@discountAmount.ToString("N2", culture) ₺
+                    </h6>
+
+                </div>
+
+                <div class="d-flex justify-content-between mb-1">
+
+                    <h6 class="font-weight-medium">
+                        Discounted Subtotal
+                    </h6>
+
+                    <h6 class="font-weight-medium">
+                        @discountedSubTotal.ToString("N2", culture) ₺
+                    </h6>
+
+                </div>
+            }
+
             <div class="d-flex justify-content-between mb-1">
-                <h6 class="font-weight-medium">VAT</h6>
-                <h6 class="font-weight-medium">@ViewBag.tax ₺</h6>
-            </div>
-            <div class="d-flex justify-content-between mb-1">
-                <h6 class="font-weight-medium">Discount Rate</h6>
-                <h6 class="font-weight-medium">% @ViewBag.discountRate</h6>
-            </div>
-            <div class="d-flex justify-content-between mb-1">
-                <h6 class="font-weight-medium">Total</h6>
-                <h6 class="font-weight-medium">@ViewBag.totalPriceWithTax ₺</h6>
+
+                <h6 class="font-weight-medium">
+                    VAT (%10)
+                </h6>
+
+                <h6 class="font-weight-medium">
+                    @tax.ToString("N2", culture) ₺
+                </h6>
+
             </div>
 
         </div>
+
         <div class="pt-2">
-            <div class="d-flex justify-content-between mt-2">
-                <h5>Discounted Price</h5>
-                <h5>@ViewBag.totalNewPriceWithDiscount ₺</h5>
-            </div>
-            <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button>
-        </div>
-</div>
 
+            <div class="d-flex justify-content-between mt-2">
+
+                <h5>
+                    Grand Total
+                </h5>
+
+                <h5>
+                    @grandTotal.ToString("N2", culture) ₺
+                </h5>
+
+            </div>
+
+            @if (subTotal > 0)
+            {
+                <a asp-controller="Order"
+                   asp-action="Index"
+                   class="btn btn-block btn-primary font-weight-bold my-3 py-3">
+
+                    Proceed To Checkout
+
+                </a>
+            }
+            else
+            {
+                <button type="button"
+                        class="btn btn-block btn-secondary font-weight-bold my-3 py-3"
+                        disabled>
+
+                    Your Cart Is Empty
+
+                </button>
+            }
+
+        </div>
+
+    </div>
+
+</div>
