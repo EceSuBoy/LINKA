@@ -14,6 +14,8 @@ namespace Linka.Message.Mapping
             CreateMap<UserMessage, ResultInboxMessageDto>().ReverseMap();
             CreateMap<UserMessage, ResultSentBoxMessageDto>().ReverseMap();
             CreateMap<UserMessage, GetByIdMessageDto>().ReverseMap();
+
+            CreateMap<Conversation, ResultConversationDto>().ReverseMap();
         }
     }
 }

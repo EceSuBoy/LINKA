@@ -19,6 +19,7 @@ using Linka.WebUI.Services.Concrete;
 using Linka.WebUI.Services.DiscountServices;
 using Linka.WebUI.Services.Interfaces;
 using Linka.WebUI.Services.MessageServices;
+using Linka.WebUI.Services.MessageServices.ConversationServices;
 using Linka.WebUI.Services.OrderServices.OrderAddressServices;
 using Linka.WebUI.Services.OrderServices.OrderOrderingServices;
 using Linka.WebUI.Services.StatisticServices.CatalogStatisticServices;
@@ -131,6 +132,13 @@ builder.Services.AddHttpClient<IOrderAddressServices, OrderAddressServices>(opt 
 {
     opt.BaseAddress = new Uri($"{values.OcelotUrl}/{values.Order.Path}");
 }).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
+
+builder.Services.AddHttpClient<IConversationService, ConversationService>(opt =>
+{
+    opt.BaseAddress =
+        new Uri($"{values.OcelotUrl}/{values.Message.Path}");
+})
+.AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
 
 builder.Services.AddHttpClient<IDiscountService, DiscountService>(opt =>
 {

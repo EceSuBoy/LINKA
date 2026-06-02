@@ -50,7 +50,7 @@ namespace Linka.Message.Controllers
             return Ok("Message deleted successfully.");
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateMessageAsync (UpdateMessageDto updateMessageDto)
+        public async Task<IActionResult> UpdateMessageAsync(UpdateMessageDto updateMessageDto)
         {
             await _userMessageService.UpdateMessageAsync(updateMessageDto);
             return Ok("Message deleted successfully.");
@@ -63,7 +63,7 @@ namespace Linka.Message.Controllers
             return Ok(values);
 
         }
-        
+
 
         [HttpGet("GetTotalMessageCountByReceiverId")]
         public async Task<IActionResult> GetTotalMessageCountByReceiverId(string id)
@@ -71,6 +71,67 @@ namespace Linka.Message.Controllers
             int values = await _userMessageService.GetTotalMessageCountByReceiverId(id);
             return Ok(values);
 
+        }
+
+        [HttpPost("SendConversationMessage")]
+        public async Task<IActionResult> SendConversationMessage(
+    SendConversationMessageDto sendConversationMessageDto)
+        {
+            try
+            {
+                await _userMessageService
+                    .CreateConversationMessageAsync(
+                        sendConversationMessageDto);
+
+                return Ok("Message sent successfully.");
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+        }
+
+        [HttpGet("GetConversationMessages/{conversationId}")]
+        public async Task<IActionResult> GetConversationMessages(
+    int conversationId)
+        {
+            try
+            {
+                var values =
+                    await _userMessageService
+                        .GetConversationMessagesAsync(
+                            conversationId);
+
+                return Ok(values);
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+            catch (KeyNotFoundException exception)
+            {
+                return NotFound(exception.Message);
+            }
+        }
+
+        [HttpPut("MarkConversationMessagesAsRead/{conversationId}/{receiverId}")]
+        public async Task<IActionResult> MarkConversationMessagesAsRead(
+    int conversationId,
+    string receiverId)
+        {
+            try
+            {
+                await _userMessageService
+                    .MarkConversationMessagesAsReadAsync(
+                        conversationId,
+                        receiverId);
+
+                return Ok("Messages marked as read successfully.");
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(exception.Message);
+            }
         }
 
     }

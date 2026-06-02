@@ -11,5 +11,15 @@ namespace Linka.WebUI.Services.MessageServices
         //Task UpdateMessageAsync(UpdateMessageDto updateMessageDto);
         //Task DeleteMessageAsync(int id);
         //Task<GetByIdMessageDto> GetByIdMessageAsync(int id);
+
+        Task<List<ResultConversationMessageDto>>
+    GetConversationMessagesAsync(int conversationId);
+
+        Task SendConversationMessageAsync(
+            SendConversationMessageDto sendConversationMessageDto);
+
+        Task MarkConversationMessagesAsReadAsync(
+    int conversationId,
+    string receiverId);
     }
 }

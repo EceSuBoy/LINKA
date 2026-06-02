@@ -1,0 +1,229 @@
+﻿@model Linka.WebUI.Areas.User.Models.MessageIndexViewModel
+
+@{
+    ViewData["Title"] = "Messages";
+    Layout = "~/Areas/User/Views/UserLayout/Index.cshtml";
+}
+
+<style>
+    .linka-messages-title {
+        margin-bottom: 6px;
+        color: #26374b;
+        font-size: 25px;
+        font-weight: 700;
+    }
+
+    .linka-messages-subtitle {
+        margin-bottom: 22px;
+        color: #8a98a9;
+        font-size: 14px;
+    }
+
+    .linka-conversation-list {
+        overflow: hidden;
+        border: 1px solid #e1e7f0;
+        border-radius: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 7px 18px rgba(35, 59, 101, 0.07);
+    }
+
+    .linka-conversation-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 17px 19px;
+        border-bottom: 1px solid #edf0f5;
+        color: #35495e;
+        text-decoration: none !important;
+        transition: 0.2s ease;
+    }
+
+        .linka-conversation-item:last-child {
+            border-bottom: none;
+        }
+
+        .linka-conversation-item:hover {
+            color: #35495e;
+            background-color: #f6f8ff;
+        }
+
+    .linka-conversation-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 47px;
+        height: 47px;
+        border-radius: 50%;
+        color: #ffffff;
+        background: linear-gradient(135deg, #3156ba, #6687e5);
+        font-size: 17px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .linka-conversation-content {
+        min-width: 0;
+        flex: 1;
+    }
+
+    .linka-conversation-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 4px;
+    }
+
+    .linka-conversation-name {
+        overflow: hidden;
+        margin: 0;
+        color: #2b3e53;
+        font-size: 15px;
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .linka-conversation-date {
+        color: #99a5b4;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .linka-conversation-product {
+        margin-bottom: 4px;
+        color: #3156ba;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .linka-conversation-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .linka-conversation-preview {
+        overflow: hidden;
+        margin: 0;
+        color: #8795a7;
+        font-size: 13px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .linka-unread-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 7px;
+        border-radius: 20px;
+        color: #ffffff;
+        background-color: #3156ba;
+        font-size: 11px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .linka-empty-messages {
+        padding: 55px 20px;
+        color: #8c99a9;
+        text-align: center;
+    }
+
+        .linka-empty-messages i {
+            display: block;
+            margin-bottom: 10px;
+            color: #b8c3d2;
+            font-size: 45px;
+        }
+</style>
+
+<div class="content-wrapper">
+
+    <h3 class="linka-messages-title">
+        Messages
+    </h3>
+
+    <p class="linka-messages-subtitle">
+        Review your private product discussions.
+    </p>
+
+    <div class="linka-conversation-list">
+
+        @if (Model.Conversations.Any())
+        {
+            @foreach (var conversation in Model.Conversations)
+            {
+                <a asp-area="User"
+                   asp-controller="Message"
+                   asp-action="Chat"
+                   asp-route-id="@conversation.ConversationId"
+                   class="linka-conversation-item">
+
+                    <div class="linka-conversation-avatar">
+                        <i class="mdi mdi-account"></i>
+                    </div>
+
+                    <div class="linka-conversation-content">
+
+                        <div class="linka-conversation-top">
+
+                            <h5 class="linka-conversation-name">
+                                @conversation.OtherUserDisplayName
+                            </h5>
+
+                            @if (conversation.LastMessageDate.HasValue)
+                            {
+                                <span class="linka-conversation-date">
+                                    @(conversation.LastMessageDate.Value
+                                                            .ToLocalTime()
+                                                            .ToString("dd.MM.yyyy HH:mm"))
+                    </span>
+                                        }
+
+                        </div>
+
+                        <div class="linka-conversation-product">
+                            Product: @conversation.ProductName
+                        </div>
+
+                        <div class="linka-conversation-bottom">
+
+                            <p class="linka-conversation-preview">
+                                @conversation.LastMessage
+                            </p>
+
+                            @if (conversation.UnreadMessageCount > 0)
+                            {
+                                <span class="linka-unread-badge">
+                                    @conversation.UnreadMessageCount
+                                </span>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </a>
+            }
+        }
+        else
+        {
+            <div class="linka-empty-messages">
+
+                <i class="mdi mdi-message-text-outline"></i>
+
+                <p>
+                    You do not have any private conversations yet.
+                </p>
+
+            </div>
+        }
+
+    </div>
+
+</div>

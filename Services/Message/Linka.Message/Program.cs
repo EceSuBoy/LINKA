@@ -16,11 +16,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddEntityFrameworkNpgsql().AddDbContext<MessageContext>(opt =>
+builder.Services.AddDbContext<MessageContext>(opt =>
 {
     opt.UseNpgsql(connectionString);
 });
+
+
 builder.Services.AddScoped<IUserMessageService, UserMessageService>();
+builder.Services.AddScoped<IConversationService, ConversationService>();
+
+
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddControllers();

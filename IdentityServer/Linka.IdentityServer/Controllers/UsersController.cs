@@ -38,6 +38,31 @@ namespace Linka.IdentityServer.Controllers
                 Username = user.UserName
             });
         }
+
+        [HttpGet("GetUserById/{id}")]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest("User ID cannot be empty.");
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                return NotFound("User could not be found.");
+            }
+
+            return Ok(new
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email,
+                Username = user.UserName
+            });
+        }
         [HttpGet("GetAllUserList")]
         public async Task<IActionResult> GetAllUserList()
         {
