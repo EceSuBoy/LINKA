@@ -1,5 +1,5 @@
 ﻿@using System.Globalization
-@model List<ResultProductDto>
+@model List<Linka.WebUI.Models.FeaturedProductViewModel>
 
 @{
     var culture = new CultureInfo("tr-TR");
@@ -15,12 +15,12 @@
     .product-img-fixed {
         width: 100%;
         height: 250px;
-        background-color: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
         padding: 15px;
+        background-color: #ffffff;
     }
 
         .product-img-fixed img {
@@ -42,9 +42,9 @@
         display: block;
         max-width: 90%;
         margin: 0 auto;
-        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .product-price-row {
@@ -52,75 +52,157 @@
         flex-wrap: wrap;
     }
 
-        .product-price-row h5,
-        .product-price-row h6 {
+        .product-price-row h5 {
             margin-bottom: 0;
         }
 
     .product-stars-fixed {
         min-height: 24px;
     }
+
+    .product-rating-value {
+        margin-left: 5px;
+        color: #6c757d;
+        font-size: 12px;
+    }
 </style>
 
 <div class="container-fluid pt-5 pb-3">
+
     <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4">
-        <span class="bg-secondary pr-3">Featured Products</span>
+        <span class="bg-secondary pr-3">
+            Featured Products
+        </span>
     </h2>
 
     <div class="row px-xl-5">
 
         @foreach (var item in Model)
         {
-            var discountPrice = item.ProductPrice * 1.2m;
+            /*
+            * Ortalama puanı en yakın yarım yıldıza yuvarlıyoruz.
+            *
+            * Örnek:
+            * 4.1 → 4
+            * 4.4 → 4.5
+            * 4.8 → 5
+            */
+            var roundedRating =
+            Math.Round(
+            item.AverageRating * 2,
+            MidpointRounding.AwayFromZero) / 2;
 
             <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+
                 <div class="product-item bg-light mb-4 product-card-fixed">
 
                     <div class="product-img position-relative overflow-hidden product-img-fixed">
-                        <img src="@item.ProductImageUrl" alt="@item.ProductName">
+
+                        <img src="@item.ProductImageUrl"
+                             alt="@item.ProductName" />
 
                         <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href="/ShoppingCart/AddBasketItem/@item.ProductId">
+
+                            <a class="btn btn-outline-dark btn-square"
+                               href="/ShoppingCart/AddBasketItem/@item.ProductId">
+
                                 <i class="fa fa-shopping-cart"></i>
+
                             </a>
-                            <a class="btn btn-outline-dark btn-square" href="">
+
+                            <a class="btn btn-outline-dark btn-square"
+                               href="">
+
                                 <i class="far fa-heart"></i>
+
                             </a>
-                            <a class="btn btn-outline-dark btn-square" href="">
+
+                            <a class="btn btn-outline-dark btn-square"
+                               href="">
+
                                 <i class="fa fa-sync-alt"></i>
+
                             </a>
-                            <a class="btn btn-outline-dark btn-square" href="">
+
+                            <a class="btn btn-outline-dark btn-square"
+                               href="/ProductList/ProductDetail/@item.ProductId">
+
                                 <i class="fa fa-search"></i>
+
                             </a>
+
                         </div>
+
                     </div>
 
                     <div class="text-center py-4 product-content-fixed">
-                        <a class="h6 text-decoration-none text-truncate product-name-fixed" href="/ProductList/ProductDetail/@item.ProductId">
+
+                        <a class="h6 text-decoration-none text-truncate product-name-fixed"
+                           href="/ProductList/ProductDetail/@item.ProductId">
+
                             @item.ProductName
+
                         </a>
 
+                        <!--
+                            Şimdilik yalnızca gerçek ürün fiyatını gösteriyoruz.
+                            Sahte indirim fiyatı kaldırıldı.
+                        -->
                         <div class="d-flex align-items-center justify-content-center mt-2 product-price-row">
-                            <h5>@item.ProductPrice.ToString("N2", culture) ₺</h5>
 
-                            <h6 class="text-muted ml-2">
-                                <del>@discountPrice.ToString("N2", culture) ₺</del>
-                            </h6>
+                            <h5>
+                                @item.ProductPrice.ToString("N2", culture) ₺
+                            </h5>
+
                         </div>
 
                         <div class="d-flex align-items-center justify-content-center mb-1 product-stars-fixed">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small>(25)</small>
+
+                            @for (int star = 1; star <= 5; star++)
+                            {
+                                if (roundedRating >= star)
+                                {
+                                    /*
+                                    * Tam yıldız.
+                                    */
+                                    <small class="fas fa-star text-primary mr-1"></small>
+                                }
+                                else if (roundedRating >= star - 0.5)
+                                {
+                                    /*
+                                    * Yarım yıldız.
+                                    */
+                                    <small class="fas fa-star-half-alt text-primary mr-1"></small>
+                                }
+                                else
+                                {
+                                    /*
+                                    * Boş yıldız.
+                                    */
+                                    <small class="far fa-star text-primary mr-1"></small>
+                                }
+                            }
+
+                            <small>
+                                (@item.CommentCount)
+                            </small>
+
+                            @if (item.CommentCount > 0)
+                            {
+                                <small class="product-rating-value">
+                                    @item.AverageRating.ToString("0.0")
+                                </small>
+                            }
+
                         </div>
+
                     </div>
 
                 </div>
+
             </div>
         }
 
     </div>
+
 </div>

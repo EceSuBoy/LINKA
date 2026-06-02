@@ -1,12 +1,14 @@
 ﻿using Linka.Comment.Context;
+using Linka.Comment.Dtos;
 using Linka.Comment.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Linka.Comment.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class CommentsController : ControllerBase
@@ -111,6 +113,82 @@ namespace Linka.Comment.Controllers
         {
             int value = _context.UserComments.Count();
             return Ok(value);
+        }
+
+        [HttpGet("GetProductCommentStatistics/{productId}")]
+        public async Task<IActionResult> GetProductCommentStatistics(
+    string productId)
+        {
+            if (string.IsNullOrWhiteSpace(productId))
+            {
+                return BadRequest(
+                    "Product ID cannot be empty.");
+            }
+
+            var activeComments =
+                _context.UserComments
+                    .Where(x =>
+                        x.ProductId == productId &&
+                        x.Status == true);
+
+            var commentCount =
+                await activeComments.CountAsync();
+
+            double averageRating = 0;
+
+            if (commentCount > 0)
+            {
+                averageRating =
+                    await activeComments
+                        .AverageAsync(x => x.Rating);
+            }
+
+            var value =
+                new ProductCommentStatisticDto
+                {
+                    ProductId =
+                        productId,
+
+                    CommentCount =
+                        commentCount,
+
+                    AverageRating =
+                        Math.Round(averageRating, 1)
+                };
+
+            return Ok(value);
+        }
+
+        [HttpGet("GetAllProductCommentStatistics")]
+        public async Task<IActionResult>
+    GetAllProductCommentStatistics()
+        {
+            var values =
+                await _context.UserComments
+                    .Where(x => x.Status == true)
+                    .GroupBy(x => x.ProductId)
+                    .Select(group =>
+                        new ProductCommentStatisticDto
+                        {
+                            ProductId =
+                                group.Key,
+
+                            CommentCount =
+                                group.Count(),
+
+                            AverageRating =
+                                group.Average(x =>
+                                    (double)x.Rating)
+                        })
+                    .ToListAsync();
+
+            foreach (var item in values)
+            {
+                item.AverageRating =
+                    Math.Round(item.AverageRating, 1);
+            }
+
+            return Ok(values);
         }
     }
 }

@@ -14,5 +14,8 @@ namespace Linka.WebUI.Services.CommentServices
         Task<int> GetTotalCommentCount();
         Task<int> GetActiveCommentCount();
         Task<int> GetPassiveCommentCount();
+        Task<List<ProductCommentStatisticDto>>
+    GetAllProductCommentStatisticsAsync();
+
     }
 }

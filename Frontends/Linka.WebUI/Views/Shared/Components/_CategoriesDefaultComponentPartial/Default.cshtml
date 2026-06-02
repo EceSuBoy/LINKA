@@ -32,7 +32,8 @@
         @foreach (var item in Model)
         {
             <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <a class="text-decoration-none" href="">
+                <a class="text-decoration-none"
+                   href="/ProductList/Index?id=@item.CategoryId">
                     <div class="cat-item d-flex align-items-center mb-4">
 
                         <div class="category-img-box">
@@ -41,7 +42,10 @@
 
                         <div class="flex-fill pl-3">
                             <h6>@item.CategoryName</h6>
-                            <small class="text-body">0 Products</small>
+                            <small class="text-body">
+                                @item.ProductCount
+                                @(item.ProductCount == 1 ? "Product" : "Products")
+                            </small>
                         </div>
 
                     </div>

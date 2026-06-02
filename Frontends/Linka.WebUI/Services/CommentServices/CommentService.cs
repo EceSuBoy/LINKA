@@ -47,7 +47,7 @@ namespace Linka.WebUI.Services.CommentServices
         {
             var responseMessage = await _httpClient.GetAsync("Comments/GetActiveCommentCount");
             var values = await responseMessage.Content.ReadFromJsonAsync<int>();
-            return values; 
+            return values;
         }
 
         public async Task<List<ResultCommentDto>> GetAllCommentAsync()
@@ -83,5 +83,33 @@ namespace Linka.WebUI.Services.CommentServices
         {
             await _httpClient.PutAsJsonAsync<UpdateCommentDto>("Comments", updateCommentDto);
         }
+
+        public async Task<List<ProductCommentStatisticDto>>
+    GetAllProductCommentStatisticsAsync()
+        {
+            var responseMessage =
+                await _httpClient.GetAsync(
+                    "Comments/GetAllProductCommentStatistics");
+
+            var jsonData =
+                await responseMessage.Content
+                    .ReadAsStringAsync();
+
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                throw new Exception(
+                    $"Product comment statistics could not be loaded: " +
+                    $"{responseMessage.StatusCode} - {jsonData}");
+            }
+
+            var values =
+                JsonConvert.DeserializeObject<
+                    List<ProductCommentStatisticDto>>(
+                        jsonData);
+
+            return values ??
+                new List<ProductCommentStatisticDto>();
+        }
+
     }
 }
