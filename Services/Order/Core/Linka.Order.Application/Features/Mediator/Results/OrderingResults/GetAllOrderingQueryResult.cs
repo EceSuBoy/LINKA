@@ -1,7 +1,7 @@
-﻿namespace Linka.DtoLayer.OrderDtos
-    .OrderOrderingDtos
+﻿namespace Linka.Order.Application.Features.Mediator
+    .Results.OrderingResults
 {
-    public class ResultOrderingByUserIdDto
+    public class GetAllOrderingQueryResult
     {
         public int OrderingId { get; set; }
 

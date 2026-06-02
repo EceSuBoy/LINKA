@@ -1,5 +1,9 @@
-﻿using Linka.WebUI.Models;
+﻿using Linka.DtoLayer.BasketDtos;
+using Linka.DtoLayer.OrderDtos.OrderOrderingDtos;
+using Linka.WebUI.Models;
 using Linka.WebUI.Services.BasketServices;
+using Linka.WebUI.Services.Interfaces;
+using Linka.WebUI.Services.OrderServices.OrderOrderingServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
@@ -10,13 +14,21 @@ namespace Linka.WebUI.Controllers
     public class PaymentController : Controller
     {
         private readonly IBasketService
-            _basketService;
+    _basketService;
+
+        private readonly IUserService
+            _userService;
+
+        private readonly IOrderOrderingServices
+            _orderOrderingServices;
 
         public PaymentController(
-            IBasketService basketService)
+            IBasketService basketService, IUserService userService, IOrderOrderingServices orderOrderingServices)
         {
             _basketService =
                 basketService;
+            _userService = userService;
+            _orderOrderingServices = orderOrderingServices;
         }
 
         [HttpGet]
@@ -146,20 +158,66 @@ namespace Linka.WebUI.Controllers
             }
 
             /*
-             * DEMO PAYMENT:
-             *
-             * Gerçek ödeme sağlayıcısı bulunmadığı için kart
-             * bilgilerini saklamıyoruz veya herhangi bir
-             * veritabanına göndermiyoruz.
-             */
+ * Kullanıcı kimliğini formdan kabul etmiyoruz.
+ * Giriş yapan hesaptan alıyoruz.
+ */
+            var user =
+                await _userService
+                    .GetUserInfo();
 
-            var orderNumber =
-                $"LNK-" +
-                $"{DateTime.UtcNow:yyyyMMddHHmmss}-" +
-                $"{Random.Shared.Next(100, 999)}";
+            /*
+             * Shopping Cart ve Order Summary ekranlarında kullanılan
+             * hesaplama ile aynı grand total değerini oluşturuyoruz.
+             */
+            var grandTotal =
+                CalculateGrandTotal(
+                    basket);
+
+            var createOrderingDto =
+                new CreateOrderingWithDetailsDto
+                {
+                    UserId =
+                        user.Id,
+
+                    TotalPrice =
+                        grandTotal,
+
+                    OrderDetails =
+                        basket.BasketItems
+                            .Select(item =>
+                                new CreateOrderingDetailItemDto
+                                {
+                                    ProductId =
+                                        item.ProductId,
+
+                                    ProductName =
+                                        item.ProductName,
+
+                                    ProductPrice =
+                                        item.Price,
+
+                                    ProductAmount =
+                                        item.Quantity
+                                })
+                            .ToList()
+                };
+
+            /*
+             * Önce SQL Server sipariş kaydı oluşturulur.
+             * Başarılı olmadan sepet temizlenmez.
+             */
+            var orderingId =
+                await _orderOrderingServices
+                    .CreateOrderingWithDetailsAsync(
+                        createOrderingDto);
 
             await _basketService
                 .ClearBasket();
+
+            var orderNumber =
+                $"LNK-" +
+                $"{DateTime.UtcNow:yyyyMMdd}-" +
+                $"{orderingId:D6}";
 
             TempData["OrderNumber"] =
                 orderNumber;
@@ -247,6 +305,56 @@ namespace Linka.WebUI.Controllers
             }
 
             return sum % 10 == 0;
+        }
+
+        private static decimal CalculateGrandTotal(
+    BasketTotalDto basket)
+        {
+            var subTotal =
+                Math.Round(
+                    basket.TotalPrice,
+                    2);
+
+            var discountRate =
+                basket.DiscountRate ?? 0;
+
+            var discountAmount =
+                Math.Round(
+                    subTotal *
+                    discountRate /
+                    100m,
+                    2);
+
+            var discountedSubTotal =
+                Math.Round(
+                    subTotal -
+                    discountAmount,
+                    2);
+
+            const decimal vatRate =
+                10m;
+
+            var vatAmount =
+                Math.Round(
+                    discountedSubTotal *
+                    vatRate /
+                    100m,
+                    2);
+
+            const decimal freeShippingThreshold =
+                1500m;
+
+            var shippingFee =
+                discountedSubTotal >=
+                freeShippingThreshold
+                    ? 0m
+                    : 50m;
+
+            return Math.Round(
+                discountedSubTotal +
+                vatAmount +
+                shippingFee,
+                2);
         }
     }
 }

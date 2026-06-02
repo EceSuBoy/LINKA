@@ -1,87 +1,268 @@
-﻿@using Linka.DtoLayer.OrderDtos.OrderOrderingDtos
+﻿@using System.Globalization
+@using Linka.DtoLayer.OrderDtos.OrderOrderingDtos
 @model List<ResultOrderingByUserIdDto>
 
 @{
     ViewData["Title"] = "My Orders";
     Layout = "~/Areas/User/Views/UserLayout/Index.cshtml";
-    int count = 0;
+
+    var culture =
+        new CultureInfo("tr-TR");
 }
 
 <style>
-    .table-striped tbody tr:nth-child(1) {
-        background-color: #d1ecf1;
+    .linka-orders-card {
+        border: 1px solid #edf0f4;
+        border-radius: 10px;
+        background-color: #ffffff;
+        box-shadow: 0 7px 22px rgba(33, 48, 77, 0.06);
+        overflow: hidden;
     }
 
-    .table-striped tbody tr:nth-child(2) {
-        background-color: #fff3cd;
+    .linka-orders-header {
+        padding: 22px 24px;
+        border-bottom: 1px solid #edf0f4;
     }
 
-    .table-striped tbody tr:nth-child(3) {
-        background-color: #f5c6cb;
+    .linka-orders-title {
+        margin-bottom: 4px;
+        color: #2f3a4a;
+        font-size: 22px;
+        font-weight: 800;
     }
 
-    .table-striped tbody tr:nth-child(4) {
-        background-color: #c3e6cb;
+    .linka-orders-subtitle {
+        margin-bottom: 0;
+        color: #7c8798;
+        font-size: 13px;
     }
 
-    .table-striped tbody tr:nth-child(5) {
-        background-color: #bbdaff;
+    .linka-orders-table {
+        margin-bottom: 0;
     }
 
-    .table-striped tbody tr:nth-child(6) {
-        background-color: #d6d8db;
+        .linka-orders-table th {
+            border-top: none;
+            color: #7c8798;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .linka-orders-table td {
+            vertical-align: middle;
+            color: #2f3a4a;
+        }
+
+    .linka-order-number {
+        color: #2f3a4a;
+        font-weight: 800;
     }
 
-    .table-striped tbody tr:nth-child(7) {
-        background-color: #e2e3e5;
+    .linka-order-status {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    .status-paid {
+        background-color: #e8f7ed;
+        color: #218739;
+    }
+
+    .status-preparing {
+        background-color: #fff5d6;
+        color: #a87700;
+    }
+
+    .status-shipped {
+        background-color: #e7f1ff;
+        color: #1d67b1;
+    }
+
+    .status-delivered {
+        background-color: #e8f7ed;
+        color: #218739;
+    }
+
+    .status-cancelled {
+        background-color: #fdeaea;
+        color: #c0392b;
+    }
+
+    .linka-order-detail-btn {
+        padding: 7px 12px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .linka-orders-empty {
+        padding: 42px 20px;
+        color: #7c8798;
+        text-align: center;
     }
 </style>
 
 <div class="main-panel">
-    <div class="content-wrapper">
-        <div class="row">
-            <div class="col-lg-12 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
 
-                        <h4 class="card-title">Order History</h4>
-                        <p class="card-description">
-                            You can view your previous orders below.
+    <div class="content-wrapper">
+
+        <div class="linka-orders-card">
+
+            <div class="linka-orders-header">
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+                    <div class="mb-2 mb-md-0">
+
+                        <h4 class="linka-orders-title">
+                            @ViewBag.PageTitle
+                        </h4>
+
+                        <p class="linka-orders-subtitle">
+                            @ViewBag.PageSubtitle
                         </p>
 
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Total Price</th>
-                                        <th>Order Date</th>
-                                        <th>Order Details</th>
-                                    </tr>
-                                </thead>
+                    </div>
 
-                                <tbody>
-                                    @foreach (var item in Model)
-                                    {
-                                        count++;
-                                        <tr>
-                                            <th>@count</th>
-                                            <td>@item.TotalPrice ₺</td>
-                                            <td>@item.OrderDate.ToString("dd-MMM-yyyy")</td>
-                                            <td>
-                                                <a href="#" class="btn btn-warning">
-                                                    Order Details
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="btn-group">
+
+                        <a asp-area="User"
+                           asp-controller="MyOrder"
+                           asp-action="ActiveOrders"
+                           class="btn btn-sm @(ViewBag.SelectedSection == "active" ? "btn-primary" : "btn-outline-primary")">
+
+                            <i class="mdi mdi-truck-delivery-outline mr-1"></i>
+
+                            Active Orders
+
+                        </a>
+
+                        <a asp-area="User"
+                           asp-controller="MyOrder"
+                           asp-action="OrderHistory"
+                           class="btn btn-sm @(ViewBag.SelectedSection == "history" ? "btn-primary" : "btn-outline-primary")">
+
+                            <i class="mdi mdi-history mr-1"></i>
+
+                            Order History
+
+                        </a>
 
                     </div>
+
                 </div>
+
             </div>
+
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+
+                    <table class="table linka-orders-table">
+
+                        <thead>
+                            <tr>
+                                <th>Order Number</th>
+                                <th>Order Date</th>
+                                <th>Status</th>
+                                <th class="text-right">
+                                    Total Price
+                                </th>
+                                <th class="text-center">
+                                    Details
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in Model)
+                            {
+                                var displayOrderNumber =
+                                $"LNK-{item.OrderDate:yyyyMMdd}-{item.OrderingId:D6}";
+
+                                var status =
+                                string.IsNullOrWhiteSpace(item.OrderStatus)
+                                ? "Paid"
+                                : item.OrderStatus;
+
+                                var statusClass =
+                                status.ToLowerInvariant() switch
+                                {
+                                    "preparing" => "status-preparing",
+                                    "shipped" => "status-shipped",
+                                    "delivered" => "status-delivered",
+                                    "cancelled" => "status-cancelled",
+                                    _ => "status-paid"
+                                };
+
+                                <tr>
+
+                                    <td>
+                                        <span class="linka-order-number">
+                                            @displayOrderNumber
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @(item.OrderDate.ToString("dd.MM.yyyy HH:mm"))
+                                    </td>
+
+                                    <td>
+                                        <span class="linka-order-status @statusClass">
+                                            @status
+                                        </span>
+                                    </td>
+
+                                    <td class="text-right font-weight-bold">
+                                        @(item.TotalPrice.ToString("N2", culture)) ₺
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        <a asp-area="User"
+                                           asp-controller="MyOrder"
+                                           asp-action="OrderDetail"
+                                           asp-route-id="@item.OrderingId"
+                                           class="btn btn-outline-primary linka-order-detail-btn">
+
+                                            <i class="mdi mdi-eye-outline mr-1"></i>
+
+                                            View Details
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+            else
+            {
+                <div class="linka-orders-empty">
+
+                    <i class="mdi mdi-cart-outline d-block mb-2"
+                       style="font-size:38px;">
+                    </i>
+
+                    @ViewBag.EmptyMessage
+
+                </div>
+            }
+
         </div>
+
     </div>
+
 </div>

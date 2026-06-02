@@ -1,0 +1,228 @@
+﻿@using System.Globalization
+@using Linka.DtoLayer.OrderDtos.OrderOrderingDtos
+@model List<ResultOrderingDto>
+
+@{
+    ViewData["Title"] = "Order Operations";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var culture =
+        new CultureInfo("tr-TR");
+}
+
+<style>
+    .linka-admin-order-card {
+        padding: 20px;
+        border: 1px solid #edf0f4;
+        border-radius: 8px;
+        background-color: #ffffff;
+    }
+
+    .linka-admin-order-table {
+        margin-bottom: 0;
+    }
+
+        .linka-admin-order-table th {
+            border-top: none;
+            color: #7c8798;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.35px;
+            text-transform: uppercase;
+        }
+
+        .linka-admin-order-table td {
+            vertical-align: middle;
+            color: #2f3a4a;
+        }
+
+    .linka-admin-order-number {
+        font-weight: 800;
+    }
+
+    .linka-admin-order-user {
+        display: inline-block;
+        max-width: 230px;
+        overflow: hidden;
+        color: #677386;
+        font-size: 12px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .linka-admin-status-form {
+        display: flex;
+        min-width: 245px;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .linka-admin-status-select {
+        min-width: 135px;
+        height: 36px;
+        font-size: 13px;
+    }
+
+    .linka-admin-update-btn {
+        height: 36px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+</style>
+
+<section class="content container-fluid">
+
+    <div class="row">
+
+        <div class="col-md-12">
+
+            @if (TempData["OrderSuccess"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["OrderSuccess"]
+                </div>
+            }
+
+            @if (TempData["OrderError"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["OrderError"]
+                </div>
+            }
+
+            <div class="chart-box linka-admin-order-card">
+
+                <h4>
+                    Order Operations
+                </h4>
+
+                <p class="text-muted">
+                    Review customer orders and update their current status.
+                </p>
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover linka-admin-order-table">
+
+                        <thead>
+                            <tr>
+                                <th>Order Number</th>
+                                <th>Customer ID</th>
+                                <th>Order Date</th>
+                                <th>Total Price</th>
+                                <th>Current Status</th>
+                                <th>Update Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in Model)
+                            {
+                                var displayOrderNumber =
+                                $"LNK-{item.OrderDate:yyyyMMdd}-{item.OrderingId:D6}";
+
+                                var currentStatus =
+                                string.IsNullOrWhiteSpace(item.OrderStatus)
+                                ? "Paid"
+                                : item.OrderStatus;
+
+                                <tr>
+
+                                    <td>
+                                        <span class="linka-admin-order-number">
+                                            @displayOrderNumber
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="linka-admin-order-user"
+                                              title="@item.UserId">
+                                            @item.UserId
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @(item.OrderDate.ToString("dd.MM.yyyy HH:mm"))
+                                    </td>
+
+                                    <td class="font-weight-bold">
+                                        @(item.TotalPrice.ToString("N2", culture)) ₺
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            @currentStatus
+                                        </strong>
+                                    </td>
+
+                                    <td>
+
+                                        <form asp-area="Admin"
+                                              asp-controller="Order"
+                                              asp-action="UpdateStatus"
+                                              method="post"
+                                              class="linka-admin-status-form">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="OrderingId"
+                                                   value="@item.OrderingId" />
+
+                                            <select name="OrderStatus"
+                                                    class="form-control linka-admin-status-select">
+
+                                                @foreach (var status in new[]
+                                                                                            {
+                                                                                        "Paid",
+                                                                                        "Preparing",
+                                                                                        "Shipped",
+                                                                                        "Delivered",
+                                                                                        "Cancelled"
+                                                                                        })
+                                                {
+                                                    if (status == currentStatus)
+                                                    {
+                                                        <option value="@status"
+                                                                selected>
+                                                            @status
+                                                        </option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@status">
+                                                            @status
+                                                        </option>
+                                                    }
+                                                }
+
+                                            </select>
+
+                                            <button type="submit"
+                                                    class="btn btn-primary linka-admin-update-btn">
+
+                                                Update
+
+                                            </button>
+
+                                        </form>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

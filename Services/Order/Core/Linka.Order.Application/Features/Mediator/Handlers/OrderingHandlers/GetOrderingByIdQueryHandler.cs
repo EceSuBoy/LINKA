@@ -28,7 +28,9 @@ namespace Linka.Order.Application.Features.Mediator.Handlers.OrderingHandlers
                 OrderingId = values.OrderingId,
                 UserId = values.UserId,
                 TotalPrice = values.TotalPrice,
-                OrderDate = values.OrderDate
+                OrderDate = values.OrderDate,
+                OrderStatus =
+                            values.OrderStatus,
             };
         }
             

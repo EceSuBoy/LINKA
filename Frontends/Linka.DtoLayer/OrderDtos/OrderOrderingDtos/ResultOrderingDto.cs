@@ -1,7 +1,7 @@
 ﻿namespace Linka.DtoLayer.OrderDtos
     .OrderOrderingDtos
 {
-    public class ResultOrderingByUserIdDto
+    public class ResultOrderingDto
     {
         public int OrderingId { get; set; }
 

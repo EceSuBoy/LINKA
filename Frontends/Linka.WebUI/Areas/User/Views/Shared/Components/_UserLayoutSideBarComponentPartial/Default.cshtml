@@ -11,16 +11,37 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="../../pages/charts/chartjs.html">
-                <i class="mdi mdi-chart-pie menu-icon"></i>
-                <span class="menu-title">My Active Orders</span>
+
+            <a class="nav-link"
+               asp-area="User"
+               asp-controller="MyOrder"
+               asp-action="ActiveOrders">
+
+                <i class="mdi mdi-truck-delivery-outline menu-icon"></i>
+
+                <span class="menu-title">
+                    My Active Orders
+                </span>
+
             </a>
+
         </li>
+
         <li class="nav-item">
-            <a class="nav-link" href="../../pages/charts/chartjs.html">
-                <i class="mdi mdi-chart-pie menu-icon"></i>
-                <span class="menu-title">Order History</span>
+
+            <a class="nav-link"
+               asp-area="User"
+               asp-controller="MyOrder"
+               asp-action="OrderHistory">
+
+                <i class="mdi mdi-history menu-icon"></i>
+
+                <span class="menu-title">
+                    Order History
+                </span>
+
             </a>
+
         </li>
         <li class="nav-item">
             <a class="nav-link" href="../../pages/tables/basic-table.html">

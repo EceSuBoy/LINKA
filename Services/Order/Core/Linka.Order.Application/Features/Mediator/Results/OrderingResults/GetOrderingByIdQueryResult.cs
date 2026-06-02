@@ -12,5 +12,6 @@ namespace Linka.Order.Application.Features.Mediator.Results.OrderingResults
         public string UserId { get; set; }
         public decimal TotalPrice { get; set; }
         public DateTime OrderDate { get; set; }
+        public string OrderStatus { get; set; }
     }
 }

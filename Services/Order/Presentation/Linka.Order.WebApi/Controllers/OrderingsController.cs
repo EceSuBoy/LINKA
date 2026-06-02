@@ -54,5 +54,83 @@ namespace Linka.Order.WebApi.Controllers
             var values = await _mediator.Send(new GetOrderingByUserIdQuery(id));
             return Ok(values);
         }
+
+        [HttpPost("CreateOrderingWithDetails")]
+        public async Task<IActionResult>
+    CreateOrderingWithDetails(
+        CreateOrderingWithDetailsCommand command)
+        {
+            try
+            {
+                var orderingId =
+                    await _mediator.Send(command);
+
+                return Ok(orderingId);
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(
+                    exception.Message);
+            }
+        }
+
+        [HttpGet("GetOrderingDetail/{orderingId}/{userId}")]
+        public async Task<IActionResult>
+    GetOrderingDetail(
+        int orderingId,
+        string userId)
+        {
+            var value =
+                await _mediator.Send(
+                    new GetOrderingDetailQuery(
+                        orderingId,
+                        userId));
+
+            if (value == null)
+            {
+                return NotFound(
+                    "Order could not be found.");
+            }
+
+            return Ok(value);
+        }
+        [HttpPut("UpdateOrderingStatus")]
+        public async Task<IActionResult>
+    UpdateOrderingStatus(
+        UpdateOrderingStatusCommand command)
+        {
+            try
+            {
+                var isUpdated =
+                    await _mediator.Send(
+                        command);
+
+                if (!isUpdated)
+                {
+                    return NotFound(
+                        "Order could not be found.");
+                }
+
+                return Ok(
+                    "Order status updated successfully.");
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(
+                    exception.Message);
+            }
+        }
+
+        [HttpGet("GetAllOrdering")]
+        public async Task<IActionResult>
+    GetAllOrdering()
+        {
+            var values =
+                await _mediator.Send(
+                    new GetAllOrderingQuery());
+
+            return Ok(values);
+        }
+
     }
 }

@@ -12,6 +12,10 @@ namespace Linka.Order.Domain.Entities
         public string UserId { get; set; }
         public decimal TotalPrice { get; set; }
         public DateTime OrderDate { get; set; }
+
         public List<OrderDetail> OrderDetails { get; set; }
+            = new List<OrderDetail>();
+
+        public string OrderStatus { get; set; } = "Paid";
     }
 }
