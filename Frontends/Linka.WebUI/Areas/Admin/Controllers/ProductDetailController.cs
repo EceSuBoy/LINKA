@@ -6,7 +6,7 @@ namespace Linka.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/ProductDetail")]
-    public class ProductDetailController : Controller
+    public class ProductDetailController : AdminControllerBase
     {
         private readonly IProductDetailService _productDetailService;
 

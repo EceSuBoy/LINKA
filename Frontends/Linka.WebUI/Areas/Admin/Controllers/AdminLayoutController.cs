@@ -3,7 +3,7 @@
 namespace Linka.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class AdminLayoutController : Controller
+    public class AdminLayoutController : AdminControllerBase
     {
         public IActionResult Index()
         {

@@ -10,7 +10,7 @@ namespace Linka.WebUI.Areas.Admin.Controllers
     [Area("Admin")]
     [AllowAnonymous]
     [Route("Admin/SpecialOffer")]
-    public class SpecialOfferController : Controller
+    public class SpecialOfferController : AdminControllerBase
     {     
         private readonly ISpecialOfferService _specialOfferService;
 

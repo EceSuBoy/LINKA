@@ -9,7 +9,7 @@ namespace Linka.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/Brand")]
-    public class BrandController : Controller
+    public class BrandController : AdminControllerBase
     {
         private readonly IBrandService _brandService;
 

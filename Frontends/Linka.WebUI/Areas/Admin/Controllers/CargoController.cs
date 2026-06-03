@@ -6,7 +6,7 @@ namespace Linka.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/Cargo")]
-    public class CargoController : Controller
+    public class CargoController : AdminControllerBase
     {
         private readonly ICargoCompanyService _cargoCompanyService;
 

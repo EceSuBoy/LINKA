@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Linka.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")] 
-    public class StatisticController : Controller
+    public class StatisticController : AdminControllerBase
     {
         private readonly ICatalogStatisticService _catalogStatisticService;
         private readonly IUserStatisticService _userstatisticService;

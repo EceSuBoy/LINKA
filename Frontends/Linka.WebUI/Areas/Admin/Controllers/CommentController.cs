@@ -10,7 +10,7 @@ namespace Linka.WebUI.Areas.Admin.Controllers
     [Area("Admin")]
     [AllowAnonymous]
     [Route("Admin/Comment")]
-    public class CommentController : Controller
+    public class CommentController : AdminControllerBase
     {
         private readonly IHttpClientFactory _httpClientFactory;
 

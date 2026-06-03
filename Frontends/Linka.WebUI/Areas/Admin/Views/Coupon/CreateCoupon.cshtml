@@ -1,0 +1,107 @@
+﻿@model CreateDiscountCouponDto
+
+@{
+    ViewData["Title"] =
+        "Create Coupon";
+
+    Layout =
+        "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<section class="content container-fluid">
+
+    <div class="row">
+
+        <div class="col-md-8 col-md-offset-2">
+
+            <div class="chart-box"
+                 style="border-radius:12px; padding:24px;">
+
+                <h4>
+                    <i class="fa fa-ticket-alt"></i>
+                    Create New Coupon
+                </h4>
+
+                <p class="text-muted">
+                    Define a promotional code that customers can apply during checkout.
+                </p>
+
+                <hr />
+
+                <form method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="All"
+                         class="text-danger mb-3">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            Coupon Code
+                        </label>
+
+                        <input asp-for="Code"
+                               class="form-control"
+                               style="text-transform:uppercase;"
+                               placeholder="Example: BONUS20" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            Discount Rate (%)
+                        </label>
+
+                        <input asp-for="Rate"
+                               type="number"
+                               min="1"
+                               max="100"
+                               class="form-control"
+                               placeholder="20" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            Valid Until
+                        </label>
+
+                        <input asp-for="ValidDate"
+                               type="date"
+                               class="form-control" />
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                            <input asp-for="IsActive"
+                                   type="checkbox" />
+                            Coupon is active
+                        </label>
+                    </div>
+
+                    <br />
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        <i class="fa fa-save"></i>
+
+                        Create Coupon
+
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn btn-default">
+
+                        Cancel
+
+                    </a>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

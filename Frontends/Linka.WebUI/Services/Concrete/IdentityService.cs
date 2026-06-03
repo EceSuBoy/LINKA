@@ -1,11 +1,13 @@
 ﻿using IdentityModel.Client;
 using Linka.DtoLayer.IdentityDtos.LoginDtos;
+using Linka.WebUI.Models;
 using Linka.WebUI.Services.Interfaces;
 using Linka.WebUI.Settings;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace Linka.WebUI.Services.Concrete
@@ -87,14 +89,44 @@ namespace Linka.WebUI.Services.Concrete
                 Policy = new DiscoveryPolicy { RequireHttps = false }
             });
 
-            var passwordTokenRequest = new PasswordTokenRequest
-            {
-                ClientId = _clientSettings.LinkaManagerClient.ClientId,
-                ClientSecret = _clientSettings.LinkaManagerClient.ClientSecret,
-                UserName = signInDto.Username,
-                Password = signInDto.Password,
-                Address= discoveryEndPoint.TokenEndpoint
-            };
+            var passwordTokenRequest =
+    new PasswordTokenRequest
+    {
+        ClientId =
+            _clientSettings
+                .LinkaManagerClient
+                .ClientId,
+
+        ClientSecret =
+            _clientSettings
+                .LinkaManagerClient
+                .ClientSecret,
+
+        UserName =
+            signInDto.Username,
+
+        Password =
+            signInDto.Password,
+
+        Address =
+            discoveryEndPoint
+                .TokenEndpoint,
+
+        Scope =
+            "openid profile email " +
+            "IdentityServerApi " +
+            "CatalogFullPermission " +
+            "CatalogReadPermission " +
+            "DiscountFullPermission " +
+            "OrderFullPermission " +
+            "CargoFullPermission " +
+            "BasketFullPermission " +
+            "CommentFullPermission " +
+            "PaymentFullPermission " +
+            "ImagesFullPermission " +
+            "OcelotFullPermission " +
+            "MessageFullPermission"
+    };
 
             var token = await _httpClient.RequestPasswordTokenAsync(passwordTokenRequest);
             if (token.IsError)
@@ -108,9 +140,79 @@ namespace Linka.WebUI.Services.Concrete
                 Address = discoveryEndPoint.UserInfoEndpoint      
             };
 
-            var userValues= await _httpClient.GetUserInfoAsync(userInfoRequest);
+            var userValues =
+    await _httpClient
+        .GetUserInfoAsync(
+            userInfoRequest);
 
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(userValues.Claims, CookieAuthenticationDefaults.AuthenticationScheme, "name", "role");
+            using var currentUserRequest =
+                new HttpRequestMessage(
+                    HttpMethod.Get,
+                    $"{_serviceApiSettings.IdentityServerUrl}" +
+                    "/api/users/GetUser");
+
+            currentUserRequest
+                .Headers
+                .Authorization =
+                    new AuthenticationHeaderValue(
+                        "Bearer",
+                        token.AccessToken);
+
+            using var currentUserResponse =
+                await _httpClient
+                    .SendAsync(
+                        currentUserRequest);
+
+            if (!currentUserResponse.IsSuccessStatusCode)
+            {
+                var errorContent =
+                    await currentUserResponse
+                        .Content
+                        .ReadAsStringAsync();
+
+                throw new Exception(
+                    "User role information could not be retrieved: " +
+                    $"{currentUserResponse.StatusCode} - " +
+                    $"{errorContent}");
+            }
+
+            var currentUser =
+                await currentUserResponse
+                    .Content
+                    .ReadFromJsonAsync<
+                        UserDetailViewModel>();
+
+            var claims =
+                userValues.Claims
+                    .ToList();
+
+            foreach (
+                var role in
+                currentUser?.Roles ??
+                new List<string>())
+            {
+                var roleAlreadyExists =
+                    claims.Any(
+                        x =>
+                            x.Type == "role" &&
+                            x.Value == role);
+
+                if (!roleAlreadyExists)
+                {
+                    claims.Add(
+                        new Claim(
+                            "role",
+                            role));
+                }
+            }
+
+            ClaimsIdentity claimsIdentity =
+                new ClaimsIdentity(
+                    claims,
+                    CookieAuthenticationDefaults
+                        .AuthenticationScheme,
+                    "name",
+                    "role");
 
             ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 

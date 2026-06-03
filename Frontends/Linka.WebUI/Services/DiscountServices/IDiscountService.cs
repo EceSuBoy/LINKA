@@ -4,7 +4,23 @@ namespace Linka.WebUI.Services.DiscountServices
 {
     public interface IDiscountService
     {
-        Task<GetDiscountCodeDetailByCode> GetDiscountCode(string code);
-        Task<int> GetDiscountCouponCountRate(string code);
+        Task<List<ResultDiscountCouponDto>>
+            GetAllDiscountCouponsAsync();
+
+        Task<GetByIdDiscountCouponDto?>
+            GetByIdDiscountCouponAsync(
+                int id);
+
+        Task CreateDiscountCouponAsync(
+            CreateDiscountCouponDto dto);
+
+        Task UpdateDiscountCouponAsync(
+            UpdateDiscountCouponDto dto);
+
+        Task DeleteDiscountCouponAsync(
+            int id);
+
+        Task<int> GetDiscountCouponCountRate(
+            string code);
     }
 }

@@ -10,7 +10,7 @@ namespace Linka.WebUI.Areas.Admin.Controllers
     [Authorize]
     [Area("Admin")]
     [Route("Admin/Order")]
-    public class OrderController : Controller
+    public class OrderController : AdminControllerBase
     {
         private readonly IOrderOrderingServices
             _orderOrderingServices;

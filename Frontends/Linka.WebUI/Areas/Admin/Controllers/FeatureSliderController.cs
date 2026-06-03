@@ -8,7 +8,7 @@ namespace Linka.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/FeatureSlider")]
-    public class FeatureSliderController : Controller
+    public class FeatureSliderController : AdminControllerBase
     {
         private readonly IFeatureSliderService _featureSliderService;
 

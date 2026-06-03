@@ -1,13 +1,10 @@
-﻿using Azure.Identity;
-using IdentityServer4.Hosting.LocalApiAuthentication;
-using Linka.IdentityServer.Dtos;
+﻿using Linka.IdentityServer.Dtos;
 using Linka.IdentityServer.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
-using static IdentityServer4.IdentityServerConstants;
 
 namespace Linka.IdentityServer.Controllers
 {
@@ -15,34 +12,109 @@ namespace Linka.IdentityServer.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class RegistersController : ControllerBase
-    {       
-        private readonly UserManager<ApplicationUser> _userManager;
+    {
+        private const string DefaultRole =
+            "Customer";
 
-        public RegistersController(UserManager<ApplicationUser> userManager)
+        private readonly UserManager<ApplicationUser>
+            _userManager;
+
+        private readonly RoleManager<IdentityRole>
+            _roleManager;
+
+        public RegistersController(
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
-            _userManager = userManager;
+            _userManager =
+                userManager;
+
+            _roleManager =
+                roleManager;
         }
 
         [HttpPost]
-
-        public async Task<IActionResult> UserRegister(UserRegisterDto userRegisterDto)
+        public async Task<IActionResult> UserRegister(
+            UserRegisterDto userRegisterDto)
         {
-            var values = new ApplicationUser()
+            /*
+             * Register formunu kullanan herkes yalnızca
+             * Customer rolüyle oluşturulur.
+             *
+             * Admin ve Manager rolleri formdan alınmaz.
+             */
+            if (!await _roleManager
+                    .RoleExistsAsync(
+                        DefaultRole))
             {
-                UserName= userRegisterDto.Username,
-                Email= userRegisterDto.Email,
-                Name= userRegisterDto.Name,
-                Surname= userRegisterDto.Surname,
-            };
-            var result = await _userManager.CreateAsync(values, userRegisterDto.Password);
-            if(result.Succeeded)
-            {
-                return Ok("User added successfully");
+                var roleCreateResult =
+                    await _roleManager
+                        .CreateAsync(
+                            new IdentityRole(
+                                DefaultRole));
+
+                if (!roleCreateResult.Succeeded)
+                {
+                    return BadRequest(
+                        roleCreateResult.Errors
+                            .Select(x =>
+                                x.Description));
+                }
             }
-            else
+
+            var user =
+                new ApplicationUser
+                {
+                    UserName =
+                        userRegisterDto.Username,
+
+                    Email =
+                        userRegisterDto.Email,
+
+                    Name =
+                        userRegisterDto.Name,
+
+                    Surname =
+                        userRegisterDto.Surname
+                };
+
+            var createResult =
+                await _userManager
+                    .CreateAsync(
+                        user,
+                        userRegisterDto.Password);
+
+            if (!createResult.Succeeded)
             {
-                return Ok("An error occured. Please try again.");
+                return BadRequest(
+                    createResult.Errors
+                        .Select(x =>
+                            x.Description));
             }
+
+            var roleResult =
+                await _userManager
+                    .AddToRoleAsync(
+                        user,
+                        DefaultRole);
+
+            if (!roleResult.Succeeded)
+            {
+                /*
+                 * Kullanıcı oluşturulduktan sonra rol ataması
+                 * başarısız olursa eksik kayıt bırakmıyoruz.
+                 */
+                await _userManager
+                    .DeleteAsync(user);
+
+                return BadRequest(
+                    roleResult.Errors
+                        .Select(x =>
+                            x.Description));
+            }
+
+            return Ok(
+                "User added successfully.");
         }
     }
 }

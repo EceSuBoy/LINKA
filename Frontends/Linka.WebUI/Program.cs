@@ -65,6 +65,18 @@ builder.Services
         options.SlidingExpiration = true;
     });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(
+        "AdminOrManager",
+        policy =>
+        {
+            policy.RequireRole(
+                "Admin",
+                "Manager");
+        });
+});
+
 builder.Services.AddAccessTokenManagement();
 
 builder.Services.AddHttpContextAccessor();

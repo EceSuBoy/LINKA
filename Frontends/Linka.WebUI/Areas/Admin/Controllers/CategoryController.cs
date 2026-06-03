@@ -9,7 +9,7 @@ namespace Linka.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/Category")]
-    public class CategoryController : Controller
+    public class CategoryController : AdminControllerBase
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ICategoryService _categoryService;

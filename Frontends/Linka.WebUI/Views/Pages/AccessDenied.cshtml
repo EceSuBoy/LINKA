@@ -1,0 +1,85 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+    Layout = "~/Views/UILayout/_UILayout.cshtml";
+}
+
+<style>
+    .access-denied-wrapper {
+        min-height: 430px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 45px 15px;
+    }
+
+    .access-denied-card {
+        width: 100%;
+        max-width: 650px;
+        padding: 48px 38px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+    }
+
+    .access-denied-icon {
+        width: 82px;
+        height: 82px;
+        margin: 0 auto 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: #fff3cd;
+        color: #e0a800;
+        font-size: 34px;
+    }
+
+    .access-denied-title {
+        margin-bottom: 12px;
+        color: #2f3542;
+        font-weight: 700;
+    }
+
+    .access-denied-text {
+        margin-bottom: 28px;
+        color: #747d8c;
+        line-height: 1.7;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <div class="access-denied-wrapper">
+
+        <div class="access-denied-card">
+
+            <div class="access-denied-icon">
+                <i class="fa fa-lock"></i>
+            </div>
+
+            <h2 class="access-denied-title">
+                Access Denied
+            </h2>
+
+            <p class="access-denied-text">
+                You do not have permission to access this page.
+                The requested area is available only to authorized
+                LINKA administrators and managers.
+            </p>
+
+            <a asp-controller="Default"
+               asp-action="Index"
+               class="btn btn-primary px-4 py-2">
+
+                <i class="fa fa-home mr-2"></i>
+
+                Return To Home Page
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

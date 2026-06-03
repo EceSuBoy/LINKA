@@ -1,0 +1,627 @@
+﻿@model CouponListViewModel
+
+@{
+    ViewData["Title"] =
+        "Coupon Management";
+
+    Layout =
+        "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var firstItem =
+        Model.TotalCount == 0
+            ? 0
+            : ((Model.Page - 1) *
+               Model.PageSize) + 1;
+
+    var lastItem =
+        Math.Min(
+            Model.Page *
+            Model.PageSize,
+            Model.TotalCount);
+
+    var firstVisiblePage =
+        Math.Max(
+            1,
+            Model.Page - 2);
+
+    var lastVisiblePage =
+        Math.Min(
+            Model.TotalPages,
+            Model.Page + 2);
+}
+
+<style>
+    .coupon-page {
+        padding-bottom: 28px;
+    }
+
+    .coupon-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(150px, 1fr));
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .coupon-summary-card {
+        padding: 18px;
+        border: 1px solid #edf0f4;
+        border-radius: 12px;
+        background-color: #ffffff;
+        box-shadow: 0 6px 20px rgba(31, 45, 61, 0.05);
+    }
+
+    .coupon-summary-label {
+        display: block;
+        margin-bottom: 7px;
+        color: #8995a8;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.35px;
+        text-transform: uppercase;
+    }
+
+    .coupon-summary-value {
+        color: #273444;
+        font-size: 27px;
+        font-weight: 800;
+    }
+
+    .coupon-card {
+        overflow: hidden;
+        border: 1px solid #edf0f4;
+        border-radius: 12px;
+        background-color: #ffffff;
+        box-shadow: 0 7px 22px rgba(31, 45, 61, 0.06);
+    }
+
+    .coupon-card-header,
+    .coupon-table-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 18px 22px;
+        flex-wrap: wrap;
+    }
+
+    .coupon-card-header {
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .coupon-title {
+        margin: 0 0 4px;
+        color: #273444;
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+    .coupon-subtitle,
+    .coupon-footer-text {
+        margin: 0;
+        color: #8492a6;
+        font-size: 13px;
+    }
+
+    .coupon-filter-box {
+        padding: 16px 22px;
+        border-bottom: 1px solid #edf0f4;
+        background-color: #fbfcfe;
+    }
+
+    .coupon-filter-grid {
+        display: grid;
+        grid-template-columns: minmax(220px, 1fr) 180px 130px auto;
+        align-items: end;
+        gap: 12px;
+    }
+
+    .coupon-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #6b778c;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .coupon-input,
+    .coupon-select {
+        width: 100%;
+        height: 40px;
+        border: 1px solid #dfe5ec;
+        border-radius: 7px;
+        background-color: #ffffff;
+        padding: 0 11px;
+    }
+
+    .coupon-actions {
+        display: flex;
+        gap: 7px;
+    }
+
+    .coupon-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .coupon-table {
+        min-width: 850px;
+        margin-bottom: 0;
+    }
+
+        .coupon-table thead th {
+            padding: 14px;
+            color: #8995a8;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .coupon-table tbody td {
+            padding: 15px 14px;
+            border-top: 1px solid #f0f2f5;
+            vertical-align: middle;
+        }
+
+    .coupon-code {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 10px;
+        border: 1px dashed #e1b800;
+        border-radius: 7px;
+        background-color: #fff9df;
+        color: #8b7200;
+        font-weight: 800;
+        letter-spacing: 0.6px;
+    }
+
+    .coupon-rate {
+        color: #273444;
+        font-weight: 800;
+    }
+
+    .coupon-badge {
+        display: inline-block;
+        min-width: 76px;
+        padding: 6px 10px;
+        border-radius: 15px;
+        font-size: 11px;
+        font-weight: 800;
+        text-align: center;
+    }
+
+    .coupon-active {
+        background-color: #e3f7e9;
+        color: #388954;
+    }
+
+    .coupon-inactive {
+        background-color: #f1f3f5;
+        color: #7d8792;
+    }
+
+    .coupon-expired {
+        background-color: #fde2e2;
+        color: #bd4141;
+    }
+
+    .coupon-table-footer {
+        border-top: 1px solid #edf0f4;
+    }
+
+    .coupon-empty {
+        padding: 52px 15px;
+        color: #8492a6;
+        text-align: center;
+    }
+
+    @@media (max-width: 900px) {
+        .coupon-summary-grid,
+        .coupon-filter-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @@media (max-width: 560px) {
+        .coupon-summary-grid,
+        .coupon-filter-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<section class="content container-fluid coupon-page">
+
+    @if (TempData["CouponSuccess"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="fa fa-check-circle"></i>
+            @TempData["CouponSuccess"]
+        </div>
+    }
+
+    <div class="coupon-summary-grid">
+
+        <div class="coupon-summary-card">
+            <span class="coupon-summary-label">
+                Matching Coupons
+            </span>
+            <span class="coupon-summary-value">
+                @Model.TotalCount
+            </span>
+        </div>
+
+        <div class="coupon-summary-card">
+            <span class="coupon-summary-label">
+                Active
+            </span>
+            <span class="coupon-summary-value">
+                @Model.ActiveCount
+            </span>
+        </div>
+
+        <div class="coupon-summary-card">
+            <span class="coupon-summary-label">
+                Inactive
+            </span>
+            <span class="coupon-summary-value">
+                @Model.InactiveCount
+            </span>
+        </div>
+
+        <div class="coupon-summary-card">
+            <span class="coupon-summary-label">
+                Expired
+            </span>
+            <span class="coupon-summary-value">
+                @Model.ExpiredCount
+            </span>
+        </div>
+
+    </div>
+
+    <div class="coupon-card">
+
+        <div class="coupon-card-header">
+
+            <div>
+                <h4 class="coupon-title">
+                    Coupon Management
+                </h4>
+
+                <p class="coupon-subtitle">
+                    Create and manage promotional coupon codes used during checkout.
+                </p>
+            </div>
+
+            <a asp-area="Admin"
+               asp-controller="Coupon"
+               asp-action="CreateCoupon"
+               class="btn btn-primary">
+
+                <i class="fa fa-plus"></i>
+
+                Add New Coupon
+
+            </a>
+
+        </div>
+
+        <div class="coupon-filter-box">
+
+            <form method="get"
+                  asp-area="Admin"
+                  asp-controller="Coupon"
+                  asp-action="Index">
+
+                <input type="hidden"
+                       name="page"
+                       value="1" />
+
+                <div class="coupon-filter-grid">
+
+                    <div>
+                        <label class="coupon-label">
+                            Search Code
+                        </label>
+
+                        <input type="text"
+                               name="search"
+                               value="@Model.Search"
+                               class="coupon-input"
+                               placeholder="Search BONUS20..." />
+                    </div>
+
+                    <div>
+                        <label class="coupon-label">
+                            Status
+                        </label>
+
+                        <select name="statusFilter"
+                                class="coupon-select">
+
+                            @foreach (
+                                                        var status in
+                                                        new[]
+                                                        {
+                                                        "All",
+                                                        "Active",
+                                                        "Inactive",
+                                                        "Expired"
+                                                        })
+                            {
+                                <option value="@status"
+                                        selected="@(status == Model.StatusFilter)">
+                                    @status
+                                </option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="coupon-label">
+                            Page Size
+                        </label>
+
+                        <select name="pageSize"
+                                class="coupon-select">
+
+                            @foreach (
+                                                        var size in
+                                                        new[]
+                                                        {
+                                                        10,
+                                                        20,
+                                                        50
+                                                        })
+                            {
+                                <option value="@size"
+                                        selected="@(size == Model.PageSize)">
+                                    @size
+                                </option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <div class="coupon-actions">
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            <i class="fa fa-search"></i>
+
+                            Search
+
+                        </button>
+
+                        <a asp-area="Admin"
+                           asp-controller="Coupon"
+                           asp-action="Index"
+                           class="btn btn-default">
+
+                            Clear
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="coupon-table-wrapper">
+
+            <table class="table coupon-table">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Coupon Code</th>
+                        <th>Rate</th>
+                        <th>Valid Until</th>
+                        <th>Status</th>
+                        <th>Operations</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model.Items)
+                    {
+                        var expired =
+                        item.ValidDate.Date <
+                        DateTime.Today;
+
+                        var statusText =
+                        !item.IsActive
+                        ? "Inactive"
+                        : expired
+                        ? "Expired"
+                        : "Active";
+
+                        var statusCss =
+                        statusText ==
+                        "Active"
+                        ? "coupon-active"
+                        : statusText ==
+                        "Expired"
+                        ? "coupon-expired"
+                        : "coupon-inactive";
+
+                        <tr>
+
+                            <td>
+                                @item.CouponId
+                            </td>
+
+                            <td>
+                                <span class="coupon-code">
+                                    <i class="fa fa-ticket-alt"></i>
+                                    @item.Code
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="coupon-rate">
+                                    %@item.Rate
+                                </span>
+                            </td>
+
+                            <td>
+                                @item.ValidDate.ToString("dd.MM.yyyy")
+                            </td>
+
+                            <td>
+                                <span class="coupon-badge @statusCss">
+                                    @statusText
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <a asp-area="Admin"
+                                   asp-controller="Coupon"
+                                   asp-action="UpdateCoupon"
+                                   asp-route-id="@item.CouponId"
+                                   class="btn btn-success btn-sm">
+
+                                    <i class="fa fa-edit"></i>
+
+                                    Update
+
+                                </a>
+
+                                <form asp-area="Admin"
+                                      asp-controller="Coupon"
+                                      asp-action="DeleteCoupon"
+                                      asp-route-id="@item.CouponId"
+                                      method="post"
+                                      style="display:inline;"
+                                      onsubmit="return confirm('Are you sure you want to delete this coupon?');">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="btn btn-danger btn-sm">
+
+                                        <i class="fa fa-trash"></i>
+
+                                        Delete
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+            @if (!Model.Items.Any())
+            {
+                <div class="coupon-empty">
+                    <i class="fa fa-ticket-alt fa-3x"></i>
+
+                    <h4>
+                        No coupons were found.
+                    </h4>
+
+                    <p>
+                        Add a new coupon or change your filters.
+                    </p>
+                </div>
+            }
+
+        </div>
+
+        <div class="coupon-table-footer">
+
+            <span class="coupon-footer-text">
+                Showing
+                <strong>@firstItem</strong>
+                -
+                <strong>@lastItem</strong>
+                of
+                <strong>@Model.TotalCount</strong>
+                coupons
+            </span>
+
+            @if (Model.TotalPages > 1)
+            {
+                <ul class="pagination">
+
+                    <li class="@(Model.Page <= 1 ? "disabled" : "")">
+
+                        <a asp-area="Admin"
+                           asp-controller="Coupon"
+                           asp-action="Index"
+                           asp-route-search="@Model.Search"
+                           asp-route-statusFilter="@Model.StatusFilter"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-page="@(Model.Page - 1)">
+
+                            &laquo;
+
+                        </a>
+
+                    </li>
+
+                    @for (
+                                    var pageNumber =
+                                    firstVisiblePage;
+
+                                    pageNumber <=
+                                    lastVisiblePage;
+
+                                    pageNumber++)
+                    {
+                        <li class="@(pageNumber == Model.Page ? "active" : "")">
+
+                            <a asp-area="Admin"
+                               asp-controller="Coupon"
+                               asp-action="Index"
+                               asp-route-search="@Model.Search"
+                               asp-route-statusFilter="@Model.StatusFilter"
+                               asp-route-pageSize="@Model.PageSize"
+                               asp-route-page="@pageNumber">
+
+                                @pageNumber
+
+                            </a>
+
+                        </li>
+                    }
+
+                    <li class="@(Model.Page >= Model.TotalPages ? "disabled" : "")">
+
+                        <a asp-area="Admin"
+                           asp-controller="Coupon"
+                           asp-action="Index"
+                           asp-route-search="@Model.Search"
+                           asp-route-statusFilter="@Model.StatusFilter"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-page="@(Model.Page + 1)">
+
+                            &raquo;
+
+                        </a>
+
+                    </li>
+
+                </ul>
+            }
+
+        </div>
+
+    </div>
+
+</section>

@@ -1,107 +1,362 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
-using System;
-using System.Linq;
-using System.Security.Claims;
-using IdentityModel;
-using Linka.IdentityServer.Data;
+﻿using Linka.IdentityServer.Data;
 using Linka.IdentityServer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using System;
+using System.Linq;
 
 namespace Linka.IdentityServer
 {
     public class SeedData
     {
-        public static void EnsureSeedData(string connectionString)
+        private static readonly string[] SystemRoles =
         {
-            var services = new ServiceCollection();
-            services.AddLogging();
-            services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlite(connectionString));
+            "Customer",
+            "Manager",
+            "Admin"
+        };
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+        public static void EnsureSeedData(
+            string connectionString)
+        {
+            var services =
+                new ServiceCollection();
+
+            services.AddLogging();
+
+            /*
+             * Burada UseSqlite DEĞİL,
+             * UseSqlServer kullanılmalıdır.
+             */
+            services.AddDbContext<ApplicationDbContext>(
+                options =>
+                    options.UseSqlServer(
+                        connectionString));
+
+            services
+                .AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            using (var serviceProvider = services.BuildServiceProvider())
+            using var serviceProvider =
+                services.BuildServiceProvider();
+
+            using var scope =
+                serviceProvider
+                    .GetRequiredService<IServiceScopeFactory>()
+                    .CreateScope();
+
+            var context =
+                scope.ServiceProvider
+                    .GetRequiredService<ApplicationDbContext>();
+
+            /*
+             * Identity tabloları zaten varsa değiştirmez.
+             * Eksik migration varsa uygular.
+             */
+            context.Database.Migrate();
+
+            var userManager =
+                scope.ServiceProvider
+                    .GetRequiredService<
+                        UserManager<ApplicationUser>>();
+
+            var roleManager =
+                scope.ServiceProvider
+                    .GetRequiredService<
+                        RoleManager<IdentityRole>>();
+
+            foreach (var role in SystemRoles)
             {
-                using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
-                {
-                    var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-                    context.Database.Migrate();
-
-                    var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                    var alice = userMgr.FindByNameAsync("alice").Result;
-                    if (alice == null)
-                    {
-                        alice = new ApplicationUser
-                        {
-                            UserName = "alice",
-                            Email = "AliceSmith@email.com",
-                            EmailConfirmed = true,
-                        };
-                        var result = userMgr.CreateAsync(alice, "Pass123$").Result;
-                        if (!result.Succeeded)
-                        {
-                            throw new Exception(result.Errors.First().Description);
-                        }
-
-                        result = userMgr.AddClaimsAsync(alice, new Claim[]{
-                            new Claim(JwtClaimTypes.Name, "Alice Smith"),
-                            new Claim(JwtClaimTypes.GivenName, "Alice"),
-                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                            new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
-                        }).Result;
-                        if (!result.Succeeded)
-                        {
-                            throw new Exception(result.Errors.First().Description);
-                        }
-                        Log.Debug("alice created");
-                    }
-                    else
-                    {
-                        Log.Debug("alice already exists");
-                    }
-
-                    var bob = userMgr.FindByNameAsync("bob").Result;
-                    if (bob == null)
-                    {
-                        bob = new ApplicationUser
-                        {
-                            UserName = "bob",
-                            Email = "BobSmith@email.com",
-                            EmailConfirmed = true
-                        };
-                        var result = userMgr.CreateAsync(bob, "Pass123$").Result;
-                        if (!result.Succeeded)
-                        {
-                            throw new Exception(result.Errors.First().Description);
-                        }
-
-                        result = userMgr.AddClaimsAsync(bob, new Claim[]{
-                            new Claim(JwtClaimTypes.Name, "Bob Smith"),
-                            new Claim(JwtClaimTypes.GivenName, "Bob"),
-                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                            new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
-                            new Claim("location", "somewhere")
-                        }).Result;
-                        if (!result.Succeeded)
-                        {
-                            throw new Exception(result.Errors.First().Description);
-                        }
-                        Log.Debug("bob created");
-                    }
-                    else
-                    {
-                        Log.Debug("bob already exists");
-                    }
-                }
+                CreateRoleIfNotExists(
+                    roleManager,
+                    role);
             }
+
+            /*
+             * Kullanıcının rolünü Role alanından belirliyoruz.
+             *
+             * Normal kullanıcı: Customer
+             * Yönetici: Manager
+             * Tam yetkili yönetici: Admin
+             */
+            var users =
+                new[]
+                {
+                    new SeedUser
+                    {
+                        Username = "linkaadmin",
+                        Email = "admin@linka.com",
+                        Name = "LINKA",
+                        Surname = "Admin",
+                        Password = "Admin123!",
+                        Role = "Admin"
+                    },
+
+                    new SeedUser
+                    {
+                        Username = "linkamanager",
+                        Email = "manager@linka.com",
+                        Name = "LINKA",
+                        Surname = "Manager",
+                        Password = "Manager123!",
+                        Role = "Manager"
+                    },
+
+                    new SeedUser
+                    {
+                        Username = "kerem",
+                        Email = "kerem@linka.com",
+                        Name = "Kerem",
+                        Surname = "Aydın",
+                        Password = "Kerem123!",
+                        Role = "Customer"
+                    },
+
+                    new SeedUser
+                    {
+                        Username = "mehmet",
+                        Email = "mehmet@linka.com",
+                        Name = "Mehmet",
+                        Surname = "Demir",
+                        Password = "Mehmet123!",
+                        Role = "Customer"
+                    },
+
+                    new SeedUser
+                    {
+                        Username = "ayse",
+                        Email = "ayse@linka.com",
+                        Name = "Ayşe",
+                        Surname = "Çelik",
+                        Password = "Ayse123!",
+                        Role = "Customer"
+                    }
+                };
+
+            foreach (var user in users)
+            {
+                CreateOrUpdateUser(
+                    userManager,
+                    user);
+            }
+
+            Log.Information(
+                "LINKA identity seed completed successfully.");
+        }
+
+        private static void CreateRoleIfNotExists(
+            RoleManager<IdentityRole> roleManager,
+            string roleName)
+        {
+            var exists =
+                roleManager
+                    .RoleExistsAsync(roleName)
+                    .GetAwaiter()
+                    .GetResult();
+
+            if (exists)
+            {
+                Log.Information(
+                    "Role already exists: {Role}",
+                    roleName);
+
+                return;
+            }
+
+            var result =
+                roleManager
+                    .CreateAsync(
+                        new IdentityRole(roleName))
+                    .GetAwaiter()
+                    .GetResult();
+
+            if (!result.Succeeded)
+            {
+                throw new Exception(
+                    string.Join(
+                        " | ",
+                        result.Errors.Select(
+                            x => x.Description)));
+            }
+
+            Log.Information(
+                "Role created: {Role}",
+                roleName);
+        }
+
+        private static void CreateOrUpdateUser(
+            UserManager<ApplicationUser> userManager,
+            SeedUser seedUser)
+        {
+            var user =
+                userManager
+                    .FindByNameAsync(seedUser.Username)
+                    .GetAwaiter()
+                    .GetResult();
+
+            if (user == null)
+            {
+                user =
+                    new ApplicationUser
+                    {
+                        UserName =
+                            seedUser.Username,
+
+                        Email =
+                            seedUser.Email,
+
+                        Name =
+                            seedUser.Name,
+
+                        Surname =
+                            seedUser.Surname,
+
+                        EmailConfirmed =
+                            true
+                    };
+
+                var createResult =
+                    userManager
+                        .CreateAsync(
+                            user,
+                            seedUser.Password)
+                        .GetAwaiter()
+                        .GetResult();
+
+                if (!createResult.Succeeded)
+                {
+                    throw new Exception(
+                        $"User could not be created: " +
+                        $"{seedUser.Username}. " +
+                        string.Join(
+                            " | ",
+                            createResult.Errors.Select(
+                                x => x.Description)));
+                }
+
+                Log.Information(
+                    "User created: {Username}",
+                    seedUser.Username);
+            }
+            else
+            {
+                user.Email =
+                    seedUser.Email;
+
+                user.Name =
+                    seedUser.Name;
+
+                user.Surname =
+                    seedUser.Surname;
+
+                user.EmailConfirmed =
+                    true;
+
+                var updateResult =
+                    userManager
+                        .UpdateAsync(user)
+                        .GetAwaiter()
+                        .GetResult();
+
+                if (!updateResult.Succeeded)
+                {
+                    throw new Exception(
+                        $"User could not be updated: " +
+                        $"{seedUser.Username}. " +
+                        string.Join(
+                            " | ",
+                            updateResult.Errors.Select(
+                                x => x.Description)));
+                }
+
+                Log.Information(
+                    "User already exists: {Username}",
+                    seedUser.Username);
+            }
+
+            /*
+             * Seed listesinde rolü değiştirirsen eski LINKA
+             * rolü kaldırılır ve yeni rol atanır.
+             */
+            var currentRoles =
+                userManager
+                    .GetRolesAsync(user)
+                    .GetAwaiter()
+                    .GetResult();
+
+            foreach (
+                var currentRole in
+                currentRoles.Where(
+                    role =>
+                        SystemRoles.Contains(role) &&
+                        role != seedUser.Role))
+            {
+                userManager
+                    .RemoveFromRoleAsync(
+                        user,
+                        currentRole)
+                    .GetAwaiter()
+                    .GetResult();
+            }
+
+            var alreadyInRole =
+                userManager
+                    .IsInRoleAsync(
+                        user,
+                        seedUser.Role)
+                    .GetAwaiter()
+                    .GetResult();
+
+            if (!alreadyInRole)
+            {
+                var roleResult =
+                    userManager
+                        .AddToRoleAsync(
+                            user,
+                            seedUser.Role)
+                        .GetAwaiter()
+                        .GetResult();
+
+                if (!roleResult.Succeeded)
+                {
+                    throw new Exception(
+                        $"Role could not be assigned: " +
+                        $"{seedUser.Username}. " +
+                        string.Join(
+                            " | ",
+                            roleResult.Errors.Select(
+                                x => x.Description)));
+                }
+
+                Log.Information(
+                    "Role assigned: {Username} -> {Role}",
+                    seedUser.Username,
+                    seedUser.Role);
+            }
+        }
+
+        private class SeedUser
+        {
+            public string Username { get; set; } =
+                string.Empty;
+
+            public string Email { get; set; } =
+                string.Empty;
+
+            public string Name { get; set; } =
+                string.Empty;
+
+            public string Surname { get; set; } =
+                string.Empty;
+
+            public string Password { get; set; } =
+                string.Empty;
+
+            public string Role { get; set; } =
+                string.Empty;
         }
     }
 }

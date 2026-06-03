@@ -9,7 +9,7 @@ namespace Linka.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/OfferDiscount")]
-    public class OfferDiscountController : Controller
+    public class OfferDiscountController : AdminControllerBase
     {
         private readonly IOfferDiscountService _offerDiscountService;
 

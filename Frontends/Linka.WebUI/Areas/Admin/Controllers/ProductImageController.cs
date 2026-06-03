@@ -6,7 +6,7 @@ namespace Linka.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/ProductImage")]
-    public class ProductImageController : Controller
+    public class ProductImageController : AdminControllerBase
     {
         private readonly IProductImageService _productImageService;
 

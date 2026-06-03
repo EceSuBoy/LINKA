@@ -10,7 +10,7 @@ namespace Linka.WebUI.Areas.Admin.Controllers
     [Area("Admin")]
     [AllowAnonymous]
     [Route("Admin/About")]
-    public class AboutController : Controller
+    public class AboutController : AdminControllerBase
     {
         private readonly IAboutService _aboutService;
 

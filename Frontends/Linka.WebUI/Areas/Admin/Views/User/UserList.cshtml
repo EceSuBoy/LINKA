@@ -1,42 +1,841 @@
-﻿@model List<ResultUserDto>
+﻿@model PagedResultDto<ResultUserWithRoleDto>
 
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
-    int count = 0;
+    ViewData["Title"] =
+        "User Role Management";
+
+    Layout =
+        "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var canManageRoles =
+        ViewBag.CanManageRoles is bool value &&
+        value;
+
+    var currentUserId =
+        ViewBag.CurrentUserId as string;
+
+    var startItem =
+        Model.TotalCount == 0
+            ? 0
+            : ((Model.Page - 1) *
+               Model.PageSize) + 1;
+
+    var endItem =
+        Math.Min(
+            Model.Page *
+            Model.PageSize,
+            Model.TotalCount);
+
+    var firstVisiblePage =
+        Math.Max(
+            1,
+            Model.Page - 2);
+
+    var lastVisiblePage =
+        Math.Min(
+            Model.TotalPages,
+            Model.Page + 2);
+
+    var rowNumber =
+        startItem - 1;
 }
 
-<section class="content container-fluid">
+<style>
+    .linka-user-page {
+        padding-bottom: 28px;
+    }
+
+    .linka-user-card {
+        overflow: hidden;
+        border: 1px solid #edf0f4;
+        border-radius: 12px;
+        background-color: #ffffff;
+        box-shadow: 0 7px 22px rgba(31, 45, 61, 0.06);
+    }
+
+    .linka-user-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 22px 24px;
+        border-bottom: 1px solid #edf0f4;
+        flex-wrap: wrap;
+    }
+
+    .linka-user-title {
+        margin: 0 0 4px;
+        color: #273444;
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+    .linka-user-subtitle {
+        margin: 0;
+        color: #8492a6;
+        font-size: 13px;
+    }
+
+    .linka-total-users {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 13px;
+        border-radius: 18px;
+        background-color: #f8fafc;
+        color: #596780;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .linka-filter-box {
+        padding: 18px 24px;
+        border-bottom: 1px solid #edf0f4;
+        background-color: #fbfcfe;
+    }
+
+    .linka-filter-grid {
+        display: grid;
+        grid-template-columns: minmax(240px, 1fr) 185px 130px auto;
+        align-items: end;
+        gap: 12px;
+    }
+
+    .linka-filter-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #6b778c;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.25px;
+        text-transform: uppercase;
+    }
+
+    .linka-filter-input,
+    .linka-filter-select {
+        width: 100%;
+        height: 40px;
+        border: 1px solid #dfe5ec;
+        border-radius: 7px;
+        background-color: #ffffff;
+        padding: 0 12px;
+        color: #3c4858;
+        outline: none;
+    }
+
+    .linka-filter-actions {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .linka-filter-btn {
+        height: 40px;
+        padding: 0 15px;
+        border-radius: 7px;
+        font-weight: 700;
+    }
+
+    .linka-user-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .linka-user-table {
+        min-width: 1080px;
+        margin-bottom: 0;
+    }
+
+        .linka-user-table thead th {
+            padding: 15px 14px;
+            border-bottom: 1px solid #edf0f4;
+            color: #8995a8;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.45px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .linka-user-table tbody td {
+            padding: 15px 14px;
+            border-top: 1px solid #f0f2f5;
+            color: #3c4858;
+            vertical-align: middle;
+        }
+
+    .linka-user-profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .linka-user-avatar {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: #fff4cd;
+        color: #b58700;
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .linka-user-full-name {
+        display: block;
+        color: #273444;
+        font-weight: 700;
+    }
+
+    .linka-user-id {
+        display: block;
+        max-width: 155px;
+        overflow: hidden;
+        color: #a0aabc;
+        font-size: 11px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .linka-username {
+        color: #596780;
+        font-weight: 700;
+    }
+
+    .linka-role-badge {
+        display: inline-block;
+        min-width: 88px;
+        padding: 6px 10px;
+        border-radius: 14px;
+        font-size: 11px;
+        font-weight: 800;
+        text-align: center;
+    }
+
+    .linka-role-admin {
+        background-color: #fde2e2;
+        color: #bd4141;
+    }
+
+    .linka-role-manager {
+        background-color: #e2eafd;
+        color: #4169bd;
+    }
+
+    .linka-role-customer {
+        background-color: #e3f7e9;
+        color: #388954;
+    }
+
+    .linka-role-unassigned {
+        background-color: #f1f3f5;
+        color: #7d8792;
+    }
+
+    .linka-role-form {
+        display: flex;
+        min-width: 248px;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .linka-role-select {
+        height: 34px;
+        border: 1px solid #dfe5ec;
+        border-radius: 6px;
+        background-color: #ffffff;
+        padding: 0 8px;
+        font-size: 12px;
+    }
+
+    .linka-update-role-btn {
+        height: 34px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .linka-read-only-text {
+        color: #a0aabc;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .linka-own-account {
+        color: #b58700;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .linka-address-btn {
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .linka-table-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 16px 24px;
+        border-top: 1px solid #edf0f4;
+        flex-wrap: wrap;
+    }
+
+    .linka-pagination-info {
+        color: #8492a6;
+        font-size: 13px;
+    }
+
+    .linka-pagination {
+        margin: 0;
+    }
+
+    .linka-empty-state {
+        padding: 54px 20px;
+        color: #8492a6;
+        text-align: center;
+    }
+
+        .linka-empty-state i {
+            display: block;
+            margin-bottom: 12px;
+            color: #c4ccd7;
+            font-size: 38px;
+        }
+
+    @@media (max-width: 991px) {
+        .linka-filter-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .linka-filter-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<section class="content container-fluid linka-user-page">
+
     <div class="row">
+
         <div class="col-md-12">
-            <div class="chart-box">
-                <div class="bs-example" data-example-id="bordered-table">
-                    <table class="table table-bordered">
+
+            @if (TempData["UserRoleSuccess"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="fa fa-check-circle"></i>
+                    @TempData["UserRoleSuccess"]
+                </div>
+            }
+
+            @if (TempData["UserRoleError"] != null)
+            {
+                <div class="alert alert-danger">
+                    <i class="fa fa-exclamation-circle"></i>
+                    @TempData["UserRoleError"]
+                </div>
+            }
+
+            <div class="linka-user-card">
+
+                <div class="linka-user-card-header">
+
+                    <div>
+
+                        <h4 class="linka-user-title">
+                            User Role Management
+                        </h4>
+
+                        <p class="linka-user-subtitle">
+                            Search users, review their roles and manage authorization levels.
+                        </p>
+
+                    </div>
+
+                    <span class="linka-total-users">
+
+                        <i class="fa fa-users"></i>
+
+                        @Model.TotalCount Users
+
+                    </span>
+
+                </div>
+
+                <div class="linka-filter-box">
+
+                    <form asp-area="Admin"
+                          asp-controller="User"
+                          asp-action="UserList"
+                          method="get">
+
+                        <input type="hidden"
+                               name="page"
+                               value="1" />
+
+                        <div class="linka-filter-grid">
+
+                            <div>
+
+                                <label class="linka-filter-label">
+                                    Search User
+                                </label>
+
+                                <input type="text"
+                                       name="search"
+                                       value="@Model.Search"
+                                       class="linka-filter-input"
+                                       placeholder="Search by username, name or email..." />
+
+                            </div>
+
+                            <div>
+
+                                <label class="linka-filter-label">
+                                    Role
+                                </label>
+
+                                <select name="roleFilter"
+                                        class="linka-filter-select">
+
+                                    @foreach (
+                                                                        var role in
+                                                                        new[]
+                                                                        {
+                                                                        "All",
+                                                                        "Customer",
+                                                                        "Manager",
+                                                                        "Admin",
+                                                                        "Unassigned"
+                                                                        })
+                                    {
+                                        if (string.Equals(
+                                        Model.RoleFilter,
+                                        role,
+                                        StringComparison
+                                        .OrdinalIgnoreCase))
+                                        {
+                                            <option value="@role"
+                                                    selected>
+                                                @role
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@role">
+                                                @role
+                                            </option>
+                                        }
+                                    }
+
+                                </select>
+
+                            </div>
+
+                            <div>
+
+                                <label class="linka-filter-label">
+                                    Page Size
+                                </label>
+
+                                <select name="pageSize"
+                                        class="linka-filter-select">
+
+                                    @foreach (
+                                                                        var size in
+                                                                        new[]
+                                                                        {
+                                                                        10,
+                                                                        20,
+                                                                        50
+                                                                        })
+                                    {
+                                        if (Model.PageSize ==
+                                        size)
+                                        {
+                                            <option value="@size"
+                                                    selected>
+                                                @size Users
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@size">
+                                                @size Users
+                                            </option>
+                                        }
+                                    }
+
+                                </select>
+
+                            </div>
+
+                            <div class="linka-filter-actions">
+
+                                <button type="submit"
+                                        class="btn btn-primary linka-filter-btn">
+
+                                    <i class="fa fa-search"></i>
+
+                                    Search
+
+                                </button>
+
+                                <a asp-area="Admin"
+                                   asp-controller="User"
+                                   asp-action="UserList"
+                                   class="btn btn-default linka-filter-btn">
+
+                                    Clear
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="linka-user-table-wrapper">
+
+                    <table class="table linka-user-table">
+
                         <thead>
+
                             <tr>
                                 <th>#</th>
-                                <th>Name Surname</th>
+                                <th>User</th>
                                 <th>Username</th>
                                 <th>Email</th>
-                                <th>Address Detail</th>
+                                <th>Current Role</th>
+                                <th>Address</th>
+                                <th>Manage Role</th>
                             </tr>
+
                         </thead>
+
                         <tbody>
-                            @foreach (var item in Model)
+
+                            @foreach (
+                                                        var item in
+                                                        Model.Items)
                             {
-                                count++;
+                                rowNumber++;
+
+                                var roleCssClass =
+                                item.RoleName switch
+                                {
+                                    "Admin" =>
+                                                            "linka-role-admin",
+
+                                    "Manager" =>
+                                                            "linka-role-manager",
+
+                                    "Customer" =>
+                                                            "linka-role-customer",
+
+                                    _ =>
+                                                            "linka-role-unassigned"
+                                };
+
+                                var firstInitial =
+                                string.IsNullOrWhiteSpace(
+                                item.Name)
+                                ? "?"
+                                : item.Name
+                                .Substring(
+                                0,
+                                1);
+
+                                var surnameInitial =
+                                string.IsNullOrWhiteSpace(
+                                item.Surname)
+                                ? string.Empty
+                                : item.Surname
+                                .Substring(
+                                0,
+                                1);
+
+                                var isCurrentUser =
+                                item.Id ==
+                                currentUserId;
+
                                 <tr>
-                                    <th scope="row">@count</th>
-                                    <td>@item.name @item.surname</td>
-                                    <td>@item.userName</td>
-                                    <td>@item.email</td>   
-                                    <td><a href="/Admin/User/UserAddressInfo/@item.id" class="btn btn-warning">Address Detail</a></td>
+
+                                    <td>
+                                        @rowNumber
+                                    </td>
+
+                                    <td>
+
+                                        <div class="linka-user-profile">
+
+                                            <div class="linka-user-avatar">
+                                                @firstInitial@surnameInitial
+                                            </div>
+
+                                            <div>
+
+                                                <span class="linka-user-full-name">
+                                                    @item.Name @item.Surname
+                                                </span>
+
+                                                <span class="linka-user-id"
+                                                      title="@item.Id">
+                                                    @item.Id
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        <span class="linka-username">
+                                            @item.Username
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @item.Email
+                                    </td>
+
+                                    <td>
+
+                                        <span class="linka-role-badge @roleCssClass">
+                                            @item.RoleName
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <a asp-area="Admin"
+                                           asp-controller="User"
+                                           asp-action="UserAddressInfo"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-warning btn-sm linka-address-btn">
+
+                                            <i class="fa fa-map-marker"></i>
+
+                                            Address
+
+                                        </a>
+
+                                    </td>
+
+                                    <td>
+
+                                        @if (!canManageRoles)
+                                        {
+                                            <span class="linka-read-only-text">
+                                                <i class="fa fa-lock"></i>
+                                                Read Only
+                                            </span>
+                                        }
+                                        else if (isCurrentUser)
+                                        {
+                                            <span class="linka-own-account">
+                                                <i class="fa fa-shield"></i>
+                                                Current Admin
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <form asp-area="Admin"
+                                                  asp-controller="User"
+                                                  asp-action="UpdateRole"
+                                                  method="post"
+                                                  class="linka-role-form"
+                                                  onsubmit="return confirm('Are you sure you want to update this user role?');">
+
+                                                @Html.AntiForgeryToken()
+
+                                                <input type="hidden"
+                                                       name="UserId"
+                                                       value="@item.Id" />
+
+                                                <input type="hidden"
+                                                       name="search"
+                                                       value="@Model.Search" />
+
+                                                <input type="hidden"
+                                                       name="roleFilter"
+                                                       value="@Model.RoleFilter" />
+
+                                                <input type="hidden"
+                                                       name="page"
+                                                       value="@Model.Page" />
+
+                                                <input type="hidden"
+                                                       name="pageSize"
+                                                       value="@Model.PageSize" />
+
+                                                <select name="RoleName"
+                                                        class="linka-role-select">
+
+                                                    @foreach (
+                                                                                                var role in
+                                                                                                new[]
+                                                                                                {
+                                                                                        "Customer",
+                                                                                        "Manager",
+                                                                                        "Admin"
+                                                                                                })
+                                                    {
+                                                        if (string.Equals(
+                                                        item.RoleName,
+                                                        role,
+                                                        StringComparison
+                                                        .OrdinalIgnoreCase))
+                                                        {
+                                                            <option value="@role"
+                                                                    selected>
+                                                                @role
+                                                            </option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@role">
+                                                                @role
+                                                            </option>
+                                                        }
+                                                    }
+
+                                                </select>
+
+                                                <button type="submit"
+                                                        class="btn btn-primary btn-sm linka-update-role-btn">
+
+                                                    Update
+
+                                                </button>
+
+                                            </form>
+                                        }
+
+                                    </td>
+
                                 </tr>
                             }
+
                         </tbody>
+
                     </table>
+
+                    @if (!Model.Items.Any())
+                    {
+                        <div class="linka-empty-state">
+
+                            <i class="fa fa-search"></i>
+
+                            <strong>
+                                No matching users were found.
+                            </strong>
+
+                            <p>
+                                Try changing the username, e-mail or role filter.
+                            </p>
+
+                        </div>
+                    }
+
                 </div>
+
+                <div class="linka-table-footer">
+
+                    <span class="linka-pagination-info">
+
+                        Showing
+                        <strong>@startItem</strong>
+                        -
+                        <strong>@endItem</strong>
+                        of
+                        <strong>@Model.TotalCount</strong>
+                        users
+
+                    </span>
+
+                    @if (Model.TotalPages > 1)
+                    {
+                        <ul class="pagination linka-pagination">
+
+                            <li class="@(Model.Page <= 1 ? "disabled" : "")">
+
+                                <a asp-area="Admin"
+                                   asp-controller="User"
+                                   asp-action="UserList"
+                                   asp-route-search="@Model.Search"
+                                   asp-route-roleFilter="@Model.RoleFilter"
+                                   asp-route-pageSize="@Model.PageSize"
+                                   asp-route-page="@(Model.Page - 1)">
+
+                                    &laquo;
+
+                                </a>
+
+                            </li>
+
+                            @for (
+                                                    var pageNumber =
+                                                    firstVisiblePage;
+
+                                                    pageNumber <=
+                                                    lastVisiblePage;
+
+                                                    pageNumber++)
+                            {
+                                <li class="@(pageNumber == Model.Page ? "active" : "")">
+
+                                    <a asp-area="Admin"
+                                       asp-controller="User"
+                                       asp-action="UserList"
+                                       asp-route-search="@Model.Search"
+                                       asp-route-roleFilter="@Model.RoleFilter"
+                                       asp-route-pageSize="@Model.PageSize"
+                                       asp-route-page="@pageNumber">
+
+                                        @pageNumber
+
+                                    </a>
+
+                                </li>
+                            }
+
+                            <li class="@(Model.Page >= Model.TotalPages ? "disabled" : "")">
+
+                                <a asp-area="Admin"
+                                   asp-controller="User"
+                                   asp-action="UserList"
+                                   asp-route-search="@Model.Search"
+                                   asp-route-roleFilter="@Model.RoleFilter"
+                                   asp-route-pageSize="@Model.PageSize"
+                                   asp-route-page="@(Model.Page + 1)">
+
+                                    &raquo;
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+                    }
+
+                </div>
+
             </div>
+
         </div>
+
     </div>
+
 </section>

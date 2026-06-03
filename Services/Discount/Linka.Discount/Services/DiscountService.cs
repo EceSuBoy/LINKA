@@ -82,15 +82,39 @@ namespace Linka.Discount.Services
             }
         }
 
-        public int GetDiscountCouponCountRate(string code)
+        public int GetDiscountCouponCountRate(
+    string code)
         {
-            string query = "Select Rate From Coupons Where Code =@code";
-            var parameters = new DynamicParameters();
-            parameters.Add("@code", code);
-            using (var connection = _context.CreateConnection())
+            string query =
+                @"SELECT Rate
+          FROM Coupons
+          WHERE UPPER(Code) = UPPER(@code)
+            AND IsActive = @isActive
+            AND ValidDate >= @today";
+
+            var parameters =
+                new DynamicParameters();
+
+            parameters.Add(
+                "@code",
+                code.Trim());
+
+            parameters.Add(
+                "@isActive",
+                true);
+
+            parameters.Add(
+                "@today",
+                DateTime.Today);
+
+            using (
+                var connection =
+                    _context.CreateConnection())
             {
-                var values = connection.QueryFirstOrDefault<int>(query, parameters);
-                return values;
+                return connection
+                    .QueryFirstOrDefault<int>(
+                        query,
+                        parameters);
             }
         }
 

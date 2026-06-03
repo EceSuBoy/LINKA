@@ -10,7 +10,7 @@ namespace Linka.WebUI.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Route("Admin/Feature")]
-    public class FeatureController : Controller
+    public class FeatureController : AdminControllerBase
     {
         private readonly IFeatureService _featureService;
 
