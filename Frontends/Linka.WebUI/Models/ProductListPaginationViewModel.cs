@@ -18,5 +18,7 @@
         public int TotalProductCount { get; set; }
 
         public int TotalPages { get; set; }
+
+        public bool DiscountedOnly { get; set; }
     }
 }

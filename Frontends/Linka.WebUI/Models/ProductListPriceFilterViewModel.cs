@@ -18,6 +18,8 @@
             get;
             set;
         } = new List<ProductListPriceRangeViewModel>();
+
+        public bool DiscountedOnly { get; set; }
     }
 
     public class ProductListPriceRangeViewModel
@@ -29,6 +31,6 @@
 
         public decimal? MaxPrice { get; set; }
 
-        public int ProductCount { get; set; }
+        public int ProductCount { get; set; }  
     }
 }

@@ -23,7 +23,8 @@ namespace Linka.WebUI.ViewComponents.ProductListViewComponents
             decimal? maxPrice,
             string? sort,
             int page,
-            int pageSize)
+            int pageSize,
+            bool discountedOnly)
         {
             var products =
                 string.IsNullOrWhiteSpace(id)
@@ -31,6 +32,16 @@ namespace Linka.WebUI.ViewComponents.ProductListViewComponents
                         .GetProductsWithCategoryAsync()
                     : await _productService
                         .GetProductsWithCategoryByCategoryIdAsync(id);
+
+            if (discountedOnly)
+            {
+                products =
+                    products
+                        .Where(x =>
+                            x.DiscountRate > 0 &&
+                            x.DiscountRate <= 100)
+                        .ToList();
+            }
 
             var totalProductCount =
                 products.Count(product =>
@@ -73,6 +84,9 @@ namespace Linka.WebUI.ViewComponents.ProductListViewComponents
 
                     MaxPrice =
                         maxPrice,
+
+                    DiscountedOnly =
+    discountedOnly,
 
                     Sort =
                         string.IsNullOrWhiteSpace(sort)

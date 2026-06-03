@@ -22,7 +22,8 @@ namespace Linka.WebUI.ViewComponents.ProductListViewComponents
     decimal? minPrice,
     decimal? maxPrice,
     string? sort,
-    int pageSize)
+    int pageSize,
+    bool discountedOnly)
         {
             List<ResultProductWithCategoryDto> products;
 
@@ -38,6 +39,18 @@ namespace Linka.WebUI.ViewComponents.ProductListViewComponents
                     await _productService
                         .GetProductsWithCategoryByCategoryIdAsync(id);
             }
+
+            if (discountedOnly)
+            {
+                products =
+                    products
+                        .Where(x =>
+                            x.DiscountRate > 0 &&
+                            x.DiscountRate <= 100)
+                        .ToList();
+            }
+
+
 
             var ranges =
                 new List<ProductListPriceRangeViewModel>
@@ -104,6 +117,8 @@ namespace Linka.WebUI.ViewComponents.ProductListViewComponents
         SelectedMaxPrice =
             maxPrice,
 
+        
+
         Sort =
             string.IsNullOrWhiteSpace(sort)
                 ? "default"
@@ -111,6 +126,9 @@ namespace Linka.WebUI.ViewComponents.ProductListViewComponents
 
         PageSize =
             pageSize,
+
+        DiscountedOnly =
+    discountedOnly,
 
         PriceRanges =
             ranges

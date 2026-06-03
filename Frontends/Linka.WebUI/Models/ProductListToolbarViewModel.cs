@@ -15,5 +15,7 @@
             10;
 
         public int TotalProductCount { get; set; }
+
+        public bool DiscountedOnly { get; set; }
     }
 }

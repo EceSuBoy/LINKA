@@ -25,11 +25,21 @@ namespace Linka.WebUI.Controllers
     decimal? maxPrice,
     string? sort = "default",
     int page = 1,
-    int pageSize = 10)
+    int pageSize = 10,
+    bool discountedOnly = false)
         {
-            ViewBag.directory1 = "Home Page";
-            ViewBag.directory2 = "Products";
-            ViewBag.directory3 = "Product List";
+            ViewBag.directory1 =
+                "Home Page";
+
+            ViewBag.directory2 =
+                discountedOnly
+                    ? "Daily Offers"
+                    : "Products";
+
+            ViewBag.directory3 =
+                discountedOnly
+                    ? "Discounted Products"
+                    : "Product List";
 
             if (page < 1)
             {
@@ -57,7 +67,8 @@ namespace Linka.WebUI.Controllers
                 !allowedSortValues.Contains(
                     sort.ToLowerInvariant()))
             {
-                sort = "default";
+                sort =
+                    "default";
             }
 
             ViewBag.i =
@@ -77,6 +88,13 @@ namespace Linka.WebUI.Controllers
 
             ViewBag.PageSize =
                 pageSize;
+
+            /*
+             * Daily Offer sayfasında yalnızca indirimli
+             * ürünlerin gösterilmesi için kullanılır.
+             */
+            ViewBag.DiscountedOnly =
+                discountedOnly;
 
             return View();
         }

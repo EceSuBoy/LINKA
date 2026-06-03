@@ -63,6 +63,7 @@
                        asp-route-sort="default"
                        asp-route-pageSize="@Model.PageSize"
                        asp-route-page="1"
+                       asp-route-discountedOnly="@Model.DiscountedOnly"
                        class="dropdown-item">
 
                         Default
@@ -77,6 +78,7 @@
                        asp-route-sort="popularity"
                        asp-route-pageSize="@Model.PageSize"
                        asp-route-page="1"
+                       asp-route-discountedOnly="@Model.DiscountedOnly"
                        class="dropdown-item">
 
                         Popularity
@@ -91,6 +93,7 @@
                        asp-route-sort="best-rating"
                        asp-route-pageSize="@Model.PageSize"
                        asp-route-page="1"
+                       asp-route-discountedOnly="@Model.DiscountedOnly"
                        class="dropdown-item">
 
                         Best Rating
@@ -105,6 +108,7 @@
                        asp-route-sort="price-asc"
                        asp-route-pageSize="@Model.PageSize"
                        asp-route-page="1"
+                       asp-route-discountedOnly="@Model.DiscountedOnly"
                        class="dropdown-item">
 
                         Price: Low to High
@@ -119,6 +123,7 @@
                        asp-route-sort="price-desc"
                        asp-route-pageSize="@Model.PageSize"
                        asp-route-page="1"
+                       asp-route-discountedOnly="@Model.DiscountedOnly"
                        class="dropdown-item">
 
                         Price: High to Low
@@ -152,6 +157,7 @@
                            asp-route-sort="@Model.Sort"
                            asp-route-pageSize="@size"
                            asp-route-page="1"
+                           asp-route-discountedOnly="@Model.DiscountedOnly"
                            class="dropdown-item">
 
                             @size

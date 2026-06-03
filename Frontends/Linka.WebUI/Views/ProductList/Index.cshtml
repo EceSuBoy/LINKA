@@ -1,13 +1,12 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/UILayout/_UILayout.cshtml";
 }
 
-
 <div class="container-fluid">
+
     <div class="row px-xl-5">
-        
+
         <div class="col-lg-3 col-md-4">
 
             @await Component.InvokeAsync(
@@ -18,17 +17,26 @@
                             minPrice = ViewBag.MinPrice,
                             maxPrice = ViewBag.MaxPrice,
                             sort = ViewBag.Sort,
-                            pageSize = ViewBag.PageSize
+                            pageSize = ViewBag.PageSize,
+                            discountedOnly = ViewBag.DiscountedOnly
                         })
 
-            @* @await Component.InvokeAsync("_ProductListColorFilterComponentPartial")
-            
-            @await Component.InvokeAsync("_ProductListSizeFilterComponentPartial") *@
-            
-            
+            @*
+                Beden ve renk filtrelerini şimdilik kapalı tutuyoruz.
+                Daha sonra ürün varyant sistemini oluşturduğumuzda
+                kategoriye göre koşullu şekilde açabiliriz.
+
+                @await Component.InvokeAsync(
+                    "_ProductListColorFilterComponentPartial")
+
+                @await Component.InvokeAsync(
+                    "_ProductListSizeFilterComponentPartial")
+            *@
+
         </div>
-        
+
         <div class="col-lg-9 col-md-8">
+
             <div class="row pb-3">
 
                 @await Component.InvokeAsync(
@@ -39,7 +47,8 @@
                                     minPrice = ViewBag.MinPrice,
                                     maxPrice = ViewBag.MaxPrice,
                                     sort = ViewBag.Sort,
-                                    pageSize = ViewBag.PageSize
+                                    pageSize = ViewBag.PageSize,
+                                    discountedOnly = ViewBag.DiscountedOnly
                                 })
 
                 @await Component.InvokeAsync(
@@ -51,7 +60,8 @@
                                     maxPrice = ViewBag.MaxPrice,
                                     sort = ViewBag.Sort,
                                     page = ViewBag.CurrentPage,
-                                    pageSize = ViewBag.PageSize
+                                    pageSize = ViewBag.PageSize,
+                                    discountedOnly = ViewBag.DiscountedOnly
                                 })
 
                 @await Component.InvokeAsync(
@@ -63,10 +73,14 @@
                                     maxPrice = ViewBag.MaxPrice,
                                     sort = ViewBag.Sort,
                                     page = ViewBag.CurrentPage,
-                                    pageSize = ViewBag.PageSize
+                                    pageSize = ViewBag.PageSize,
+                                    discountedOnly = ViewBag.DiscountedOnly
                                 })
-                
+
             </div>
+
         </div>
+
     </div>
+
 </div>
