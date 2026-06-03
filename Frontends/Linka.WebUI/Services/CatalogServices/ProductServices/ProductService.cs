@@ -11,9 +11,26 @@ namespace Linka.WebUI.Services.CatalogServices.ProductServices
         {
             _httpClient = httpClient;
         }
-        public async Task CreateProductAsync(CreateProductDto createProductDto)
+        public async Task CreateProductAsync(
+    CreateProductDto createProductDto)
         {
-            await _httpClient.PostAsJsonAsync<CreateProductDto>("products", createProductDto);
+            var responseMessage =
+                await _httpClient
+                    .PostAsJsonAsync(
+                        "products",
+                        createProductDto);
+
+            var content =
+                await responseMessage
+                    .Content
+                    .ReadAsStringAsync();
+
+            if (!responseMessage
+                    .IsSuccessStatusCode)
+            {
+                throw new Exception(
+                    content);
+            }
         }
 
         public async Task DeleteProductAsync(string id)
@@ -52,9 +69,128 @@ namespace Linka.WebUI.Services.CatalogServices.ProductServices
             return values;
         }
 
-        public async Task UpdateProductAsync(UpdateProductDto updateProductDto)
+        public async Task UpdateProductAsync(
+    UpdateProductDto updateProductDto)
         {
-            await _httpClient.PutAsJsonAsync<UpdateProductDto>("products", updateProductDto);
+            var responseMessage =
+                await _httpClient
+                    .PutAsJsonAsync(
+                        "products",
+                        updateProductDto);
+
+            var content =
+                await responseMessage
+                    .Content
+                    .ReadAsStringAsync();
+
+            if (!responseMessage
+                    .IsSuccessStatusCode)
+            {
+                throw new Exception(
+                    content);
+            }
         }
+
+
+        public async Task<
+    PagedProductResultDto<
+        ResultProductWithCategoryDto>>
+    GetPagedProductsWithCategoryAsync(
+        string? search,
+        string? categoryId,
+        int page,
+        int pageSize)
+        {
+            var encodedSearch =
+                Uri.EscapeDataString(
+                    search ??
+                    string.Empty);
+
+            var encodedCategoryId =
+                Uri.EscapeDataString(
+                    categoryId ??
+                    string.Empty);
+
+            var requestUrl =
+                "products/GetPagedProductsWithCategory" +
+                $"?search={encodedSearch}" +
+                $"&categoryId={encodedCategoryId}" +
+                $"&page={page}" +
+                $"&pageSize={pageSize}";
+
+            var responseMessage =
+                await _httpClient
+                    .GetAsync(
+                        requestUrl);
+
+            var content =
+                await responseMessage
+                    .Content
+                    .ReadAsStringAsync();
+
+            if (!responseMessage
+                    .IsSuccessStatusCode)
+            {
+                throw new Exception(
+                    "Products could not be loaded: " +
+                    $"{responseMessage.StatusCode} - " +
+                    $"{content}");
+            }
+
+            var values =
+                System.Text.Json
+                    .JsonSerializer
+                    .Deserialize<
+                        PagedProductResultDto<
+                            ResultProductWithCategoryDto>>(
+                                content,
+                                new System.Text.Json
+                                    .JsonSerializerOptions
+                                {
+                                    PropertyNameCaseInsensitive =
+                                            true
+                                });
+
+            return values ??
+                new PagedProductResultDto<
+                    ResultProductWithCategoryDto>();
+        }
+
+        public async Task<List<ResultProductDto>>
+    GetFeaturedProductsAsync()
+        {
+            var responseMessage =
+                await _httpClient
+                    .GetAsync(
+                        "products/GetFeaturedProducts");
+
+            var content =
+                await responseMessage
+                    .Content
+                    .ReadAsStringAsync();
+
+            if (!responseMessage
+                    .IsSuccessStatusCode)
+            {
+                throw new Exception(
+                    "Featured products could not be loaded: " +
+                    $"{responseMessage.StatusCode} - " +
+                    $"{content}");
+            }
+
+            return System.Text.Json
+                    .JsonSerializer
+                    .Deserialize<
+                        List<ResultProductDto>>(
+                            content,
+                            new System.Text.Json
+                                .JsonSerializerOptions
+                            {
+                                PropertyNameCaseInsensitive =
+                                        true
+                            })
+                ?? new List<ResultProductDto>();
+        }
+
     }
 }

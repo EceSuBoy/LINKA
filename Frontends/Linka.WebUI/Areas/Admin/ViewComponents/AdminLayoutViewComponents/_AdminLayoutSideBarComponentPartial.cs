@@ -1,12 +1,41 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Linka.WebUI.Models;
+using Linka.WebUI.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Linka.WebUI.Areas.Admin.ViewComponents.AdminLayoutViewComponents
+namespace Linka.WebUI.Areas.Admin
+    .ViewComponents
+    .AdminLayoutViewComponents
 {
-    public class _AdminLayoutSideBarComponentPartial : ViewComponent
+    public class
+        _AdminLayoutSideBarComponentPartial
+        : ViewComponent
     {
-        public IViewComponentResult Invoke()
+        private readonly IUserService
+            _userService;
+
+        public
+            _AdminLayoutSideBarComponentPartial(
+                IUserService userService)
         {
-            return View();
+            _userService =
+                userService;
+        }
+
+        public async Task<IViewComponentResult>
+            InvokeAsync()
+        {
+            var user =
+                await _userService
+                    .GetUserInfo();
+
+            var model =
+                new AdminLayoutUserViewModel
+                {
+                    User =
+                        user
+                };
+
+            return View(model);
         }
     }
 }

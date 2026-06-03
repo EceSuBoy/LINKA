@@ -11,5 +11,19 @@ namespace Linka.Catalog.Services.ProductServices
         Task<GetByIdProductDto> GetByIdProductAsync(string id);
         Task<List<ResultProductsWithCategoryDto>> GetProductsWithCategoryAsync();
         Task<List<ResultProductsWithCategoryDto>> GetProductsWithCategoryByCategoryIdAsync(string categoryId);
+
+        Task<
+    PagedProductResultDto<
+        ResultProductsWithCategoryDto>>
+    GetPagedProductsWithCategoryAsync(
+        string? search,
+        string? categoryId,
+        int page,
+        int pageSize);
+
+        Task<List<ResultProductDto>>
+    GetFeaturedProductsAsync();
+
+
     }
 }

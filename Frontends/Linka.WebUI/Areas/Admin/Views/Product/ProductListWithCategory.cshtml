@@ -1,52 +1,579 @@
-﻿@model List<ResultProductWithCategoryDto>
+﻿@model AdminProductListViewModel
 
 @{
-    ViewData["Title"] = "ProductListWithCategory";
-    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
-    int count = 0;
+    ViewData["Title"] =
+        "Product Management";
+
+    Layout =
+        "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
 
-<section class="content container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="chart-box">
-                <div class="bs-example" data-example-id="bordered-table">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Product Name</th>
-                                <th>Product Price</th>
-                                <th>Product Category</th>
-                                <th>Delete</th>
-                                <th>Update</th>
-                                <th>Product Image</th>
-                                <th>Description and Info</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                count++;
-                                <tr>
-                                    <th scope="row">@count</th>
-                                    <td>@item.ProductName</td>
-                                    <td>@item.ProductPrice</td>
-                                    <td>@item.Category.CategoryName</td>
+<style>
+    .linka-product-page {
+        padding-bottom: 30px;
+    }
 
-                                    <td><a href="/Admin/Product/DeleteProduct/@item.ProductId" class="btn btn-danger">Remove</a></td>
-                                    <td><a href="/Admin/Product/UpdateProduct/@item.ProductId" class="btn btn-success">Update</a></td>
-                                    <td><a href="/Admin/ProductImage/ProductImageOperation/@item.ProductId" class="btn btn-warning">Product Images</a></td>
-                                    <td><a href="/Admin/ProductDetail/ProductDetailOperation/@item.ProductId" class="btn btn-info">Description and Info</a></td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <td><a href="/Admin/Product/CreateProduct/" class="btn btn-primary">Add New Product</a></td>
+    .linka-product-card {
+        overflow: hidden;
+        border: 1px solid #dde4ec;
+        border-radius: 12px;
+        background-color: #ffffff;
+        box-shadow: 0 7px 22px rgba(31, 45, 61, 0.06);
+    }
+
+    .linka-product-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 21px 23px;
+        border-bottom: 1px solid #edf0f4;
+        flex-wrap: wrap;
+    }
+
+    .linka-product-title {
+        margin: 0 0 4px;
+        color: #273444;
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+    .linka-product-subtitle {
+        margin: 0;
+        color: #8492a6;
+        font-size: 13px;
+    }
+
+    .linka-product-filter-box {
+        padding: 17px 23px;
+        border-bottom: 1px solid #edf0f4;
+        background-color: #fbfcfe;
+    }
+
+    .linka-product-filter-grid {
+        display: grid;
+        grid-template-columns: minmax(260px, 1fr) minmax(180px, 240px) 135px auto;
+        align-items: end;
+        gap: 12px;
+    }
+
+    .linka-product-filter-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #6b778c;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+    }
+
+    .linka-product-input,
+    .linka-product-select {
+        width: 100%;
+        height: 41px;
+        border: 1px solid #dce3eb;
+        border-radius: 7px;
+        background-color: #ffffff;
+        padding: 0 12px;
+        color: #3c4858;
+        outline: none;
+        transition: 0.2s;
+    }
+
+        .linka-product-input:focus,
+        .linka-product-select:focus {
+            border-color: #4c94e8;
+            box-shadow: 0 0 0 3px rgba(76, 148, 232, 0.12);
+        }
+
+    .linka-product-search-wrapper {
+        position: relative;
+    }
+
+    .linka-product-search-icon {
+        position: absolute;
+        top: 12px;
+        right: 13px;
+        color: #9ba7b6;
+    }
+
+    .linka-product-filter-actions {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .linka-product-filter-btn {
+        height: 41px;
+        border-radius: 7px;
+        font-weight: 700;
+    }
+
+    .linka-product-table-area {
+        position: relative;
+        min-height: 180px;
+    }
+
+    .linka-product-loading {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(255, 255, 255, 0.82);
+    }
+
+        .linka-product-loading.active {
+            display: flex;
+        }
+
+    .linka-product-loading-content {
+        color: #4c94e8;
+        font-size: 14px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .linka-product-spinner {
+        width: 30px;
+        height: 30px;
+        margin: 0 auto 9px;
+        border: 3px solid #d7e7fa;
+        border-top-color: #4c94e8;
+        border-radius: 50%;
+        animation: linkaProductSpin 0.75s linear infinite;
+    }
+
+    @@keyframes linkaProductSpin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @@media (max-width: 1050px) {
+        .linka-product-filter-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @@media (max-width: 620px) {
+        .linka-product-filter-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<section class="content container-fluid linka-product-page">
+
+    <div class="row">
+
+        <div class="col-md-12">
+
+            @if (TempData["ProductSuccess"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="fa fa-check-circle"></i>
+                    @TempData["ProductSuccess"]
                 </div>
+            }
+
+            <div class="linka-product-card">
+
+                <div class="linka-product-header">
+
+                    <div>
+
+                        <h4 class="linka-product-title">
+                            Product Management
+                        </h4>
+
+                        <p class="linka-product-subtitle">
+                            Search, filter and manage the products in your LINKA catalog.
+                        </p>
+
+                    </div>
+
+                    <a asp-area="Admin"
+                       asp-controller="Product"
+                       asp-action="CreateProduct"
+                       class="btn btn-primary">
+
+                        <i class="fa fa-plus"></i>
+
+                        Add New Product
+
+                    </a>
+
+                </div>
+
+                <div class="linka-product-filter-box">
+
+                    <div class="linka-product-filter-grid">
+
+                        <div>
+
+                            <label class="linka-product-filter-label">
+                                Search Product
+                            </label>
+
+                            <div class="linka-product-search-wrapper">
+
+                                <input type="text"
+                                       id="productSearch"
+                                       class="linka-product-input"
+                                       placeholder="Start typing a product name..." />
+
+                                <i class="fa fa-search linka-product-search-icon"></i>
+
+                            </div>
+
+                        </div>
+
+                        <div>
+
+                            <label class="linka-product-filter-label">
+                                Category
+                            </label>
+
+                            <select id="productCategory"
+                                    class="linka-product-select">
+
+                                <option value="">
+                                    All Categories
+                                </option>
+
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category.CategoryId">
+                                        @category.CategoryName
+                                    </option>
+                                }
+
+                            </select>
+
+                        </div>
+
+                        <div>
+
+                            <label class="linka-product-filter-label">
+                                Page Size
+                            </label>
+
+                            <select id="productPageSize"
+                                    class="linka-product-select">
+
+                                <option value="10">
+                                    10 Products
+                                </option>
+
+                                <option value="20">
+                                    20 Products
+                                </option>
+
+                                <option value="50">
+                                    50 Products
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="linka-product-filter-actions">
+
+                            <button type="button"
+                                    id="clearProductFilters"
+                                    class="btn btn-default linka-product-filter-btn">
+
+                                <i class="fa fa-refresh"></i>
+
+                                Clear Filters
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="linka-product-table-area">
+
+                    <div id="productLoading"
+                         class="linka-product-loading">
+
+                        <div class="linka-product-loading-content">
+
+                            <div class="linka-product-spinner">
+                            </div>
+
+                            Loading products...
+
+                        </div>
+
+                    </div>
+
+                    <div id="productTableContainer">
+
+                        @await Html.PartialAsync(
+                        "_ProductTablePartial",
+                                                Model.Products)
+
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
+
     </div>
+
 </section>
 
+<script>
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
 
+            const searchInput =
+                document.getElementById(
+                    "productSearch");
+
+            const categorySelect =
+                document.getElementById(
+                    "productCategory");
+
+            const pageSizeSelect =
+                document.getElementById(
+                    "productPageSize");
+
+            const clearButton =
+                document.getElementById(
+                    "clearProductFilters");
+
+            const tableContainer =
+                document.getElementById(
+                    "productTableContainer");
+
+            const loadingLayer =
+                document.getElementById(
+                    "productLoading");
+
+            const productTableUrl =
+                '@Url.Action(
+                                        "ProductTable",
+                                        "Product",
+                                        new
+                                        {
+                                                area = "Admin"
+                                        })';
+
+            let debounceTimer =
+                null;
+
+            let activeRequestController =
+                null;
+
+            function showLoading() {
+                loadingLayer
+                    .classList
+                    .add(
+                        "active");
+            }
+
+            function hideLoading() {
+                loadingLayer
+                    .classList
+                    .remove(
+                        "active");
+            }
+
+            async function loadProducts(
+                page = 1) {
+
+                if (activeRequestController) {
+                    activeRequestController
+                        .abort();
+                }
+
+                activeRequestController =
+                    new AbortController();
+
+                const search =
+                    searchInput
+                        .value
+                        .trim();
+
+                const categoryId =
+                    categorySelect
+                        .value;
+
+                const pageSize =
+                    pageSizeSelect
+                        .value;
+
+                const query =
+                    new URLSearchParams({
+                        search:
+                            search,
+
+                        categoryId:
+                            categoryId,
+
+                        page:
+                            page,
+
+                        pageSize:
+                            pageSize
+                    });
+
+                showLoading();
+
+                try {
+                    const response =
+                        await fetch(
+                            `${productTableUrl}?${query.toString()}`,
+                            {
+                                method:
+                                    "GET",
+
+                                headers: {
+                                    "X-Requested-With":
+                                        "XMLHttpRequest"
+                                },
+
+                                signal:
+                                    activeRequestController
+                                        .signal
+                            });
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Products could not be loaded.");
+                    }
+
+                    tableContainer
+                        .innerHTML =
+                            await response.text();
+                }
+                catch (error) {
+                    if (
+                        error.name !==
+                        "AbortError") {
+
+                        tableContainer
+                            .innerHTML =
+                                `
+                                <div style="
+                                    padding:42px 18px;
+                                    color:#bd4141;
+                                    text-align:center;
+                                ">
+                                    <i class="fa fa-exclamation-circle"
+                                       style="font-size:31px;">
+                                    </i>
+
+                                    <h4>
+                                        Products could not be loaded.
+                                    </h4>
+
+                                    <p>
+                                        Please refresh the page and try again.
+                                    </p>
+                                </div>
+                                `;
+                    }
+                }
+                finally {
+                    hideLoading();
+                }
+            }
+
+            searchInput
+                .addEventListener(
+                    "input",
+                    function () {
+
+                        clearTimeout(
+                            debounceTimer);
+
+                        debounceTimer =
+                            setTimeout(
+                                function () {
+                                    loadProducts(
+                                        1);
+                                },
+                                350);
+                    });
+
+            categorySelect
+                .addEventListener(
+                    "change",
+                    function () {
+                        loadProducts(
+                            1);
+                    });
+
+            pageSizeSelect
+                .addEventListener(
+                    "change",
+                    function () {
+                        loadProducts(
+                            1);
+                    });
+
+            clearButton
+                .addEventListener(
+                    "click",
+                    function () {
+
+                        searchInput
+                            .value =
+                                "";
+
+                        categorySelect
+                            .value =
+                                "";
+
+                        pageSizeSelect
+                            .value =
+                                "10";
+
+                        loadProducts(
+                            1);
+                    });
+
+            tableContainer
+                .addEventListener(
+                    "click",
+                    function (event) {
+
+                        const paginationLink =
+                            event.target
+                                .closest(
+                                    "[data-product-page]");
+
+                        if (!paginationLink) {
+                            return;
+                        }
+
+                        event.preventDefault();
+
+                        const page =
+                            paginationLink
+                                .getAttribute(
+                                    "data-product-page");
+
+                        if (!page) {
+                            return;
+                        }
+
+                        loadProducts(
+                            page);
+                    });
+        });
+</script>

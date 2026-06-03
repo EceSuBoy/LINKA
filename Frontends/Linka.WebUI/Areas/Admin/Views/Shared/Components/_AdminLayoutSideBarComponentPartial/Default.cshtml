@@ -1,44 +1,436 @@
-﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+﻿@model Linka.WebUI.Models.AdminLayoutUserViewModel
 
+@{
+    var currentController =
+        ViewContext
+            .RouteData
+            .Values["controller"]
+            ?.ToString()
+        ?? string.Empty;
+
+    string Active(string controller)
+    {
+        return string.Equals(
+                currentController,
+                controller,
+                StringComparison.OrdinalIgnoreCase)
+            ? "active"
+            : string.Empty;
+    }
+}
+
+<style>
+    .linka-admin-user-panel {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 92px;
+        padding: 16px 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        background-color: #252a30;
+    }
+
+    .linka-admin-sidebar-avatar {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        color: #ffffff;
+        background: linear-gradient( 135deg, #4c94e8, #2464bc );
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .linka-admin-sidebar-name {
+        display: block;
+        max-width: 145px;
+        overflow: hidden;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .linka-admin-sidebar-role {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 5px;
+        color: #9ec8ff;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+        .linka-admin-sidebar-role i {
+            color: #6bd28d;
+            font-size: 9px;
+        }
+
+    .main-sidebar,
+    .main-sidebar .sidebar {
+        background-color: #30353b !important;
+    }
+
+    .sidebar-menu {
+        background-color: #30353b !important;
+    }
+
+        .sidebar-menu .header {
+            padding: 11px 14px 9px !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.045);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+            color: #aeb8c4 !important;
+            background-color: #272c32 !important;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.9px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-menu > li > a {
+            border-left: 3px solid transparent !important;
+            color: #b8c0ca !important;
+            background-color: #30353b !important;
+            transition: 0.2s ease;
+        }
+
+            .sidebar-menu > li > a:hover,
+            .sidebar-menu > li.active > a {
+                border-left-color: #4c94e8 !important;
+                color: #ffffff !important;
+                background-color: #242a31 !important;
+            }
+
+            .sidebar-menu > li > a i {
+                width: 19px;
+                color: #95a2b1 !important;
+                text-align: center;
+            }
+
+            .sidebar-menu > li.active > a i,
+            .sidebar-menu > li > a:hover i {
+                color: #78aeef !important;
+            }
+
+    .sidebar-menu > li > a {
+        transition: 0.2s ease;
+    }
+
+        .sidebar-menu > li > a:hover,
+        .sidebar-menu > li.active > a {
+            border-left-color: #4c94e8 !important;
+            color: #ffffff !important;
+            background-color: #242a31 !important;
+        }
+
+        .sidebar-menu > li > a i {
+            width: 19px;
+            text-align: center;
+        }
+</style>
 
 <aside class="main-sidebar dark-bg">
+
     <section class="sidebar">
-        <div class="user-panel black-bg">
-            <div class="pull-left image"> <img src="~/images/Logos/manlogo.jpg" class="img-circle" alt="User Image"> </div>
-            <div class="pull-left info">
-                <p>LINKA Admin</p>
-                <a href="#"><i class="fa fa-circle"></i> Online</a>
+
+        <div class="linka-admin-user-panel">
+
+            <div class="linka-admin-sidebar-avatar">
+                @Model.Initials
             </div>
+
+            <div>
+
+                <span class="linka-admin-sidebar-name"
+                      title="@Model.FullName">
+
+                    @Model.FullName
+
+                </span>
+
+                <span class="linka-admin-sidebar-role">
+
+                    <i class="fa fa-circle"></i>
+
+                    @Model.RoleName
+
+                </span>
+
+            </div>
+
         </div>
-        <!-- Sidebar Menu -->
-        <ul class="sidebar-menu" data-widget="tree">
-            <li class="header dark-bg">Menu</li>
-            <li> <a href="/Admin/Category/Index/"> <i class="fa fa-th"></i> <span>Categories</span></a> </li>
-            <li> <a href="/Admin/Product/ProductListWithCategory/"> <i class="fa fa-suitcase"></i> <span>Products</span></a> </li>
-            <li> <a href="/default/index/"> <i class="fa fa-map-pin"></i> <span>Go To Site</span></a> </li>
-            <li> <a href="/Admin/SpecialOffer/Index/"> <i class="fa fa-tags"></i> <span>Special Offers</span></a> </li>
-            <li> <a href="/Admin/FeatureSlider/Index/"> <i class="fa fa-picture-o"></i> <span>Slider Panel</span></a> </li>
-            <li> <a href="/Admin/Feature/Index/"> <i class="fa fa-map"></i> <span>Feature</span></a> </li>
-            <li> <a href="/Admin/OfferDiscount/Index/"> <i class="fa fa-shopping-cart"></i> <span>Discount Offers</span></a> </li>
-            <li> <a href="/Admin/Brand/Index/"> <i class="fa fa-paper-plane" aria-hidden="true"></i> <span>Brands</span></a> </li>
-            <li> <a href="/Admin/About/Index/"> <i class="fa fa-info-circle"></i> <span>About</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-comment"></i> <span>Comments</span></a> </li>
-            <li> <a href="/Admin/User/UserList/"> <i class="fa fa-users"></i> <span>User List</span></a> </li>
-            <li> <a href="/Admin/Order/Index/"> <i class="fa fa-shopping-basket"></i> <span>Order List</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-money"></i> <span>Cash</span></a> </li>
-            <li> <a href="/Admin/Statistic/Index/"> <i class="fa fa-pie-chart"></i> <span>Statistics</span></a> </li>
-            <li> <a href="/Admin/Cargo/CargoCompanyList/"> <i class="fa fa-bus"></i> <span>Cargo</span></a> </li>
-            <li> <a href="/Admin/Coupon/Index/"> <i class="fa fa-balance-scale"></i> <span>Coupons</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-file-image-o"></i> <span>Images</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-envelope"></i> <span>Messages</span></a> </li>
-            <li> <a href="/Images/Default/Create/"> <i class="fa fa-envelope"></i> <span>Google Drive Images</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-cogs"></i> <span>Settings</span></a> </li>
-            <li> <a href="/Admin/Comment/Index/"> <i class="fa fa-window-close-o"></i> <span>Logout</span></a> </li>
 
+        <ul class="sidebar-menu"
+            data-widget="tree">
 
+            <li class="header">
+                Dashboard
+            </li>
 
+            <li class="@Active("Statistic")">
+
+                <a asp-area="Admin"
+                   asp-controller="Statistic"
+                   asp-action="Index">
+
+                    <i class="fa fa-dashboard"></i>
+
+                    <span>
+                        Overview
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="header">
+                Catalog Management
+            </li>
+
+            <li class="@Active("Category")">
+
+                <a asp-area="Admin"
+                   asp-controller="Category"
+                   asp-action="Index">
+
+                    <i class="fa fa-th-large"></i>
+
+                    <span>
+                        Categories
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="@Active("Product")">
+
+                <a asp-area="Admin"
+                   asp-controller="Product"
+                   asp-action="ProductListWithCategory">
+
+                    <i class="fa fa-cubes"></i>
+
+                    <span>
+                        Products
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="@Active("Brand")">
+
+                <a asp-area="Admin"
+                   asp-controller="Brand"
+                   asp-action="Index">
+
+                    <i class="fa fa-building-o"></i>
+
+                    <span>
+                        Brands
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="header">
+                Content and Promotions
+            </li>
+
+            <li class="@Active("SpecialOffer")">
+
+                <a asp-area="Admin"
+                   asp-controller="SpecialOffer"
+                   asp-action="Index">
+
+                    <i class="fa fa-tags"></i>
+
+                    <span>
+                        Special Offers
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="@Active("FeatureSlider")">
+
+                <a asp-area="Admin"
+                   asp-controller="FeatureSlider"
+                   asp-action="Index">
+
+                    <i class="fa fa-picture-o"></i>
+
+                    <span>
+                        Slider Panel
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="@Active("Feature")">
+
+                <a asp-area="Admin"
+                   asp-controller="Feature"
+                   asp-action="Index">
+
+                    <i class="fa fa-star-o"></i>
+
+                    <span>
+                        Features
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="@Active("OfferDiscount")">
+
+                <a asp-area="Admin"
+                   asp-controller="OfferDiscount"
+                   asp-action="Index">
+
+                    <i class="fa fa-money"></i>
+
+                    <span>
+                        Discount Offers
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="@Active("Coupon")">
+
+                <a asp-area="Admin"
+                   asp-controller="Coupon"
+                   asp-action="Index">
+
+                    <i class="fa fa-ticket"></i>
+
+                    <span>
+                        Coupons
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="@Active("About")">
+
+                <a asp-area="Admin"
+                   asp-controller="About"
+                   asp-action="Index">
+
+                    <i class="fa fa-info-circle"></i>
+
+                    <span>
+                        About
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="header">
+                Operations
+            </li>
+
+            <li class="@Active("Comment")">
+
+                <a asp-area="Admin"
+                   asp-controller="Comment"
+                   asp-action="Index">
+
+                    <i class="fa fa-comments"></i>
+
+                    <span>
+                        Comments
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="@Active("User")">
+
+                <a asp-area="Admin"
+                   asp-controller="User"
+                   asp-action="UserList">
+
+                    <i class="fa fa-users"></i>
+
+                    <span>
+                        User Management
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="@Active("Order")">
+
+                <a asp-area="Admin"
+                   asp-controller="Order"
+                   asp-action="Index">
+
+                    <i class="fa fa-suitcase"></i>
+
+                    <span>
+                        Order Management
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="@Active("Cargo")">
+
+                <a asp-area="Admin"
+                   asp-controller="Cargo"
+                   asp-action="CargoCompanyList">
+
+                    <i class="fa fa-truck"></i>
+
+                    <span>
+                        Cargo Companies
+                    </span>
+
+                </a>
+
+            </li>
+
+            <li class="header">
+                Navigation
+            </li>
+
+            <li>
+
+                <a asp-area=""
+                   asp-controller="Default"
+                   asp-action="Index">
+
+                    <i class="fa fa-external-link"></i>
+
+                    <span>
+                        Go To Store
+                    </span>
+
+                </a>
+
+            </li>
 
         </ul>
-        <!-- sidebar-menu -->
+
     </section>
+
 </aside>

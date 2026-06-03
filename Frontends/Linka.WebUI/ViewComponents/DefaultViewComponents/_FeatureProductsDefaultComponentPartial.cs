@@ -22,8 +22,8 @@ namespace Linka.WebUI.ViewComponents.DefaultViewComponents
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var products =
-                await _productService
-                    .GetAllProductAsync();
+    await _productService
+        .GetFeaturedProductsAsync();
 
             var commentStatistics =
                 await _commentService

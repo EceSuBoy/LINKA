@@ -1,5 +1,6 @@
 ﻿using Linka.DtoLayer.CatalogDtos.CategoryDtos;
 using Linka.DtoLayer.CatalogDtos.ProductDtos;
+using Linka.WebUI.Models;
 using Linka.WebUI.Services.CatalogServices.CategoryServices;
 using Linka.WebUI.Services.CatalogServices.ProductServices;
 using Microsoft.AspNetCore.Authorization;
@@ -37,17 +38,53 @@ namespace Linka.WebUI.Areas.Admin.Controllers
             return View(values);
         }
 
+        [HttpGet]
         [Route("ProductListWithCategory")]
-
-        public async Task<IActionResult> ProductListWithCategory()
+        public async Task<IActionResult>
+    ProductListWithCategory()
         {
-            ViewBag.v1 = "Home";
-            ViewBag.v2 = "Products";
-            ViewBag.v3 = "Product List";
-            ViewBag.v0 = "Product Operations";
+            ViewBag.v1 =
+                "Home";
 
-            var values = await _productService.GetProductsWithCategoryAsync();
-            return View(values);;
+            ViewBag.v2 =
+                "Products";
+
+            ViewBag.v3 =
+                "Product List";
+
+            ViewBag.v0 =
+                "Product Operations";
+
+            var categories =
+                await _categoryService
+                    .GetAllCategoriesAsync();
+
+            var products =
+                await _productService
+                    .GetPagedProductsWithCategoryAsync(
+                        search:
+                            string.Empty,
+
+                        categoryId:
+                            string.Empty,
+
+                        page:
+                            1,
+
+                        pageSize:
+                            10);
+
+            var model =
+                new AdminProductListViewModel
+                {
+                    Categories =
+                        categories,
+
+                    Products =
+                        products
+                };
+
+            return View(model);
         }
 
         [Route("CreateProduct")]
@@ -71,10 +108,42 @@ namespace Linka.WebUI.Areas.Admin.Controllers
         }
         [HttpPost]
         [Route("CreateProduct")]
-        public async Task<IActionResult> CreateProduct(CreateProductDto createProductDto)
+        public async Task<IActionResult>
+    CreateProduct(
+        CreateProductDto createProductDto)
         {
-            await _productService.CreateProductAsync(createProductDto);
-            return RedirectToAction("Index", "Product", new { area = "Admin" });
+            if (!ModelState.IsValid)
+            {
+                await LoadCategoriesAsync();
+
+                return View(
+                    createProductDto);
+            }
+
+            try
+            {
+                await _productService
+                    .CreateProductAsync(
+                        createProductDto);
+
+                TempData["ProductSuccess"] =
+                    "Product created successfully.";
+
+                return RedirectToAction(
+                    nameof(
+                        ProductListWithCategory));
+            }
+            catch (Exception exception)
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    exception.Message);
+
+                await LoadCategoriesAsync();
+
+                return View(
+                    createProductDto);
+            }
         }
         [Route("DeleteProduct/{id}")]
         public async Task<IActionResult> DeleteProduct(string id)
@@ -105,10 +174,78 @@ namespace Linka.WebUI.Areas.Admin.Controllers
         }
         [HttpPost]
         [Route("UpdateProduct/{id}")]
-        public async Task<IActionResult> UpdateProduct(UpdateProductDto updateProductDto)
+        public async Task<IActionResult>
+    UpdateProduct(
+        string id,
+        UpdateProductDto updateProductDto)
         {
-            await _productService.UpdateProductAsync(updateProductDto);
-            return RedirectToAction("Index", "Product", new { area = "Admin" });
+            updateProductDto.ProductId =
+                id;
+
+            if (!ModelState.IsValid)
+            {
+                await LoadCategoriesAsync();
+
+                return View(
+                    updateProductDto);
+            }
+
+            try
+            {
+                await _productService
+                    .UpdateProductAsync(
+                        updateProductDto);
+
+                TempData["ProductSuccess"] =
+                    "Product updated successfully.";
+
+                return RedirectToAction(
+                    nameof(
+                        ProductListWithCategory));
+            }
+            catch (Exception exception)
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    exception.Message);
+
+                await LoadCategoriesAsync();
+
+                return View(
+                    updateProductDto);
+            }
+        }
+
+        [HttpGet]
+        [Route("ProductTable")]
+        public async Task<IActionResult>
+    ProductTable(
+        string? search,
+        string? categoryId,
+        int page = 1,
+        int pageSize = 10)
+        {
+            var values =
+                await _productService
+                    .GetPagedProductsWithCategoryAsync(
+                        search,
+                        categoryId,
+                        page,
+                        pageSize);
+
+            return PartialView(
+                "_ProductTablePartial",
+                values);
+        }
+
+        private async Task LoadCategoriesAsync()
+        {
+            var categories =
+                await _categoryService
+                    .GetAllCategoriesAsync();
+
+            ViewBag.Categories =
+                categories;
         }
     }
 }

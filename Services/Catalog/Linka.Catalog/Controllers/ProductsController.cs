@@ -32,10 +32,24 @@ namespace Linka.Catalog.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(CreateProductDto createProductDto)
+        public async Task<IActionResult>
+    CreateProduct(
+        CreateProductDto createProductDto)
         {
-            await _ProductService.CreateProductAsync(createProductDto);
-            return Ok("Product successfully added");
+            try
+            {
+                await _ProductService
+                    .CreateProductAsync(
+                        createProductDto);
+
+                return Ok(
+                    "Product successfully added.");
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(
+                    exception.Message);
+            }
         }
 
         [HttpDelete("{id}")]
@@ -46,10 +60,24 @@ namespace Linka.Catalog.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct(UpdateProductDto updateProductDto)
+        public async Task<IActionResult>
+    UpdateProduct(
+        UpdateProductDto updateProductDto)
         {
-            await _ProductService.UpdateProductAsync(updateProductDto);
-            return Ok("Product successfully updated");
+            try
+            {
+                await _ProductService
+                    .UpdateProductAsync(
+                        updateProductDto);
+
+                return Ok(
+                    "Product successfully updated.");
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(
+                    exception.Message);
+            }
         }
         [HttpGet("ProductListWithCategory")]
         public async Task<IActionResult> ProductListWithCategory()
@@ -64,6 +92,45 @@ namespace Linka.Catalog.Controllers
             var values = await _ProductService.GetProductsWithCategoryByCategoryIdAsync(id);
             return Ok(values);
 
+        }
+
+        [HttpGet(
+    "GetPagedProductsWithCategory")]
+        public async Task<IActionResult>
+    GetPagedProductsWithCategory(
+        [FromQuery]
+        string? search,
+
+        [FromQuery]
+        string? categoryId,
+
+        [FromQuery]
+        int page = 1,
+
+        [FromQuery]
+        int pageSize = 10)
+        {
+            var values =
+                await _ProductService
+                    .GetPagedProductsWithCategoryAsync(
+                        search,
+                        categoryId,
+                        page,
+                        pageSize);
+
+            return Ok(
+                values);
+        }
+
+        [HttpGet("GetFeaturedProducts")]
+        public async Task<IActionResult>
+    GetFeaturedProducts()
+        {
+            var values =
+                await _ProductService
+                    .GetFeaturedProductsAsync();
+
+            return Ok(values);
         }
     }
 }

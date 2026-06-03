@@ -11,5 +11,18 @@ namespace Linka.WebUI.Services.CatalogServices.ProductServices
         Task<UpdateProductDto> GetByIdProductAsync(string id);
         Task<List<ResultProductWithCategoryDto>> GetProductsWithCategoryAsync();
         Task<List<ResultProductWithCategoryDto>> GetProductsWithCategoryByCategoryIdAsync(string categoryId);
+
+        Task<
+    PagedProductResultDto<
+        ResultProductWithCategoryDto>>
+    GetPagedProductsWithCategoryAsync(
+        string? search,
+        string? categoryId,
+        int page,
+        int pageSize);
+
+        Task<List<ResultProductDto>>
+    GetFeaturedProductsAsync();
+
     }
 }

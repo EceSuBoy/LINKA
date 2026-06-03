@@ -14,6 +14,10 @@ namespace Linka.Catalog.Dtos.ProductDtos
             ErrorMessage = "Discount rate must be between 0 and 100.")]
         public decimal DiscountRate { get; set; }
         public string ProductImageUrl { get; set; }
+
+        public bool IsFeatured { get; set; }
+
+        public int FeaturedOrder { get; set; }
         public string ProductDescription { get; set; }
         public string CategoryId { get; set; }
     }

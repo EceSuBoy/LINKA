@@ -1,146 +1,437 @@
-﻿<header class="main-header dark-bg">
-    <style>
+﻿@model Linka.WebUI.Models.AdminLayoutUserViewModel
 
-        .messages-menu {
-            position: relative;
+<style>
+    .linka-admin-header-title {
+        display: flex;
+        height: 50px;
+        flex-direction: column;
+        justify-content: center;
+        margin-left: 18px;
+    }
+
+        .linka-admin-header-title strong {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
         }
 
-
-
-            .messages-menu .notify {
-                position: absolute;
-                top: 10px;
-                right: 3px;
-            }
-
-
-
-        .notifications-menu {
-            position: relative;
+        .linka-admin-header-title span {
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 11px;
         }
 
+    .linka-admin-header-action {
+        position: relative;
+        display: flex !important;
+        height: 50px;
+        align-items: center;
+        justify-content: center;
+        padding-right: 14px !important;
+        padding-left: 14px !important;
+        color: #ffffff !important;
+        font-size: 17px;
+    }
 
+        .linka-admin-header-action:hover {
+            background-color: rgba(0, 0, 0, 0.08) !important;
+        }
 
-            .notifications-menu .notify {
-                position: absolute;
-                top: 10px;
-            }
+    .linka-admin-header-badge {
+        position: absolute;
+        top: 5px;
+        right: 7px;
+        min-width: 16px;
+        height: 16px;
+        padding: 0 4px;
+        border-radius: 9px;
+        color: #ffffff;
+        background-color: #ff4f67;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 16px;
+        text-align: center;
+    }
 
-    </style>
-    <!-- Logo -->
-    <a href="../index.html" class="logo dark-bg">
-        <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><img src="~/images/Logos/LinkaBlueLogo.png" style="width:50px;height:50px; !important" alt="Ovio"></span>
-        <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><img src="~/images/Logos/LinkaBlueLogo.png" style="width:200px;height:50px; !important " alt="Ovio"></span>
+    .linka-admin-profile-button {
+        display: flex !important;
+        height: 50px;
+        align-items: center;
+        gap: 8px;
+        padding-right: 15px !important;
+        padding-left: 12px !important;
+    }
+
+    .linka-admin-header-avatar {
+        width: 31px;
+        height: 31px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 50%;
+        color: #ffffff;
+        background: linear-gradient( 135deg, #2f6fc5, #23528f );
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.4px;
+    }
+
+    .linka-admin-header-name {
+        max-width: 145px;
+        overflow: hidden;
+        color: #ffffff;
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .linka-admin-dropdown {
+        width: 285px !important;
+        padding-bottom: 6px !important;
+        border: none !important;
+        border-radius: 0 0 8px 8px !important;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.17);
+    }
+
+    .linka-admin-dropdown-profile {
+        padding: 17px 16px 14px;
+        background-color: #f7f9fc;
+    }
+
+    .linka-admin-dropdown-avatar {
+        width: 47px;
+        height: 47px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        float: left;
+        margin-right: 11px;
+        border-radius: 50%;
+        color: #ffffff;
+        background: linear-gradient( 135deg, #4c94e8, #2464bc );
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .linka-admin-dropdown-full-name {
+        display: block;
+        overflow: hidden;
+        color: #273444;
+        font-size: 14px;
+        font-weight: 800;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .linka-admin-dropdown-meta {
+        display: block;
+        overflow: hidden;
+        color: #8492a6;
+        font-size: 11px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .linka-admin-role-badge {
+        display: inline-block;
+        margin-top: 5px;
+        padding: 3px 8px;
+        border-radius: 10px;
+        color: #356aa7;
+        background-color: #e3efff;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .linka-admin-dropdown > li > a,
+    .linka-admin-dropdown-button {
+        display: flex !important;
+        width: 100%;
+        align-items: center;
+        gap: 9px;
+        padding: 10px 15px !important;
+        border: none;
+        color: #667085 !important;
+        background-color: transparent;
+        font-size: 13px;
+        text-align: left;
+    }
+
+        .linka-admin-dropdown > li > a:hover,
+        .linka-admin-dropdown-button:hover {
+            color: #2f6fc5 !important;
+            background-color: #f1f6fd !important;
+        }
+
+    .linka-admin-dropdown i {
+        width: 16px;
+        text-align: center;
+    }
+
+    .linka-admin-dropdown > li > a i,
+    .linka-admin-dropdown-button i {
+        width: 17px;
+        color: #527199 !important;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .linka-admin-dropdown > li > a:hover i,
+    .linka-admin-dropdown-button:hover i {
+        color: #2f6fc5 !important;
+    }
+</style>
+
+<header class="main-header dark-bg">
+
+    <a asp-area="Admin"
+       asp-controller="Statistic"
+       asp-action="Index"
+       class="logo dark-bg">
+
+        <span class="logo-mini">
+
+            <img src="~/images/Logos/LinkaBlueLogo.png"
+                 style="width:50px; height:50px;"
+                 alt="LINKA">
+
+        </span>
+
+        <span class="logo-lg">
+
+            <img src="~/images/Logos/LinkaBlueLogo.png"
+                 style="width:200px; height:50px;"
+                 alt="LINKA">
+
+        </span>
+
     </a>
 
-    <!-- Header Navbar -->
-    <nav class="navbar navbar-static-top" role="navigation">
-        <!-- Sidebar toggle button-->
-        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button"> <span class="sr-only">Toggle navigation</span> </a>
-        <div class="pull-left search-box">
-            <form action="#" method="get" class="search-form">
-                <div class="input-group">
-                    <input type="text" name="search" class="form-control" placeholder="Search...">
-                    <span class="input-group-btn">
-                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i> </button>
-                    </span>
-                </div>
-            </form>
-            <!-- search form -->
-        </div>
-        <!-- Navbar Right Menu -->
-        <div class="navbar-custom-menu">
-            <ul class="nav navbar-nav">
-                <li class="dropdown messages-menu">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="icon-envelope"></i>
-                        <div class="notify">  <span class="point"></span> </div>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li class="header">@(ViewBag.messageCount > 0 ? $"You have {ViewBag.messageCount} new messages" : "No new messages")</li>
-                        <li>
-                            <ul class="menu">
-                                <li>
-                                    <a href="#">
-                                        <div class="pull-left"><img src="../dist/img/img1.jpg" class="img-circle" alt="User Image"></div>
-                                        <h4>Admin Panel</h4>
-                                        <p>Lorem ipsum dolor sit amet.</p>
-                                        <p><small><i class="fa fa-clock-o"></i> 2 mins</small></p>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <div class="pull-left"><img src="../dist/img/img2.jpg" class="img-circle" alt="User Image"></div>
-                                        <h4>Douglas Smith</h4>
-                                        <p>Lorem ipsum dolor sit amet.</p>
-                                        <p><small><i class="fa fa-clock-o"></i> 15 mins</small></p>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <div class="pull-left"><img src="../dist/img/img3.jpg" class="img-circle" alt="User Image"></div>
-                                        <h4>Lorence Deo</h4>
-                                        <p>Lorem ipsum dolor sit amet.</p>
-                                        <p><small><i class="fa fa-clock-o"></i> 35 mins</small></p>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <div class="pull-left"><img src="../dist/img/img1.jpg" class="img-circle" alt="User Image"></div>
-                                        <h4>Florence Douglas</h4>
-                                        <p>Lorem ipsum dolor sit amet.</p>
-                                        <p><small><i class="fa fa-clock-o"></i> 2 mins</small></p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="footer"><a href="#">Check all notifications</a></li>
-                    </ul>
-                </li>
-                <!-- messages-menu -->
-                <!-- Notifications Menu -->
-                <li class="dropdown notifications-menu">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        
-                        <i class="icon-megaphone"></i>
-                        <div class="notify">  <span class="point"></span> </div>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li class="header">@(ViewBag.totalCommentCount > 0 ? $"You have {ViewBag.totalCommentCount} new comments" : "No new comment")</li>
-                        <li>
-                            <ul class="menu">
-                                <li><a href="#"><i class="icon-lightbulb"></i> Lorem ipsum dolor sit amet </a> </li>
-                                <li><a href="#"><i class="icon-map-pin blue"></i> Lorem ipsum dolor sit amet </a> </li>
-                                <li><a href="#"><i class="icon-refresh orange"></i> Lorem ipsum dolor sit amet </a> </li>
-                                <li><a href="#"><i class="icon-map-pin blue"></i> Lorem ipsum dolor sit amet </a> </li>
-                            </ul>
-                        </li>
-                        <li class="footer"><a href="#">View all</a></li>
-                    </ul>
-                </li>
-                <!-- Tasks Menu -->
-                <!-- User Account Menu -->
-                <li class="dropdown user user-menu">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <img src="~/images/Logos/manlogo.jpg" class="user-image" alt="User Image"> <span class="hidden-xs">Admin 01</span> </a>
-                    <ul class="dropdown-menu">
-                        <li class="user-header">
-                            <div class="pull-left user-img"><img src="~/images/Logos/manlogo.jpg" class="img-responsive" alt="User"></div>
-                            <p class="text-left">Berk <small>Linka@gmail.com</small> </p>
-                            <div class="view-link text-left"><a href="#">View Profile</a> </div>
-                        </li>
-                        <li><a href="#"><i class="icon-profile-male"></i> My Profile</a></li>
-                        <li><a href="#"><i class="icon-wallet"></i> My Balance</a></li>
-                        <li><a href="#"><i class="icon-envelope"></i> Inbox</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#"><i class="icon-gears"></i> Account Setting</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#"><i class="fa fa-power-off"></i> Logout</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </nav>
-</header>
+    <nav class="navbar navbar-static-top"
+         role="navigation">
 
+        <a href="#"
+           class="sidebar-toggle"
+           data-toggle="push-menu"
+           role="button">
+
+            <span class="sr-only">
+                Toggle navigation
+            </span>
+
+        </a>
+
+        <div class="pull-left linka-admin-header-title hidden-xs">
+
+            <strong>
+                LINKA Admin Control Center
+            </strong>
+
+            <span>
+                Manage store content and operations
+            </span>
+
+        </div>
+
+        <div class="navbar-custom-menu">
+
+            <ul class="nav navbar-nav">
+
+                <li>
+
+                    <a asp-area="User"
+                       asp-controller="Message"
+                       asp-action="Index"
+                       class="linka-admin-header-action"
+                       title="My Messages">
+
+                        <i class="fa fa-envelope-o"></i>
+
+                        @if (Model.MessageCount > 0)
+                        {
+                            <span class="linka-admin-header-badge">
+                                @Model.MessageCount
+                            </span>
+                        }
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a asp-area="Admin"
+                       asp-controller="Comment"
+                       asp-action="Index"
+                       class="linka-admin-header-action"
+                       title="Comments">
+
+                        <i class="fa fa-comments-o"></i>
+
+                        @if (Model.CommentCount > 0)
+                        {
+                            <span class="linka-admin-header-badge">
+                                @Model.CommentCount
+                            </span>
+                        }
+
+                    </a>
+
+                </li>
+
+                <li class="dropdown user user-menu">
+
+                    <a href="#"
+                       class="dropdown-toggle linka-admin-profile-button"
+                       data-toggle="dropdown">
+
+                        <span class="linka-admin-header-avatar">
+                            @Model.Initials
+                        </span>
+
+                        <span class="hidden-xs linka-admin-header-name">
+                            @Model.FullName
+                        </span>
+
+                    </a>
+
+                    <ul class="dropdown-menu linka-admin-dropdown">
+
+                        <li class="linka-admin-dropdown-profile">
+
+                            <div class="linka-admin-dropdown-avatar">
+                                @Model.Initials
+                            </div>
+
+                            <span class="linka-admin-dropdown-full-name">
+                                @Model.FullName
+                            </span>
+
+                            <span class="linka-admin-dropdown-meta">
+                                @Model.Username
+                            </span>
+
+                            <span class="linka-admin-dropdown-meta">
+                                @Model.Email
+                            </span>
+
+                            <span class="linka-admin-role-badge">
+                                @Model.RoleName
+                            </span>
+
+                            <div style="clear:both;"></div>
+
+                        </li>
+
+                        <li>
+
+                            <a asp-area=""
+                               asp-controller="Default"
+                               asp-action="Index">
+
+                                <i class="fa fa-home"></i>
+
+                                Go To Store
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a asp-area="User"
+                               asp-controller="Profile"
+                               asp-action="Index">
+
+                                <i class="fa fa-user"></i>
+
+                                My User Panel
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a asp-area="User"
+                               asp-controller="MyOrder"
+                               asp-action="ActiveOrders">
+
+                                <i class="fa fa-list-alt"></i>
+
+                                My Orders
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a asp-area="User"
+                               asp-controller="Message"
+                               asp-action="Index">
+
+                                <i class="fa fa-envelope-o"></i>
+
+                                My Messages
+
+                            </a>
+
+                        </li>
+
+                        <li role="separator"
+                            class="divider">
+                        </li>
+
+                        <li>
+
+                            <a asp-area="Admin"
+                               asp-controller="User"
+                               asp-action="UserList">
+
+                                <i class="fa fa-users"></i>
+
+                                User Management
+
+                            </a>
+
+                        </li>
+
+                        <li role="separator"
+                            class="divider">
+                        </li>
+
+                        <li>
+
+                            <form asp-area=""
+                                  asp-controller="Login"
+                                  asp-action="LogOut"
+                                  method="post"
+                                  class="m-0">
+
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit"
+                                        class="linka-admin-dropdown-button">
+
+                                    <i class="fa fa-sign-out"></i>
+
+                                    Log Out
+
+                                </button>
+
+                            </form>
+
+                        </li>
+
+                    </ul>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </nav>
+
+</header>

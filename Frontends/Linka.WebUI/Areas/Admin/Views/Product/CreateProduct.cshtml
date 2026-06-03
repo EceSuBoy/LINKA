@@ -13,6 +13,26 @@
         padding: 10px 12px !important;
         font-size: 15px;
     }
+
+    .linka-featured-settings {
+        margin-top: 20px;
+        padding: 18px;
+        border: 1px solid #e4eaf1;
+        border-radius: 10px;
+        background-color: #fbfcfe;
+    }
+
+    .linka-featured-title {
+        margin-top: 0;
+        color: #273444;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+        .linka-featured-title i {
+            margin-right: 6px;
+            color: #f0ad4e;
+        }
 </style>
 
 <section class="content container-fluid">
@@ -65,9 +85,110 @@
                         <textarea class="form-control" asp-for="ProductDescription" rows="5"></textarea>
                         <br />
 
+                        <hr />
+
+                        <div class="linka-featured-settings">
+
+                            <h4 class="linka-featured-title">
+                                <i class="fa fa-star"></i>
+                                Featured Product Settings
+                            </h4>
+
+                            <p class="text-muted">
+                                Select this option to display the product
+                                in the Featured Products section on the home page.
+                                A maximum of 8 products can be featured.
+                            </p>
+
+                            <div class="checkbox">
+
+                                <label>
+
+                                    <input asp-for="IsFeatured"
+                                           type="checkbox"
+                                           id="isFeaturedCheckbox" />
+
+                                    Show in Featured Products
+
+                                </label>
+
+                            </div>
+
+                            <div class="form-group"
+                                 id="featuredOrderGroup">
+
+                                <label>
+                                    Featured Display Order
+                                </label>
+
+                                <input asp-for="FeaturedOrder"
+                                       type="number"
+                                       min="1"
+                                       max="8"
+                                       class="form-control"
+                                       placeholder="Enter a value between 1 and 8" />
+
+                                <small class="text-muted">
+                                    Products with lower values appear first.
+                                </small>
+
+                            </div>
+
+                        </div>
+
                         <button class="btn btn-primary">Add Product</button>
 
                     </form>
+                    <script>
+                        document.addEventListener(
+                            "DOMContentLoaded",
+                            function () {
+
+                                const checkbox =
+                                    document.getElementById(
+                                        "isFeaturedCheckbox");
+
+                                const orderGroup =
+                                    document.getElementById(
+                                        "featuredOrderGroup");
+
+                                const orderInput =
+                                    document.getElementById(
+                                        "FeaturedOrder");
+
+                                function updateFeaturedOrderVisibility() {
+                                    const isFeatured =
+                                        checkbox.checked;
+
+                                    orderGroup.style.display =
+                                        isFeatured
+                                            ? "block"
+                                            : "none";
+
+                                    orderInput.disabled =
+                                        !isFeatured;
+
+                                    if (!isFeatured) {
+                                        orderInput.value =
+                                            "0";
+                                    }
+                                    else if (
+                                        orderInput.value ===
+                                        "0") {
+
+                                        orderInput.value =
+                                            "1";
+                                    }
+                                }
+
+                                checkbox.addEventListener(
+                                    "change",
+                                    updateFeaturedOrderVisibility);
+
+                                updateFeaturedOrderVisibility();
+                            });
+                    </script>
+
                 </div>
             </div>
         </div>

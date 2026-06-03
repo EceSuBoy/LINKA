@@ -1,8 +1,10 @@
 ﻿using Linka.WebUI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Linka.WebUI.Areas.User.Controllers
 {
+    [Authorize]
     [Area("User")]
     public class ProfileController : Controller
     {
