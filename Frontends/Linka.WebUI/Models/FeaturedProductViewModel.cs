@@ -19,6 +19,10 @@
         public string ProductName { get; set; } = string.Empty;
 
         public decimal ProductPrice { get; set; }
+        public int StockCount { get; set; }
+
+        public bool IsInStock =>
+            StockCount > 0;
 
         public string ProductImageUrl { get; set; } = string.Empty;
 

@@ -1,7 +1,9 @@
 ﻿using Linka.DtoLayer.BasketDtos;
+using Linka.DtoLayer.CatalogDtos.ProductDtos;
 using Linka.DtoLayer.OrderDtos.OrderOrderingDtos;
 using Linka.WebUI.Models;
 using Linka.WebUI.Services.BasketServices;
+using Linka.WebUI.Services.CatalogServices.ProductServices;
 using Linka.WebUI.Services.Interfaces;
 using Linka.WebUI.Services.OrderServices.OrderOrderingServices;
 using Microsoft.AspNetCore.Authorization;
@@ -22,13 +24,17 @@ namespace Linka.WebUI.Controllers
         private readonly IOrderOrderingServices
             _orderOrderingServices;
 
+        private readonly IProductService
+    _productService;
+
         public PaymentController(
-            IBasketService basketService, IUserService userService, IOrderOrderingServices orderOrderingServices)
+            IBasketService basketService, IUserService userService, IOrderOrderingServices orderOrderingServices, IProductService productService)
         {
             _basketService =
                 basketService;
             _userService = userService;
             _orderOrderingServices = orderOrderingServices;
+            _productService = productService;
         }
 
         [HttpGet]
@@ -79,15 +85,6 @@ namespace Linka.WebUI.Controllers
                     "ShoppingCart");
             }
 
-            /*
-             * Form görünümünde boşluklarla gösterilen kart
-             * numarasını yalnızca rakamlara dönüştürüyoruz.
-             *
-             * Örnek:
-             * 4242 4242 4242 4242
-             *              ↓
-             * 4242424242424242
-             */
             var normalizedCardNumber =
                 Regex.Replace(
                     paymentViewModel.CardNumber ??
@@ -157,18 +154,38 @@ namespace Linka.WebUI.Controllers
                     paymentViewModel);
             }
 
-            /*
- * Kullanıcı kimliğini formdan kabul etmiyoruz.
- * Giriş yapan hesaptan alıyoruz.
- */
+            foreach (var item in basket.BasketItems)
+            {
+                var product =
+                    await _productService
+                        .GetByIdProductAsync(
+                            item.ProductId);
+
+                if (product == null)
+                {
+                    TempData["BasketError"] =
+                        $"{item.ProductName} could not be found.";
+
+                    return RedirectToAction(
+                        "Index",
+                        "ShoppingCart");
+                }
+
+                if (product.StockCount < item.Quantity)
+                {
+                    TempData["BasketError"] =
+                        $"Insufficient stock for {item.ProductName}. Available stock: {product.StockCount}.";
+
+                    return RedirectToAction(
+                        "Index",
+                        "ShoppingCart");
+                }
+            }
+
             var user =
                 await _userService
                     .GetUserInfo();
 
-            /*
-             * Shopping Cart ve Order Summary ekranlarında kullanılan
-             * hesaplama ile aynı grand total değerini oluşturuyoruz.
-             */
             var grandTotal =
                 CalculateGrandTotal(
                     basket);
@@ -202,14 +219,24 @@ namespace Linka.WebUI.Controllers
                             .ToList()
                 };
 
-            /*
-             * Önce SQL Server sipariş kaydı oluşturulur.
-             * Başarılı olmadan sepet temizlenmez.
-             */
             var orderingId =
-                await _orderOrderingServices
-                    .CreateOrderingWithDetailsAsync(
-                        createOrderingDto);
+    await _orderOrderingServices
+        .CreateOrderingWithDetailsAsync(
+            createOrderingDto);
+
+            foreach (var item in basket.BasketItems)
+            {
+                await _productService
+                    .DecreaseProductStockAsync(
+                        new DecreaseProductStockDto
+                        {
+                            ProductId =
+                                item.ProductId,
+
+                            Quantity =
+                                item.Quantity
+                        });
+            }
 
             await _basketService
                 .ClearBasket();
@@ -263,12 +290,6 @@ namespace Linka.WebUI.Controllers
                 "Payment";
         }
 
-        /*
-         * Basit Luhn kontrolü.
-         *
-         * Bu yalnızca test amaçlı temel kart formatı
-         * doğrulamasıdır. Gerçek ödeme işlemi değildir.
-         */
         private static bool IsValidCardNumber(
             string cardNumber)
         {

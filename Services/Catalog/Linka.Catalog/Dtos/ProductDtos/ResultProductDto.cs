@@ -6,6 +6,8 @@
         public string ProductName { get; set; }
         public decimal ProductPrice { get; set; }
         public decimal DiscountRate { get; set; }
+        public int StockCount { get; set; }
+
 
         public bool IsFeatured { get; set; }
 

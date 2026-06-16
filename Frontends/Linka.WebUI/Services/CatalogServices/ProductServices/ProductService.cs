@@ -69,6 +69,28 @@ namespace Linka.WebUI.Services.CatalogServices.ProductServices
             return values;
         }
 
+        public async Task DecreaseProductStockAsync(
+    DecreaseProductStockDto dto)
+        {
+            var responseMessage =
+                await _httpClient
+                    .PutAsJsonAsync(
+                        "products/DecreaseProductStock",
+                        dto);
+
+            var content =
+                await responseMessage
+                    .Content
+                    .ReadAsStringAsync();
+
+            if (!responseMessage
+                    .IsSuccessStatusCode)
+            {
+                throw new Exception(
+                    content);
+            }
+        }
+
         public async Task UpdateProductAsync(
     UpdateProductDto updateProductDto)
         {

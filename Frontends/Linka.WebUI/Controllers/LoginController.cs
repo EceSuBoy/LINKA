@@ -32,11 +32,51 @@ namespace Linka.WebUI.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Index(SignInDto signInDto)
+        public async Task<IActionResult> Index(CreateLoginDto createLoginDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(createLoginDto);
+            }
 
-            await _identityService.SignIn(signInDto);
-            return RedirectToAction("Index", "Default");
+            var signInDto =
+                new SignInDto
+                {
+                    Username =
+                        createLoginDto.Username,
+
+                    Password =
+                        createLoginDto.Password
+                };
+
+            try
+            {
+                await _identityService
+                    .SignIn(signInDto);
+
+                return RedirectToAction(
+                    "Index",
+                    "Default");
+            }
+            catch (Exception exception)
+            {
+                if (exception.Message.Contains("invalid_grant") ||
+                    exception.Message.Contains("invalid_username_or_password") ||
+                    exception.Message.Contains("Username or password"))
+                {
+                    ModelState.AddModelError(
+                        string.Empty,
+                        "Username or password is incorrect.");
+                }
+                else
+                {
+                    ModelState.AddModelError(
+                        string.Empty,
+                        "Login failed. Please try again later.");
+                }
+
+                return View(createLoginDto);
+            }
         }
 
         [HttpPost]

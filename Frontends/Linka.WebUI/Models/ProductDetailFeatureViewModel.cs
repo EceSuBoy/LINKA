@@ -11,6 +11,10 @@
         public decimal ProductPrice { get; set; }
 
         public decimal DiscountRate { get; set; }
+        public int StockCount { get; set; }
+
+        public bool IsInStock =>
+            StockCount > 0;
 
         public string ProductDescription { get; set; } =
             string.Empty;

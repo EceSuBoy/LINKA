@@ -213,6 +213,28 @@
             color: #c5ced9;
             font-size: 40px;
         }
+
+    .linka-stock-badge,
+    .linka-out-stock-badge {
+        display: inline-block;
+        min-width: 92px;
+        padding: 6px 10px;
+        border-radius: 14px;
+        font-size: 11px;
+        font-weight: 800;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .linka-stock-badge {
+        color: #277944;
+        background-color: #e4f7ea;
+    }
+
+    .linka-out-stock-badge {
+        color: #b23b3b;
+        background-color: #fde2e2;
+    }
 </style>
 
 @if (Model.Items.Any())
@@ -228,6 +250,7 @@
                     <th>Product Name</th>
                     <th>Price</th>
                     <th>Category</th>
+                    <th>Stock</th>
                     <th>Featured</th>
                     <th>Delete</th>
                     <th>Update</th>
@@ -277,6 +300,21 @@
 
                     </span>
 
+                        </td>
+
+                        <td>
+                    @if (item.StockCount > 0)
+                            {
+                                <span class="linka-stock-badge">
+                                    @item.StockCount in stock
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="linka-out-stock-badge">
+                                    Out of Stock
+                                </span>
+                            }
                         </td>
 
                         <td>

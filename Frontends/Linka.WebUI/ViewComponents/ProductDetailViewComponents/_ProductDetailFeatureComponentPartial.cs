@@ -37,6 +37,9 @@ namespace Linka.WebUI.ViewComponents.ProductDetailViewComponents
                     ProductPrice =
                         product.ProductPrice,
 
+                    StockCount =
+                        product.StockCount,
+
                     DiscountRate =
                         product.DiscountRate,
 

@@ -8,6 +8,8 @@ namespace Linka.Catalog.Dtos.ProductDtos
         public string ProductName { get; set; }
         public decimal ProductPrice { get; set; }
 
+        public int StockCount { get; set; }
+
         public bool IsFeatured { get; set; }
 
         public int FeaturedOrder { get; set; }

@@ -17,6 +17,8 @@ namespace Linka.Catalog.Entities
         [BsonRepresentation(BsonType.ObjectId)]
         public string CategoryId { get; set; }
 
+        public int StockCount { get; set; }
+
         public bool IsFeatured { get; set; }
 
         public int FeaturedOrder { get; set; }

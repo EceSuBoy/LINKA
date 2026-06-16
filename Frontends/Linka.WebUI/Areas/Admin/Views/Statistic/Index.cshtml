@@ -1,202 +1,403 @@
-﻿
+﻿@using System.Globalization
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Dashboard";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var culture = new CultureInfo("tr-TR");
+
+    string TextValue(object value, string fallback = "0")
+    {
+        return value == null
+            ? fallback
+            : value.ToString();
+    }
+
+    string MoneyValue(object value)
+    {
+        if (value == null)
+        {
+            return "0,00 ₺";
+        }
+
+        try
+        {
+            var number =
+                Convert.ToDecimal(value);
+
+            return number.ToString("N2", culture) + " ₺";
+        }
+        catch
+        {
+            return value.ToString() + " ₺";
+        }
+    }
 }
 
-<section class="content container-fluid">
-    <div class="row">
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box">
-                <div class="media-icon pull-left"><i class="icon-bargraph"></i> </div>
-                <div class="media-info">
-                    <h5>Total Brand</h5>
-                    <h3>@ViewBag.getBrandCount</h3>
-                </div>
-            </div>
+<style>
+    .linka-dashboard-page {
+        padding-bottom: 30px;
+    }
+
+    .linka-dashboard-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .linka-dashboard-title {
+        margin: 0;
+        color: #273444;
+        font-size: 24px;
+        font-weight: 800;
+    }
+
+    .linka-dashboard-subtitle {
+        margin-top: 5px;
+        color: #8492a6;
+        font-size: 13px;
+    }
+
+    .linka-dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(190px, 1fr));
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .linka-stat-card {
+        position: relative;
+        overflow: hidden;
+        min-height: 132px;
+        padding: 20px;
+        border-radius: 14px;
+        color: #fff;
+        box-shadow: 0 8px 22px rgba(31, 45, 61, 0.12);
+    }
+
+        .linka-stat-card.purple {
+            background: linear-gradient(135deg, #7457f0, #5b43c9);
+        }
+
+        .linka-stat-card.blue {
+            background: linear-gradient(135deg, #4c94e8, #2464bc);
+        }
+
+        .linka-stat-card.green {
+            background: linear-gradient(135deg, #45c767, #27a948);
+        }
+
+        .linka-stat-card.cyan {
+            background: linear-gradient(135deg, #28c9ce, #159da5);
+        }
+
+    .linka-stat-icon {
+        position: absolute;
+        right: 18px;
+        bottom: 14px;
+        color: rgba(255, 255, 255, 0.22);
+        font-size: 46px;
+    }
+
+    .linka-stat-label {
+        display: block;
+        margin-bottom: 10px;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.35px;
+        text-transform: uppercase;
+    }
+
+    .linka-stat-value {
+        display: block;
+        max-width: 92%;
+        overflow: hidden;
+        color: #fff;
+        font-size: 25px;
+        font-weight: 800;
+        line-height: 1.22;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .linka-stat-small {
+        display: block;
+        margin-top: 8px;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 12px;
+    }
+
+    .linka-section-title {
+        margin: 28px 0 14px;
+        color: #273444;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    @@media (max-width: 1200px) {
+        .linka-dashboard-grid {
+            grid-template-columns: repeat(2, minmax(190px, 1fr));
+        }
+    }
+
+    @@media (max-width: 650px) {
+        .linka-dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<section class="content container-fluid linka-dashboard-page">
+
+    <div class="linka-dashboard-header">
+
+        <div>
+            <h3 class="linka-dashboard-title">
+                Admin Dashboard
+            </h3>
+
+            <p class="linka-dashboard-subtitle">
+                Review key LINKA statistics and monitor store activity.
+            </p>
         </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-sea">
-                <div class="media-icon pull-left"><i class="icon-wallet"></i> </div>
-                <div class="media-info">
-                    <h5>Total Product</h5>
-                    <h3>@ViewBag.getProductCount</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-blue">
-                <div class="media-icon pull-left"><i class="icon-basket"></i> </div>
-                <div class="media-info">
-                    <h5>Total Category</h5>
-                    <h3>@ViewBag.getCategoryCount</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-green">
-                <div class="media-icon pull-left"><i class="icon-layers"></i> </div>
-                <div class="media-info">
-                    <h5>Average Product Price</h5>
-                    <h3>@ViewBag.getProductAvgPrice</h3>
-                </div>
-            </div>
-        </div>
+
+        <a asp-area=""
+           asp-controller="Default"
+           asp-action="Index"
+           class="btn btn-primary">
+
+            <i class="fa fa-home"></i>
+
+            Go To Store
+
+        </a>
+
     </div>
 
-    <div class="row">
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box">
-                <div class="media-icon pull-left"><i class="icon-bargraph"></i> </div>
-                <div class="media-info">
-                    <h5>The Most Expensive Product</h5>
-                    <h3>@ViewBag.getMaxPriceProductName</h3>
-                </div>
-            </div>
+    <h4 class="linka-section-title">
+        Catalog Summary
+    </h4>
+
+    <div class="linka-dashboard-grid">
+
+        <div class="linka-stat-card purple">
+            <span class="linka-stat-label">
+                Total Products
+            </span>
+
+            <span class="linka-stat-value">
+                @TextValue(ViewBag.getProductCount)
+            </span>
+
+            <span class="linka-stat-small">
+                Products available in catalog
+            </span>
+
+            <i class="fa fa-cubes linka-stat-icon"></i>
         </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-sea">
-                <div class="media-icon pull-left"><i class="icon-wallet"></i> </div>
-                <div class="media-info">
-                    <h5>The Cheapest Product</h5>
-                    <h3>@ViewBag.getMinPriceProductName</h3>
-                </div>
-            </div>
+
+        <div class="linka-stat-card blue">
+            <span class="linka-stat-label">
+                Total Categories
+            </span>
+
+            <span class="linka-stat-value">
+                @TextValue(ViewBag.getCategoryCount)
+            </span>
+
+            <span class="linka-stat-small">
+                Product category groups
+            </span>
+
+            <i class="fa fa-th-large linka-stat-icon"></i>
         </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-blue">
-                <div class="media-icon pull-left"><i class="icon-basket"></i> </div>
-                <div class="media-info">
-                    <h5>Total User</h5>
-                    <h3>@ViewBag.getUserCount</h3>
-                </div>
-            </div>
+
+        <div class="linka-stat-card cyan">
+            <span class="linka-stat-label">
+                Total Brands
+            </span>
+
+            <span class="linka-stat-value">
+                @TextValue(ViewBag.getBrandCount)
+            </span>
+
+            <span class="linka-stat-small">
+                Registered product brands
+            </span>
+
+            <i class="fa fa-building linka-stat-icon"></i>
         </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-green">
-                <div class="media-icon pull-left"><i class="icon-layers"></i> </div>
-                <div class="media-info">
-                    <h5>Total Comments</h5>
-                    <h3>@ViewBag.getTotalCommentCount</h3>
-                </div>
-            </div>
+
+        <div class="linka-stat-card green">
+            <span class="linka-stat-label">
+                Average Product Price
+            </span>
+
+            <span class="linka-stat-value">
+                @MoneyValue(ViewBag.getProductAvgPrice)
+            </span>
+
+            <span class="linka-stat-small">
+                Calculated from all products
+            </span>
+
+            <i class="fa fa-money linka-stat-icon"></i>
         </div>
+
     </div>
 
-    <div class="row">
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box">
-                <div class="media-icon pull-left"><i class="icon-bargraph"></i> </div>
-                <div class="media-info">
-                    <h5>Active Comments</h5>
-                    <h3>@ViewBag.getActiveCommentCount</h3>
-                </div>
-            </div>
+    <h4 class="linka-section-title">
+        Product Insights
+    </h4>
+
+    <div class="linka-dashboard-grid">
+
+        <div class="linka-stat-card purple">
+            <span class="linka-stat-label">
+                Most Expensive Product
+            </span>
+
+            <span class="linka-stat-value"
+                  title="@TextValue(ViewBag.getMaxPriceProductName, "No data")">
+
+                @TextValue(ViewBag.getMaxPriceProductName, "No data")
+
+            </span>
+
+            <span class="linka-stat-small">
+                Highest priced catalog item
+            </span>
+
+            <i class="fa fa-arrow-up linka-stat-icon"></i>
         </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-sea">
-                <div class="media-icon pull-left"><i class="icon-wallet"></i> </div>
-                <div class="media-info">
-                    <h5>Passive Comments</h5>
-                    <h3>@ViewBag.getPassiveCommentCount</h3>
-                </div>
-            </div>
+
+        <div class="linka-stat-card cyan">
+            <span class="linka-stat-label">
+                Cheapest Product
+            </span>
+
+            <span class="linka-stat-value"
+                  title="@TextValue(ViewBag.getMinPriceProductName, "No data")">
+
+                @TextValue(ViewBag.getMinPriceProductName, "No data")
+
+            </span>
+
+            <span class="linka-stat-small">
+                Lowest priced catalog item
+            </span>
+
+            <i class="fa fa-arrow-down linka-stat-icon"></i>
         </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-blue">
-                <div class="media-icon pull-left"><i class="icon-basket"></i> </div>
-                <div class="media-info">
-                    <h5>Total Discounts</h5>
-                    <h3>@ViewBag.getDiscountCouponCount</h3>
-                </div>
-            </div>
+
+        <div class="linka-stat-card blue">
+            <span class="linka-stat-label">
+                Total Coupons
+            </span>
+
+            <span class="linka-stat-value">
+                @TextValue(ViewBag.getDiscountCouponCount)
+            </span>
+
+            <span class="linka-stat-small">
+                Available checkout coupons
+            </span>
+
+            <i class="fa fa-ticket linka-stat-icon"></i>
         </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-green">
-                <div class="media-icon pull-left"><i class="icon-layers"></i> </div>
-                <div class="media-info">
-                    <h5>Total Messages</h5>
-                    <h3>@ViewBag.getTotalMessageCount</h3>
-                </div>
-            </div>
+
+        <div class="linka-stat-card green">
+            <span class="linka-stat-label">
+                Total Comments
+            </span>
+
+            <span class="linka-stat-value">
+                @TextValue(ViewBag.getTotalCommentCount)
+            </span>
+
+            <span class="linka-stat-small">
+                Customer product reviews
+            </span>
+
+            <i class="fa fa-comments linka-stat-icon"></i>
         </div>
+
     </div>
 
-    <div class="row">
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box">
-                <div class="media-icon pull-left"><i class="icon-bargraph"></i> </div>
-                <div class="media-info">
-                    <h5>Total Leads</h5>
-                    <h3>1530</h3>
-                </div>
-            </div>
+    <h4 class="linka-section-title">
+        Users and Operations
+    </h4>
+
+    <div class="linka-dashboard-grid">
+
+        <div class="linka-stat-card blue">
+            <span class="linka-stat-label">
+                Total Users
+            </span>
+
+            <span class="linka-stat-value">
+                @TextValue(ViewBag.getUserCount)
+            </span>
+
+            <span class="linka-stat-small">
+                Registered LINKA accounts
+            </span>
+
+            <i class="fa fa-users linka-stat-icon"></i>
         </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-sea">
-                <div class="media-icon pull-left"><i class="icon-wallet"></i> </div>
-                <div class="media-info">
-                    <h5>Total Payment</h5>
-                    <h3>$8,530</h3>
-                </div>
-            </div>
+
+        <div class="linka-stat-card purple">
+            <span class="linka-stat-label">
+                Total Messages
+            </span>
+
+            <span class="linka-stat-value">
+                @TextValue(ViewBag.getTotalMessageCount)
+            </span>
+
+            <span class="linka-stat-small">
+                User-to-user messages
+            </span>
+
+            <i class="fa fa-envelope linka-stat-icon"></i>
         </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-blue">
-                <div class="media-icon pull-left"><i class="icon-basket"></i> </div>
-                <div class="media-info">
-                    <h5>Total Sales</h5>
-                    <h3>935</h3>
-                </div>
-            </div>
+
+        <div class="linka-stat-card green">
+            <span class="linka-stat-label">
+                Active Comments
+            </span>
+
+            <span class="linka-stat-value">
+                @TextValue(ViewBag.getActiveCommentCount)
+            </span>
+
+            <span class="linka-stat-small">
+                Visible customer comments
+            </span>
+
+            <i class="fa fa-check linka-stat-icon"></i>
         </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-green">
-                <div class="media-icon pull-left"><i class="icon-layers"></i> </div>
-                <div class="media-info">
-                    <h5>New Orders</h5>
-                    <h3>5324</h3>
-                </div>
-            </div>
+
+        <div class="linka-stat-card cyan">
+            <span class="linka-stat-label">
+                Passive Comments
+            </span>
+
+            <span class="linka-stat-value">
+                @TextValue(ViewBag.getPassiveCommentCount)
+            </span>
+
+            <span class="linka-stat-small">
+                Hidden or pending comments
+            </span>
+
+            <i class="fa fa-eye-slash linka-stat-icon"></i>
         </div>
+
     </div>
 
-    <div class="row">
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box">
-                <div class="media-icon pull-left"><i class="icon-bargraph"></i> </div>
-                <div class="media-info">
-                    <h5>Total Leads</h5>
-                    <h3>1530</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-sea">
-                <div class="media-icon pull-left"><i class="icon-wallet"></i> </div>
-                <div class="media-info">
-                    <h5>Total Payment</h5>
-                    <h3>$8,530</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-blue">
-                <div class="media-icon pull-left"><i class="icon-basket"></i> </div>
-                <div class="media-info">
-                    <h5>Total Sales</h5>
-                    <h3>935</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-xs-6">
-            <div class="media-box bg-green">
-                <div class="media-icon pull-left"><i class="icon-layers"></i> </div>
-                <div class="media-info">
-                    <h5>New Orders</h5>
-                    <h3>5324</h3>
-                </div>
-            </div>
-        </div>
-    </div>
 </section>

@@ -13,6 +13,7 @@ namespace Linka.DtoLayer.CatalogDtos.ProductDtos
         public decimal ProductPrice { get; set; }
         public decimal DiscountRate { get; set; }
 
+        public int StockCount { get; set; }
         public bool IsFeatured { get; set; }
 
         public int FeaturedOrder { get; set; }

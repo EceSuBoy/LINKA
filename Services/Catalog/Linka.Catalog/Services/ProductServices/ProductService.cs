@@ -434,5 +434,66 @@ namespace Linka.Catalog.Services.ProductServices
             }
         }
 
+        public async Task DecreaseProductStockAsync(
+    DecreaseProductStockDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.ProductId))
+            {
+                throw new ArgumentException(
+                    "Product ID cannot be empty.");
+            }
+
+            if (dto.Quantity < 1)
+            {
+                throw new ArgumentException(
+                    "Quantity must be greater than zero.");
+            }
+
+            var filter =
+                Builders<Product>
+                    .Filter
+                    .And(
+                        Builders<Product>.Filter.Eq(
+                            x => x.ProductId,
+                            dto.ProductId),
+
+                        Builders<Product>.Filter.Gte(
+                            x => x.StockCount,
+                            dto.Quantity)
+                    );
+
+            var update =
+                Builders<Product>
+                    .Update
+                    .Inc(
+                        x => x.StockCount,
+                        -dto.Quantity);
+
+            var result =
+                await _productCollection
+                    .UpdateOneAsync(
+                        filter,
+                        update);
+
+            if (result.ModifiedCount == 0)
+            {
+                var product =
+                    await _productCollection
+                        .Find(x =>
+                            x.ProductId ==
+                            dto.ProductId)
+                        .FirstOrDefaultAsync();
+
+                if (product == null)
+                {
+                    throw new ArgumentException(
+                        "Product could not be found.");
+                }
+
+                throw new ArgumentException(
+                    $"Insufficient stock for {product.ProductName}. Available stock: {product.StockCount}.");
+            }
+        }
+
     }
 }

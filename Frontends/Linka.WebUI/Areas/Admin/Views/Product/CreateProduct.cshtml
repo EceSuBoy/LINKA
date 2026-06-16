@@ -68,7 +68,19 @@
                         </span>
 
                         <br />
+                        <label>Stock Count</label>
+                        <input asp-for="StockCount"
+                               type="number"
+                               min="0"
+                               class="form-control"
+                               placeholder="Enter product stock count" />
+                        <br />
 
+                        <span asp-validation-for="StockCount"
+                              class="text-danger">
+                        </span>
+
+                        <br />
                         <label>Product Image</label>
                         <input type="text" class="form-control" asp-for="ProductImageUrl" />
                         <br />

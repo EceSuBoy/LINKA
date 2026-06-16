@@ -10,6 +10,8 @@ namespace Linka.Catalog.Services.ProductServices
         Task DeleteProductAsync(string id);
         Task<GetByIdProductDto> GetByIdProductAsync(string id);
         Task<List<ResultProductsWithCategoryDto>> GetProductsWithCategoryAsync();
+        Task DecreaseProductStockAsync(
+    DecreaseProductStockDto dto);
         Task<List<ResultProductsWithCategoryDto>> GetProductsWithCategoryByCategoryIdAsync(string categoryId);
 
         Task<

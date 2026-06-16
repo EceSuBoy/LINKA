@@ -9,6 +9,8 @@ namespace Linka.WebUI.Services.CatalogServices.ProductServices
         Task UpdateProductAsync(UpdateProductDto updateProductDto);
         Task DeleteProductAsync(string id);
         Task<UpdateProductDto> GetByIdProductAsync(string id);
+        Task DecreaseProductStockAsync(
+    DecreaseProductStockDto dto);
         Task<List<ResultProductWithCategoryDto>> GetProductsWithCategoryAsync();
         Task<List<ResultProductWithCategoryDto>> GetProductsWithCategoryByCategoryIdAsync(string categoryId);
 

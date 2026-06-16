@@ -16,6 +16,7 @@ namespace Linka.DtoLayer.CatalogDtos.ProductDtos
         public bool IsFeatured { get; set; }
 
         public int FeaturedOrder { get; set; }
+        public int StockCount { get; set; }
         public decimal DiscountRate { get; set; }
         public string ProductImageUrl { get; set; }
         public string ProductDescription { get; set; }

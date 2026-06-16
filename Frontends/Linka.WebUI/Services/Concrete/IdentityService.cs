@@ -131,7 +131,14 @@ namespace Linka.WebUI.Services.Concrete
             var token = await _httpClient.RequestPasswordTokenAsync(passwordTokenRequest);
             if (token.IsError)
             {
-                throw new Exception($"Token Error: {token.Error} - {token.ErrorDescription}");
+                if (token.Error == "invalid_grant")
+                {
+                    throw new Exception(
+                        "Username or password is incorrect.");
+                }
+
+                throw new Exception(
+                    "Login failed. Please try again later.");
             }
 
             var userInfoRequest = new UserInfoRequest

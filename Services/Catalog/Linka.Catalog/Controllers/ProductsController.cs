@@ -132,5 +132,24 @@ namespace Linka.Catalog.Controllers
 
             return Ok(values);
         }
+
+        [HttpPut("DecreaseProductStock")]
+        public async Task<IActionResult> DecreaseProductStock(
+    DecreaseProductStockDto dto)
+        {
+            try
+            {
+                await _ProductService
+                    .DecreaseProductStockAsync(dto);
+
+                return Ok(
+                    "Product stock decreased successfully.");
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(
+                    exception.Message);
+            }
+        }
     }
 }

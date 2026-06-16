@@ -55,6 +55,9 @@ namespace Linka.WebUI.ViewComponents.DefaultViewComponents
                         ProductPrice =
                             product.ProductPrice,
 
+                        StockCount =
+                            product.StockCount,
+
                         ProductImageUrl =
                             product.ProductImageUrl,
 

@@ -3,7 +3,17 @@
     Layout = "~/Views/UILayout/_UILayout.cshtml";
 }
 
-<!-- Shop Detail Start -->
+@if (TempData["BasketError"] != null)
+{
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <div class="alert alert-danger">
+                @TempData["BasketError"]
+            </div>
+        </div>
+    </div>
+}
+
 <div class="container-fluid pb-5">
     <div class="row px-xl-5">
 

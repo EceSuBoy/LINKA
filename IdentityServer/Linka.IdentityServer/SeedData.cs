@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Linka.IdentityServer
 {
-    public class SeedData
+    public partial class SeedData
     {
         private static readonly string[] SystemRoles =
         {
@@ -143,6 +143,22 @@ namespace Linka.IdentityServer
                     user);
             }
 
+            /*
+             * 100 adet test kullanıcısını ekler.
+             *
+             * Mevcut kullanıcılar SİLİNMEZ; CreateOrUpdateUser
+             * username üzerinden kontrol ettiği için sadece eksik
+             * olan test hesapları oluşturulur, var olanlar korunur.
+             * Bu yüzden seed birden çok kez çalıştırılsa bile
+             * kullanıcı listesi bozulmaz.
+             */
+            foreach (var testUser in GetTestUsers())
+            {
+                CreateOrUpdateUser(
+                    userManager,
+                    testUser);
+            }
+
             Log.Information(
                 "LINKA identity seed completed successfully.");
         }
@@ -274,6 +290,36 @@ namespace Linka.IdentityServer
 
                 Log.Information(
                     "User already exists: {Username}",
+                    seedUser.Username);
+
+                var resetToken =
+    userManager
+        .GeneratePasswordResetTokenAsync(user)
+        .GetAwaiter()
+        .GetResult();
+
+                var passwordResult =
+                    userManager
+                        .ResetPasswordAsync(
+                            user,
+                            resetToken,
+                            seedUser.Password)
+                        .GetAwaiter()
+                        .GetResult();
+
+                if (!passwordResult.Succeeded)
+                {
+                    throw new Exception(
+                        $"Password could not be reset: " +
+                        $"{seedUser.Username}. " +
+                        string.Join(
+                            " | ",
+                            passwordResult.Errors.Select(
+                                x => x.Description)));
+                }
+
+                Log.Information(
+                    "Password reset: {Username}",
                     seedUser.Username);
             }
 

@@ -41,10 +41,6 @@ namespace Linka.WebUI.Controllers
                 await _basketService
                     .GetBasket();
 
-            /*
-             * Basket item fiyatları ürün bazlı indirimler
-             * uygulanmış şekilde Redis'e kaydediliyor.
-             */
             var subTotal =
                 Math.Round(
                     basket.TotalPrice,
@@ -53,9 +49,6 @@ namespace Linka.WebUI.Controllers
             var discountRate =
                 basket.DiscountRate ?? 0;
 
-            /*
-             * Kupon indirimi subtotal üzerinden uygulanıyor.
-             */
             var discountAmount =
                 Math.Round(
                     subTotal *
@@ -69,9 +62,6 @@ namespace Linka.WebUI.Controllers
                     discountAmount,
                     2);
 
-            /*
-             * VAT, kupon uygulanmış tutar üzerinden hesaplanıyor.
-             */
             const decimal vatRate =
                 10m;
 
@@ -120,9 +110,6 @@ namespace Linka.WebUI.Controllers
                 1);
         }
 
-        /*
-         * Product Detail sayfasından seçilen miktarı alır.
-         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult>
@@ -145,10 +132,6 @@ namespace Linka.WebUI.Controllers
                     "Product ID cannot be empty.");
             }
 
-            /*
-             * Kullanıcının yanlışlıkla veya bilinçli olarak
-             * anlamsız miktar göndermesini engelliyoruz.
-             */
             quantity =
                 Math.Clamp(
                     quantity,
@@ -169,10 +152,6 @@ namespace Linka.WebUI.Controllers
                 product.DiscountRate > 0 &&
                 product.DiscountRate <= 100;
 
-            /*
-             * Sepete normal fiyatı değil, kullanıcının gerçekten
-             * ödeyeceği indirimli fiyatı yazıyoruz.
-             */
             var salePrice =
                 hasDiscount
                     ? product.ProductPrice -
@@ -202,6 +181,40 @@ namespace Linka.WebUI.Controllers
             await _basketService
                 .AddBasketItem(item);
 
+            if (product.StockCount <= 0)
+            {
+                TempData["BasketError"] =
+                    "This product is currently out of stock.";
+
+                return RedirectToAction(
+                    "ProductDetail",
+                    "ProductList",
+                    new { id });
+            }
+
+            var basket =
+                await _basketService
+                    .GetBasket();
+
+            var currentQuantity =
+                basket.BasketItems
+                    .FirstOrDefault(x =>
+                        x.ProductId == id)
+                    ?.Quantity
+                ?? 0;
+
+            if (currentQuantity + quantity >
+                product.StockCount)
+            {
+                TempData["BasketError"] =
+                    $"Only {product.StockCount} items are available in stock.";
+
+                return RedirectToAction(
+                    "ProductDetail",
+                    "ProductList",
+                    new { id });
+            }
+
             return RedirectToAction(
                 nameof(Index));
         }
@@ -227,6 +240,40 @@ namespace Linka.WebUI.Controllers
             {
                 return BadRequest(
                     "Product ID cannot be empty.");
+            }
+
+            if (quantity > 0)
+            {
+                var product =
+                    await _productService
+                        .GetByIdProductAsync(id);
+
+                if (product == null)
+                {
+                    TempData["BasketError"] =
+                        "Product could not be found.";
+
+                    return RedirectToAction(
+                        nameof(Index));
+                }
+
+                if (product.StockCount <= 0)
+                {
+                    TempData["BasketError"] =
+                        "This product is currently out of stock.";
+
+                    return RedirectToAction(
+                        nameof(Index));
+                }
+
+                if (quantity > product.StockCount)
+                {
+                    TempData["BasketError"] =
+                        $"Only {product.StockCount} items are available in stock.";
+
+                    return RedirectToAction(
+                        nameof(Index));
+                }
             }
 
             await _basketService

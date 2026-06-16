@@ -47,6 +47,10 @@ Object.keys(categoryImages).forEach(function(name){
 });
 print("Categories ready: " + Object.keys(catIds).length);
 
+function randomStock() {
+    return Math.floor(Math.random() * 16) + 5;
+}
+
 // 2) Insert products + matching detail/image docs ----------------------------
 var products = [];
 products.push({"cat": "Computers", "ProductName": "Apple MacBook Pro 14\" Space Grey", "ProductPrice": "36458.47", "DiscountRate": "5", "ProductImageUrl": "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/1.webp", "ProductDescription": "Apple MacBook Pro 14\" Space Grey — available in the Computers category at LINKA.", "ProductInfo": "Ships with charger and 1-year warranty. Genuine product, sealed box.", "Images": ["https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/1.webp", "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/2.webp", "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/3.webp"]});
@@ -268,7 +272,11 @@ products.forEach(function(p){
     DiscountRate: NumberDecimal(p.DiscountRate),
     ProductImageUrl: p.ProductImageUrl,
     ProductDescription: p.ProductDescription,
-    CategoryId: catIds[p.cat]
+      CategoryId: catIds[p.cat],
+      StockCount: randomStock(),
+      IsFeatured: false,
+      FeaturedOrder: 0
+
   });
   var pid = hex(oid);
   db.ProductDetails.insertOne({

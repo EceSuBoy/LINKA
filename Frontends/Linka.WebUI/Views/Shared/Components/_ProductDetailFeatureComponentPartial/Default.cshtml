@@ -135,6 +135,19 @@
             @Model.ProductDescription
         </p>
 
+        @if (Model.IsInStock)
+        {
+            <div class="alert alert-success py-2">
+                <strong>@Model.StockCount</strong> items available in stock.
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger py-2">
+                This product is currently out of stock.
+            </div>
+        }
+
         <form asp-controller="ShoppingCart"
               asp-action="AddBasketItemWithQuantity"
               method="post">
@@ -166,7 +179,8 @@
                            class="form-control bg-secondary border-0 text-center"
                            value="1"
                            min="1"
-                           max="99" />
+                           max="@Model.StockCount"
+                           @(Model.IsInStock ? "" : "disabled") />
 
                     <div class="input-group-btn">
 
@@ -182,7 +196,8 @@
                 </div>
 
                 <button type="submit"
-                        class="btn btn-primary px-3">
+                        class="btn btn-primary px-3"
+                        @(Model.IsInStock ? "" : "disabled")>
 
                     <i class="fa fa-shopping-cart mr-1"></i>
 

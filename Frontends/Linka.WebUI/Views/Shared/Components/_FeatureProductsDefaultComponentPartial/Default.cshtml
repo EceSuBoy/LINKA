@@ -103,12 +103,26 @@
 
                         <div class="product-action">
 
-                            <a class="btn btn-outline-dark btn-square"
-                               href="/ShoppingCart/AddBasketItem/@item.ProductId">
+                            @if (item.IsInStock)
+                            {
+                                <a class="btn btn-outline-dark btn-square"
+                                   href="/ShoppingCart/AddBasketItem/@item.ProductId">
 
-                                <i class="fa fa-shopping-cart"></i>
+                                    <i class="fa fa-shopping-cart"></i>
 
-                            </a>
+                                </a>
+                            }
+                            else
+                            {
+                                <button type="button"
+                                        class="btn btn-secondary btn-square"
+                                        disabled
+                                        title="Out of Stock">
+
+                                    <i class="fa fa-ban"></i>
+
+                                </button>
+                            }
 
                             <a class="btn btn-outline-dark btn-square"
                                href="">
@@ -198,6 +212,19 @@
                         </div>
 
                     </div>
+
+                    @if (item.IsInStock)
+                    {
+                        <small class="text-success font-weight-bold">
+                            @item.StockCount in stock
+                        </small>
+                    }
+                    else
+                    {
+                        <small class="text-danger font-weight-bold">
+                            Out of Stock
+                        </small>
+                    }
 
                 </div>
 
