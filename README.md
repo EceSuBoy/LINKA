@@ -188,6 +188,16 @@ The main storefront is shown at the top of this README. Additional screens from 
 <table>
   <tr>
     <td width="50%" align="center">
+      <strong>Authentication — Sign In</strong><br><br>
+      <a href="./docs/images/auth-sign-in.jpg"><img src="./docs/images/auth-sign-in.jpg" alt="LINKA authentication sign-in screen" width="100%"></a>
+    </td>
+    <td width="50%" align="center">
+      <strong>Authentication — Registration</strong><br><br>
+      <a href="./docs/images/auth-register.jpg"><img src="./docs/images/auth-register.jpg" alt="LINKA user registration screen" width="100%"></a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
       <strong>Product Listing & Filtering</strong><br><br>
       <a href="./docs/images/product-list.jpg"><img src="./docs/images/product-list.jpg" alt="LINKA product listing and filtering" width="100%"></a>
     </td>
