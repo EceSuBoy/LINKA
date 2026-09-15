@@ -1,4 +1,14 @@
+using Linka.Images.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<GCSConfigOptions>(
+    builder.Configuration);
+
+builder.Services.AddSingleton<
+    ICloudStorageService,
+    CloudStorageService>();
+
 
 // Add services to the container.
 

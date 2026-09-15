@@ -17,6 +17,7 @@ using Linka.WebUI.Services.CatalogServices.SpecialOfferServices;
 using Linka.WebUI.Services.CommentServices;
 using Linka.WebUI.Services.Concrete;
 using Linka.WebUI.Services.DiscountServices;
+using Linka.WebUI.Services.ImageUploadServices;
 using Linka.WebUI.Services.Interfaces;
 using Linka.WebUI.Services.MessageServices;
 using Linka.WebUI.Services.MessageServices.ConversationServices;
@@ -104,6 +105,16 @@ builder.Services.AddHttpClient<IUserService, UserService>(opt =>
 {
     opt.BaseAddress = new Uri(values.IdentityServerUrl);
 }).AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
+
+builder.Services.AddHttpClient<
+    IImageUploadService,
+    ImageUploadService>(opt =>
+    {
+        opt.BaseAddress =
+            new Uri(
+                $"{values.OcelotUrl}/{values.Image.Path.TrimEnd('/')}/");
+    })
+.AddHttpMessageHandler<ResourceOwnerPasswordOwnerTokenHandler>();
 
 builder.Services.AddHttpClient<IUserIdentityService, UserIdentityService>(opt =>
 {

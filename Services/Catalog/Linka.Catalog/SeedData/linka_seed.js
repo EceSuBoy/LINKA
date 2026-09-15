@@ -1,19 +1,6 @@
-// ===========================================================================
-// LINKA Catalog seed  (MongoDB)  ->  database: LinkaCatalogDb
-// REAL product photos: main image + gallery angles per product.
-//   electronics / furniture / shoes / clothing / kitchen -> DummyJSON CDN
-//   books -> Open Library covers ; monitors/headphones/chocolate/produce -> stock photos
-//
-// HOW TO RUN:
-//   mongosh "mongodb://localhost:27017/LinkaCatalogDb" linka_seed.js
-//
-// Categories are matched by NAME (existing ones reused, no duplicates).
-// Re-running ADDS products again, so clear first if you want a fresh set.
-// ===========================================================================
 
 db = db.getSiblingDB("LinkaCatalogDb");
 
-// --- OPTIONAL: wipe catalog before seeding (uncomment the 4 lines) ----------
  //db.Products.deleteMany({});
  //db.ProductDetails.deleteMany({});
  //db.ProductImages.deleteMany({});
@@ -21,7 +8,6 @@ db = db.getSiblingDB("LinkaCatalogDb");
 
 function hex(oid){ return oid.toHexString ? oid.toHexString() : (oid.str || String(oid)); }
 
-// 1) Ensure categories exist, capture their _id ------------------------------
 var categoryImages = {
   "Computers": "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/1.webp",
   "Clothing": "https://cdn.dummyjson.com/product-images/mens-shirts/man-plaid-shirt/1.webp",
@@ -51,7 +37,6 @@ function randomStock() {
     return Math.floor(Math.random() * 16) + 5;
 }
 
-// 2) Insert products + matching detail/image docs ----------------------------
 var products = [];
 products.push({"cat": "Computers", "ProductName": "Apple MacBook Pro 14\" Space Grey", "ProductPrice": "36458.47", "DiscountRate": "5", "ProductImageUrl": "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/1.webp", "ProductDescription": "Apple MacBook Pro 14\" Space Grey — available in the Computers category at LINKA.", "ProductInfo": "Ships with charger and 1-year warranty. Genuine product, sealed box.", "Images": ["https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/1.webp", "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/2.webp", "https://cdn.dummyjson.com/product-images/laptops/apple-macbook-pro-14-inch-space-grey/3.webp"]});
 products.push({"cat": "Computers", "ProductName": "Asus Zenbook Pro Dual Screen", "ProductPrice": "22128.87", "DiscountRate": "0", "ProductImageUrl": "https://cdn.dummyjson.com/product-images/laptops/asus-zenbook-pro-dual-screen-laptop/1.webp", "ProductDescription": "Asus Zenbook Pro Dual Screen — available in the Computers category at LINKA.", "ProductInfo": "Ships with charger and 1-year warranty. Genuine product, sealed box.", "Images": ["https://cdn.dummyjson.com/product-images/laptops/asus-zenbook-pro-dual-screen-laptop/1.webp", "https://cdn.dummyjson.com/product-images/laptops/asus-zenbook-pro-dual-screen-laptop/2.webp", "https://cdn.dummyjson.com/product-images/laptops/asus-zenbook-pro-dual-screen-laptop/3.webp"]});

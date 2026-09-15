@@ -26,10 +26,6 @@ namespace Linka.IdentityServer
 
             services.AddLogging();
 
-            /*
-             * Burada UseSqlite DEĞİL,
-             * UseSqlServer kullanılmalıdır.
-             */
             services.AddDbContext<ApplicationDbContext>(
                 options =>
                     options.UseSqlServer(
@@ -52,10 +48,6 @@ namespace Linka.IdentityServer
                 scope.ServiceProvider
                     .GetRequiredService<ApplicationDbContext>();
 
-            /*
-             * Identity tabloları zaten varsa değiştirmez.
-             * Eksik migration varsa uygular.
-             */
             context.Database.Migrate();
 
             var userManager =
@@ -74,14 +66,6 @@ namespace Linka.IdentityServer
                     roleManager,
                     role);
             }
-
-            /*
-             * Kullanıcının rolünü Role alanından belirliyoruz.
-             *
-             * Normal kullanıcı: Customer
-             * Yönetici: Manager
-             * Tam yetkili yönetici: Admin
-             */
             var users =
                 new[]
                 {
@@ -143,15 +127,6 @@ namespace Linka.IdentityServer
                     user);
             }
 
-            /*
-             * 100 adet test kullanıcısını ekler.
-             *
-             * Mevcut kullanıcılar SİLİNMEZ; CreateOrUpdateUser
-             * username üzerinden kontrol ettiği için sadece eksik
-             * olan test hesapları oluşturulur, var olanlar korunur.
-             * Bu yüzden seed birden çok kez çalıştırılsa bile
-             * kullanıcı listesi bozulmaz.
-             */
             foreach (var testUser in GetTestUsers())
             {
                 CreateOrUpdateUser(
@@ -323,10 +298,6 @@ namespace Linka.IdentityServer
                     seedUser.Username);
             }
 
-            /*
-             * Seed listesinde rolü değiştirirsen eski LINKA
-             * rolü kaldırılır ve yeni rol atanır.
-             */
             var currentRoles =
                 userManager
                     .GetRolesAsync(user)

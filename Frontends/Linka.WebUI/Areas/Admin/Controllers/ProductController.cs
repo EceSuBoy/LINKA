@@ -3,6 +3,7 @@ using Linka.DtoLayer.CatalogDtos.ProductDtos;
 using Linka.WebUI.Models;
 using Linka.WebUI.Services.CatalogServices.CategoryServices;
 using Linka.WebUI.Services.CatalogServices.ProductServices;
+using Linka.WebUI.Services.ImageUploadServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,11 +19,13 @@ namespace Linka.WebUI.Areas.Admin.Controllers
 
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
+        private readonly IImageUploadService _imageUploadService;
 
-        public ProductController(IProductService productService, ICategoryService categoryService)
+        public ProductController(IProductService productService, ICategoryService categoryService, IImageUploadService imageUploadService)
         {
             _productService = productService;
             _categoryService = categoryService;
+            _imageUploadService = imageUploadService;
         }
 
         [Route("Index")]
@@ -96,25 +99,21 @@ namespace Linka.WebUI.Areas.Admin.Controllers
             ViewBag.v3 = "Product List";
             ViewBag.v0 = "Product Operations";
 
-            var values = await _categoryService.GetAllCategoriesAsync();
-            List<SelectListItem> categoryValues = (from c in values
-                                                       select new SelectListItem
-                                                       {
-                                                           Text = c.CategoryName,
-                                                           Value = c.CategoryId.ToString()
-                                                       }).ToList();
-            ViewBag.CategoryValues = categoryValues;
+            await LoadCategoriesAsync();
+
             return View();
         }
+
         [HttpPost]
         [Route("CreateProduct")]
         public async Task<IActionResult>
     CreateProduct(
-        CreateProductDto createProductDto)
+        CreateProductDto createProductDto,
+        IFormFile? imageFile)
         {
             if (!ModelState.IsValid)
             {
-                await LoadCategoriesAsync();
+                await LoadCategoriesAsync(createProductDto.CategoryId);
 
                 return View(
                     createProductDto);
@@ -122,6 +121,20 @@ namespace Linka.WebUI.Areas.Admin.Controllers
 
             try
             {
+                if (imageFile != null &&
+    imageFile.Length > 0)
+                {
+                    var uploadedUrl =
+                        await _imageUploadService
+                            .UploadAsync(imageFile);
+
+                    if (!string.IsNullOrWhiteSpace(uploadedUrl))
+                    {
+                        createProductDto.ProductImageUrl =
+                            uploadedUrl;
+                    }
+                }
+
                 await _productService
                     .CreateProductAsync(
                         createProductDto);
@@ -139,10 +152,9 @@ namespace Linka.WebUI.Areas.Admin.Controllers
                     string.Empty,
                     exception.Message);
 
-                await LoadCategoriesAsync();
+                await LoadCategoriesAsync(createProductDto.CategoryId);
 
-                return View(
-                    createProductDto);
+                return View(createProductDto);
             }
         }
         [Route("DeleteProduct/{id}")]
@@ -152,6 +164,7 @@ namespace Linka.WebUI.Areas.Admin.Controllers
             return RedirectToAction("Index", "Product", new { area = "Admin" });
         }
         [Route("UpdateProduct/{id}")]
+        [HttpGet]
         public async Task<IActionResult> UpdateProduct(string id)
         {
             ViewBag.v1 = "Home";
@@ -159,32 +172,29 @@ namespace Linka.WebUI.Areas.Admin.Controllers
             ViewBag.v3 = "Update Product";
             ViewBag.v0 = "Product Operations";
 
+            var productValues =
+                await _productService
+                    .GetByIdProductAsync(id);
 
-            var values = await _categoryService.GetAllCategoriesAsync();
-            List<SelectListItem> categoryValues = (from c in values
-                                                   select new SelectListItem
-                                                   {
-                                                       Text = c.CategoryName,
-                                                       Value = c.CategoryId.ToString()
-                                                   }).ToList();
-            ViewBag.CategoryValues = categoryValues;
+            await LoadCategoriesAsync(productValues.CategoryId);
 
-            var productValues = await _productService.GetByIdProductAsync(id);
             return View(productValues);
         }
+
         [HttpPost]
         [Route("UpdateProduct/{id}")]
         public async Task<IActionResult>
     UpdateProduct(
         string id,
-        UpdateProductDto updateProductDto)
+        UpdateProductDto updateProductDto,
+        IFormFile? imageFile)
         {
             updateProductDto.ProductId =
                 id;
 
             if (!ModelState.IsValid)
             {
-                await LoadCategoriesAsync();
+                await LoadCategoriesAsync(updateProductDto.CategoryId);
 
                 return View(
                     updateProductDto);
@@ -192,6 +202,20 @@ namespace Linka.WebUI.Areas.Admin.Controllers
 
             try
             {
+                if (imageFile != null &&
+    imageFile.Length > 0)
+                {
+                    var uploadedUrl =
+                        await _imageUploadService
+                            .UploadAsync(imageFile);
+
+                    if (!string.IsNullOrWhiteSpace(uploadedUrl))
+                    {
+                        updateProductDto.ProductImageUrl =
+                            uploadedUrl;
+                    }
+                }
+
                 await _productService
                     .UpdateProductAsync(
                         updateProductDto);
@@ -209,10 +233,9 @@ namespace Linka.WebUI.Areas.Admin.Controllers
                     string.Empty,
                     exception.Message);
 
-                await LoadCategoriesAsync();
+                await LoadCategoriesAsync(updateProductDto.CategoryId);
 
-                return View(
-                    updateProductDto);
+                return View(updateProductDto);
             }
         }
 
@@ -238,14 +261,29 @@ namespace Linka.WebUI.Areas.Admin.Controllers
                 values);
         }
 
-        private async Task LoadCategoriesAsync()
+        private async Task LoadCategoriesAsync(string? selectedCategoryId = null)
         {
             var categories =
                 await _categoryService
                     .GetAllCategoriesAsync();
 
-            ViewBag.Categories =
-                categories;
+            List<SelectListItem> categoryValues =
+                categories
+                    .Select(c => new SelectListItem
+                    {
+                        Text =
+                            c.CategoryName,
+
+                        Value =
+                            c.CategoryId,
+
+                        Selected =
+                            c.CategoryId == selectedCategoryId
+                    })
+                    .ToList();
+
+            ViewBag.CategoryValues =
+                categoryValues;
         }
     }
 }

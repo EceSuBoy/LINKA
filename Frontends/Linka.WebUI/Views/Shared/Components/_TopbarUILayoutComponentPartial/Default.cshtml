@@ -37,17 +37,12 @@
                     <div class="header-weather-card">
                         <div class="header-weather-content">
                             <div>
-                                <span class="header-weather-city">Istanbul</span>
-                                <span class="header-weather-status">Sunny</span>
-                            </div>
-
-                            <div class="header-weather-temperature">
-                                23°C
+                                @await Component.InvokeAsync("_WeatherDefaultComponentPartial")
                             </div>
                         </div>
                     </div>
                     @* bundan oncesi silenecek bu divin icinde *@
-                    @* @await Component.InvokeAsync("_WeatherDefaultComponentPartial") *@
+                     
                 </div>
 
                 <div>

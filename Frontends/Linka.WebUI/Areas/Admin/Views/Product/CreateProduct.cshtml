@@ -43,7 +43,8 @@
                 <br />
 
                 <div class="bs-example" data-example-id="simple-table">
-                    <form method="post">
+                    <form method="post"
+                          enctype="multipart/form-data">
 
                         <label>Product Name</label>
                         <input type="text" class="form-control" asp-for="ProductName" />
@@ -81,8 +82,18 @@
                         </span>
 
                         <br />
-                        <label>Product Image</label>
-                        <input type="text" class="form-control" asp-for="ProductImageUrl" />
+                        <label>Product Image File</label>
+                        <input type="file"
+                               name="imageFile"
+                               accept="image/*"
+                               class="form-control" />
+                        <small class="text-muted">
+                            Choose a product photo. It will be uploaded to cloud storage automatically.
+                        </small>
+                        <br />
+
+                        <label>Product Image URL</label>
+                        <input type="text" class="form-control" asp-for="ProductImageUrl" placeholder="Or paste an image URL manually" />
                         <br />
 
                         <label>Product Category</label>

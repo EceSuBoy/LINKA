@@ -43,9 +43,17 @@
                 <h4>Product Update Page</h4>
                 <br />
 
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        <div asp-validation-summary="All"></div>
+                    </div>
+                }
+
                 <div class="bs-example" data-example-id="simple-table">
 
-                    <form method="post">
+                    <form method="post"
+                          enctype="multipart/form-data">
 
                         <input type="hidden" asp-for="ProductId" />
 
@@ -88,8 +96,25 @@
                               class="text-danger">
                         </span>
                         <br/>
+                        <label>Upload New Product Image</label>
+                        <input type="file"
+                               name="imageFile"
+                               accept="image/*"
+                               class="form-control" />
+                        <small class="text-muted">
+                            Leave empty if you do not want to change the current image.
+                        </small>
+                        <br />
 
-                        <label>Product Image</label>
+                        @if (!string.IsNullOrWhiteSpace(Model.ProductImageUrl))
+                        {
+                            <div class="mb-3">
+                                <img src="@Model.ProductImageUrl"
+                                     style="max-width:140px; max-height:140px; object-fit:contain; border:1px solid #ddd; padding:6px;" />
+                            </div>
+                        }
+
+                        <label>Product Image URL</label>
                         <input type="text"
                                class="form-control"
                                asp-for="ProductImageUrl" />

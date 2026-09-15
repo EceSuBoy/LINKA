@@ -2,41 +2,12 @@
 
 namespace Linka.IdentityServer
 {
-    /*
-     * SeedData sınıfının ikinci parçası (partial class).
-     *
-     * Buradaki amaç, mevcut Identity veritabanını SIFIRLAMADAN
-     * 100 adet gerçekçi test kullanıcısını eklemektir.
-     *
-     * Çalışma mantığı:
-     *  - Var olan hesaplar (linkaadmin, linkamanager, kerem, mehmet,
-     *    ayse ve daha önce kayıt olmuş tüm gerçek kullanıcılar) ASLA
-     *    silinmez. EnsureSeedData içindeki CreateOrUpdateUser metodu
-     *    kullanıcıyı username üzerinden arar; yoksa oluşturur, varsa
-     *    sadece günceller. Yani bu seed birden çok kez çalıştırılsa
-     *    bile kullanıcılar tekrar tekrar eklenmez.
-     *
-     * Kurallar (istenildiği gibi):
-     *  - Tüm test kullanıcılarının şifresi: 1111aA*
-     *  - İsim ve soyisimler birbirinden farklı, gerçekçi ve
-     *    Türkçe + İngilizce karışık.
-     *  - E-posta: (isim)@linka.com          -> ör. ahmet@linka.com
-     *  - Username: (isim)01                 -> ör. ahmet01
-     *  - Rol: Customer (normal kullanıcı)
-     *
-     * Türkçe karakterler (ç, ğ, ı, İ, ö, ş, ü) e-posta ve username
-     * içinde sorun çıkarmaması için ToSlug ile ASCII'ye çevrilir.
-     * Görünen ad (Name) ise orijinal Türkçe haliyle saklanır.
-     */
     public partial class SeedData
     {
         private const string TestUserPassword = "1111aA*";
 
         private static SeedUser[] GetTestUsers()
         {
-            // 100 farklı ad (Türkçe + İngilizce karışık).
-            // Adlar benzersiz seçildiği için üretilen e-posta ve
-            // username değerleri de benzersiz olur.
             var firstNames = new[]
             {
                 "Ahmet", "Mustafa", "Emir", "Yusuf", "Berk",
@@ -61,7 +32,6 @@ namespace Linka.IdentityServer
                 "Lily", "Zoe", "Hannah", "Ella", "Scarlett"
             };
 
-            // 100 farklı soyad (Türkçe + İngilizce karışık).
             var lastNames = new[]
             {
                 "Yılmaz", "Demir", "Çelik", "Kaya", "Şahin",
@@ -106,11 +76,6 @@ namespace Linka.IdentityServer
             return users;
         }
 
-        /*
-         * Türkçe karakterleri ASCII'ye çevirip küçük harfe indirger.
-         * Örn: "Çağla" -> "cagla", "İrem" -> "irem", "Şule" -> "sule".
-         * İngilizce adlar olduğu gibi küçük harfe çevrilir.
-         */
         private static string ToSlug(string value)
         {
             var builder = new StringBuilder(value.Length);
